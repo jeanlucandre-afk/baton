@@ -1,0 +1,1536 @@
+{
+  "kids" : [
+    {
+      "classes" : "RootView",
+      "kids" : [
+        {
+          "classes" : "NonClientView",
+          "kids" : [
+            {
+              "classes" : "NativeFrameViewMac",
+              "kids" : [
+                {
+                  "classes" : "ClientView",
+                  "kids" : [
+                    {
+                      "classes" : "View",
+                      "kids" : [
+                        {
+                          "classes" : "View",
+                          "kids" : [
+                            {
+                              "classes" : "",
+                              "kids" : [
+                                {
+                                  "classes" : "",
+                                  "kids" : [
+                                    {
+                                      "classes" : "",
+                                      "kids" : [
+                                        {
+                                          "classes" : "sand-agents-sidebar.sand-1n2onr6.sand-1vjfegm.sand-78zum5.sand-dt5ytf.sand-xhr3t",
+                                          "desc" : "Bots",
+                                          "kids" : [
+                                            {
+                                              "classes" : "sand-kit-icon-button.sand-1n2onr6.sand-3nfvp2.sand-6s0dn4.sand-l56j7k.sand-2lah0",
+                                              "desc" : "Toggle compact sidebar",
+                                              "role" : "AXButton"
+                                            },
+                                            {
+                                              "classes" : "sand-kit-icon-button.sand-1n2onr6.sand-3nfvp2.sand-6s0dn4.sand-l56j7k.sand-2lah0",
+                                              "desc" : "Search",
+                                              "role" : "AXButton"
+                                            },
+                                            {
+                                              "classes" : "sand-kit-icon-button.sand-1n2onr6.sand-3nfvp2.sand-6s0dn4.sand-l56j7k.sand-2lah0",
+                                              "desc" : "New chat",
+                                              "role" : "AXButton"
+                                            },
+                                            {
+                                              "classes" : "sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1iyjqo2.sand-s83m0k.sand-dl72j9.sand-2",
+                                              "kids" : [
+                                                {
+                                                  "classes" : "ui-scroll-area.ui-1ekbvf6.ui-1logqu4.ui-1fx8caa.ui-8ddqcf.ui-1n2onr6.ui-6ikm8r.u",
+                                                  "desc" : "Bot list",
+                                                  "kids" : [
+                                                    {
+                                                      "classes" : "ui-scroll-area__viewport.ui-175mniq.ui-2lwn1j.ui-mz0i5r.ui-1pjcqnp.ui-6ikm8r.ui-",
+                                                      "kids" : [
+                                                        {
+                                                          "classes" : "sand-pinned-grid.sand-1n2onr6.sand-1ja2u2z.sand-1plvlek.sand-1s73dr8.sand-1ellvc",
+                                                          "kids" : [
+                                                            {
+                                                              "classes" : "sand-pinned-grid__tiles.sand-rvj5dj.sand-1i8xdrq.sand-l56j7k.sand-1qjc9v5.sand-1",
+                                                              "desc" : "Pinned Bots",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                  "desc" : "Planner, Main Bot",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-agent-item__corner-main.sand-10l6tqk.sand-3nfvp2.sand-6s0dn4.sand-l56j7k.sa",
+                                                                      "desc" : "Main Bot",
+                                                                      "role" : "AXImage"
+                                                                    },
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "Planner"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXButton"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                  "desc" : "SAGE",
+                                                                  "role" : "AXButton"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                  "desc" : "Ivy",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "Ivy"
+                                                                    },
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "Jasper"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXButton"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                  "desc" : "Mail Desk, Unread activity",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-agent-item__corner-dot.sand-10l6tqk.sand-3nfvp2.sand-6s0dn4.sand-l56j7k.san",
+                                                                      "desc" : "Unread activity",
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXApplicationStatus"
+                                                                    },
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "Mail Desk"
+                                                                    },
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "Dune"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXButton"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXApplicationGroup"
+                                                            }
+                                                          ],
+                                                          "role" : "AXGroup"
+                                                        },
+                                                        {
+                                                          "classes" : "sand-agents-list__rows.sand-1n2onr6.sand-1n327nk.sand-78zum5.sand-dt5ytf.sand-1j",
+                                                          "kids" : [
+                                                            {
+                                                              "classes" : "sand-agents-section.sand-78zum5.sand-dt5ytf.sand-euugli.sand-1n2onr6.sand-xhr3t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-agents-section__header.sand-78zum5.sand-aox17r.sand-6s0dn4.sand-xhr3t.sand-",
+                                                                  "role" : "AXButton",
+                                                                  "title" : "Ops"
+                                                                },
+                                                                {
+                                                                  "classes" : "ui-euugli.ui-6ikm8r.ui-10wlt62.ui-1bqoo3p.ui-81m8l4.ui-4wkmsb.ui-a1l3pf.ui-462h5",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-agents-section__rows.sand-78zum5.sand-dt5ytf.sand-1jnr06f.sand-euugli.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-jp7ctv",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                              "desc" : "Yarrow",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Yarrow"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Sent 1 Markdown file"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXButton"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-jp7ctv",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                              "desc" : "Kestrel",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Kestrel"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXButton"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXList",
+                                                                      "sub" : "AXContentList"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-agents-section.sand-78zum5.sand-dt5ytf.sand-euugli.sand-1n2onr6.sand-xhr3t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-agents-section__header.sand-78zum5.sand-aox17r.sand-6s0dn4.sand-xhr3t.sand-",
+                                                                  "role" : "AXButton",
+                                                                  "title" : "Juniper"
+                                                                },
+                                                                {
+                                                                  "classes" : "ui-euugli.ui-6ikm8r.ui-10wlt62.ui-1bqoo3p.ui-81m8l4.ui-4wkmsb.ui-a1l3pf.ui-462h5",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-agents-section__rows.sand-78zum5.sand-dt5ytf.sand-1jnr06f.sand-euugli.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-jp7ctv",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                              "desc" : "Juniper",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Juniper"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXButton"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-jp7ctv",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                              "desc" : "Reed",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Reed"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXButton"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-jp7ctv",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                              "desc" : "Team guide",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Team guide"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXButton"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXList",
+                                                                      "sub" : "AXContentList"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-agents-section.sand-78zum5.sand-dt5ytf.sand-euugli.sand-1n2onr6.sand-xhr3t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-agents-section__header.sand-78zum5.sand-aox17r.sand-6s0dn4.sand-xhr3t.sand-",
+                                                                  "role" : "AXButton",
+                                                                  "title" : "Pebble"
+                                                                },
+                                                                {
+                                                                  "classes" : "ui-euugli.ui-6ikm8r.ui-10wlt62.ui-1bqoo3p.ui-81m8l4.ui-4wkmsb.ui-a1l3pf.ui-462h5",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-agents-section__rows.sand-78zum5.sand-dt5ytf.sand-1jnr06f.sand-euugli.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-jp7ctv",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                              "desc" : "Quartz",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Quartz"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Sent 1 spreadsheet"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXButton"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-jp7ctv",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                              "desc" : "Autumn slides",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Autumn slides"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXButton"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-jp7ctv",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-agent-item.sand--default-marker.sand-jyslct.sand-1lugfcp.sand-1n2onr6.sand-",
+                                                                              "desc" : "Pebble",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "Pebble"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXButton"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXList",
+                                                                      "sub" : "AXContentList"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-agents-section.sand-78zum5.sand-dt5ytf.sand-euugli.sand-1n2onr6.sand-xhr3t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-agents-section__header.sand-78zum5.sand-aox17r.sand-6s0dn4.sand-xhr3t.sand-",
+                                                                  "role" : "AXButton",
+                                                                  "title" : "Dev"
+                                                                },
+                                                                {
+                                                                  "classes" : "ui-euugli.ui-6ikm8r.ui-10wlt62.ui-1bqoo3p.ui-81m8l4.ui-4wkmsb.ui-a1l3pf.ui-462h5",
+                                                                  "role" : "AXGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-agents-section.sand-78zum5.sand-dt5ytf.sand-euugli.sand-1n2onr6.sand-xhr3t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-agents-section__header.sand-78zum5.sand-aox17r.sand-6s0dn4.sand-xhr3t.sand-",
+                                                                  "role" : "AXButton",
+                                                                  "title" : "Unassigned"
+                                                                },
+                                                                {
+                                                                  "classes" : "ui-euugli.ui-6ikm8r.ui-10wlt62.ui-1bqoo3p.ui-81m8l4.ui-4wkmsb.ui-a1l3pf.ui-462h5",
+                                                                  "role" : "AXGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            }
+                                                          ],
+                                                          "role" : "AXGroup"
+                                                        }
+                                                      ],
+                                                      "role" : "AXGroup"
+                                                    },
+                                                    {
+                                                      "classes" : "ui-10l6tqk.ui-13vifvy.ui-tijo5x.ui-dd4er5.ui-1o0tod.ui-4jlmx6.ui-790ffn.ui-1i4c3",
+                                                      "role" : "AXGroup"
+                                                    }
+                                                  ],
+                                                  "role" : "AXGroup",
+                                                  "sub" : "AXLandmarkRegion"
+                                                },
+                                                {
+                                                  "classes" : "sand-agents-more-unreads.sand-10l6tqk.sand-1nrll8i.sand-uuh30.sand-1x85hfe.sand-",
+                                                  "desc" : "More unreads below",
+                                                  "role" : "AXButton"
+                                                }
+                                              ],
+                                              "role" : "AXGroup"
+                                            },
+                                            {
+                                              "classes" : "",
+                                              "role" : "AXGroup",
+                                              "sub" : "AXApplicationStatus"
+                                            },
+                                            {
+                                              "classes" : "sand-lvsv26.sand-jyslct.sand-3nfvp2.sand-6s0dn4.sand-l56j7k.sand-2lah0s.sand-exx",
+                                              "desc" : "Open account menu",
+                                              "kids" : [
+                                                {
+                                                  "classes" : "",
+                                                  "role" : "AXStaticText",
+                                                  "value" : "SL"
+                                                }
+                                              ],
+                                              "role" : "AXPopUpButton"
+                                            },
+                                            {
+                                              "classes" : "sand--default-marker.sand-lvsv26.sand-jyslct.sand-9f619.sand-3nfvp2.sand-6s0dn4.",
+                                              "desc" : "Connect apps",
+                                              "role" : "AXButton"
+                                            },
+                                            {
+                                              "classes" : "sand-sidebar-resize-handle.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-1euzuty.s",
+                                              "desc" : "Resize sidebar",
+                                              "role" : "AXSplitter"
+                                            }
+                                          ],
+                                          "role" : "AXGroup",
+                                          "sub" : "AXLandmarkComplementary"
+                                        },
+                                        {
+                                          "classes" : "sand-chat.sand-1l8udlp.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-5yr21d.sand-2lw",
+                                          "kids" : [
+                                            {
+                                              "classes" : "sand-toolbar.sand-10l6tqk.sand-13vifvy.sand-1o0tod.sand-tijo5x.sand-zkaem6.sand-",
+                                              "kids" : [
+                                                {
+                                                  "classes" : "sand-chat-header.sand-6s0dn4.sand-1qughib.sand-167g77z.sand-1iyjqo2.sand-s83m0k.",
+                                                  "desc" : "Planner",
+                                                  "kids" : [
+                                                    {
+                                                      "classes" : "sand-3nfvp2.sand-euugli.sand-1c4vz4f.sand-s83m0k.sand-dl72j9",
+                                                      "desc" : "Planner",
+                                                      "kids" : [
+                                                        {
+                                                          "classes" : "sand-chat-header__identity.sand-chat-header__computer.sand-3nfvp2.sand-6s0dn4.sa",
+                                                          "desc" : "View conversation details",
+                                                          "kids" : [
+                                                            {
+                                                              "classes" : "sand-chat-header__name.sand-euugli.sand-193iq5w.sand-b3r6kr.sand-tyxrsu.sand-lyi",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "",
+                                                                  "role" : "AXStaticText",
+                                                                  "value" : "Planner"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            }
+                                                          ],
+                                                          "role" : "AXButton"
+                                                        }
+                                                      ],
+                                                      "role" : "AXHeading"
+                                                    }
+                                                  ],
+                                                  "role" : "AXGroup",
+                                                  "sub" : "AXApplicationGroup"
+                                                }
+                                              ],
+                                              "role" : "AXGroup",
+                                              "sub" : "AXSectionHeader"
+                                            },
+                                            {
+                                              "classes" : "sand-chat-stage.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1iyjqo2.sand-s83m0k.sa",
+                                              "kids" : [
+                                                {
+                                                  "classes" : "ui-scroll-area.ui-1ekbvf6.ui-1logqu4.ui-1fx8caa.ui-8ddqcf.ui-1n2onr6.ui-6ikm8r.u",
+                                                  "kids" : [
+                                                    {
+                                                      "classes" : "ui-scroll-area__viewport.ui-175mniq.ui-2lwn1j.ui-mz0i5r.ui-1pjcqnp.ui-6ikm8r.ui-",
+                                                      "desc" : "Conversation transcript",
+                                                      "kids" : [
+                                                        {
+                                                          "classes" : "sand-virtual-transcript__inner.sand-1n2onr6.sand-h8yej3.sand-f7103u.sand-1xi2pdj",
+                                                          "kids" : [
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message-card.sand-file-card-wrap.sand-message-action-anchor.sand--default-m",
+                                                                      "desc" : "sample-travel-schedule .md",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-file-card.sand-78zum5.sand-dt5ytf.sand-eq5yr9.sand-axxab7.sand-yt0td4.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-1n2onr6.sand-78zum5.sand-6s0dn4.sand-167g77z.sand-h8yej3.sand-euugli.sand-9",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "sand-kit-text.sand-11wthnw.sand-w8bs97.sand-14gdtuo.sand-1rhlpx6.sand-78zum5.san",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "sand-78zum5.sand-1pha0wt.sand-euugli.sand-193iq5w.sand-1ghz6dp.sand-1717udv.sand",
+                                                                                      "desc" : "Open sample-travel-schedule.md",
+                                                                                      "kids" : [
+                                                                                        {
+                                                                                          "classes" : "sand-78zum5.sand-1pha0wt.sand-euugli.sand-193iq5w",
+                                                                                          "kids" : [
+                                                                                            {
+                                                                                              "classes" : "",
+                                                                                              "role" : "AXStaticText",
+                                                                                              "value" : "sample-travel-schedule"
+                                                                                            },
+                                                                                            {
+                                                                                              "classes" : "",
+                                                                                              "role" : "AXStaticText",
+                                                                                              "value" : ".md"
+                                                                                            }
+                                                                                          ],
+                                                                                          "role" : "AXGroup"
+                                                                                        }
+                                                                                      ],
+                                                                                      "role" : "AXButton"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "20kB"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "sand-kit-icon-button.sand-3nfvp2.sand-6s0dn4.sand-l56j7k.sand-2lah0s.sand-9f619.",
+                                                                                  "desc" : "Save sample-travel-schedule.md",
+                                                                                  "role" : "AXButton"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup",
+                                                                          "sub" : "AXDocumentArticle",
+                                                                          "title" : "Open sample-travel-schedule.md"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXApplicationGroup"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "12:03:21 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "12:03 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "Planner 12:03:21 AM"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-kit-timestamp.sand-78zum5.sand-6s0dn4.sand-l56j7k.sand-9f619.sand-1fgtraw.s",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "",
+                                                                          "role" : "AXStaticText",
+                                                                          "value" : "Today 3:27 AM"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXTimeGroup"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message.sand-fc7y3v.sand-1lvvshy.sand-ja3w2a.sand-1q8iv8g.sand-figyqd.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1717udv.sand-b3r6kr.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "",
+                                                                              "role" : "AXStaticText",
+                                                                              "value" : "You"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-message-prose.sand-78zum5.sand-dt5ytf.sand-euugli.sand-j0a0fe.sand-ehausa.s",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXDocumentArticle"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "3:27:52 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "3:27 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "You 3:27:52 AM"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message.sand-fc7y3v.sand-1lvvshy.sand-ja3w2a.sand-figyqd.sand-11ct0s3.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1717udv.sand-b3r6kr.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "",
+                                                                              "role" : "AXStaticText",
+                                                                              "value" : "Planner"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-message-prose.sand-78zum5.sand-dt5ytf.sand-euugli.sand-j0a0fe.sand-1dbef6d.",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXDocumentArticle"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "3:28:00 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "3:28 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "Planner 3:28:00 AM"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message.sand-fc7y3v.sand-1lvvshy.sand-ja3w2a.sand-figyqd.sand-11ct0s3.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1717udv.sand-b3r6kr.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "",
+                                                                              "role" : "AXStaticText",
+                                                                              "value" : "Planner"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-message-prose.sand-78zum5.sand-dt5ytf.sand-euugli.sand-j0a0fe.sand-1dbef6d.",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXDocumentArticle"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "3:28:21 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "3:28 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "Planner 3:28:21 AM"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message.sand-fc7y3v.sand-1lvvshy.sand-ja3w2a.sand-figyqd.sand-11ct0s3.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1717udv.sand-b3r6kr.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "",
+                                                                              "role" : "AXStaticText",
+                                                                              "value" : "Planner"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-message-prose.sand-78zum5.sand-dt5ytf.sand-euugli.sand-j0a0fe.sand-1dbef6d.",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            },
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "sand-dj266r.sand-at24cr.sand-xzm5a7",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText",
+                                                                                      "value" : "Open cillum commodo:"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup",
+                                                                                  "sub" : "AXStrongStyleGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "sand-dj266r.sand-at24cr.sand-xzm5a7",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText",
+                                                                                      "value" : "Esse amet fugiat laboris:"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup",
+                                                                                  "sub" : "AXStrongStyleGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "sand-dj266r.sand-at24cr.sand-xzm5a7",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText",
+                                                                                      "value" : "Nostrud veniam veniam:"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup",
+                                                                                  "sub" : "AXStrongStyleGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            },
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "sand-dj266r.sand-at24cr.sand-xzm5a7",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText",
+                                                                                      "value" : "Consequat tempor proident:"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup",
+                                                                                  "sub" : "AXStrongStyleGroup"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            },
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-92arao.sand-jfdnhf.sand-43c9pm.sand-ta",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "sand-dj266r.sand-at24cr.sand-eaf4i8.sand-1xnkbjl",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXListMarker",
+                                                                                      "value" : "• "
+                                                                                    },
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "sand-at24cr.sand-eaf4i8.sand-1xnkbjl.sand-1om1abp",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXListMarker",
+                                                                                      "value" : "• "
+                                                                                    },
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXList",
+                                                                              "sub" : "AXContentList"
+                                                                            },
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "sand-dj266r.sand-at24cr.sand-xzm5a7",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText",
+                                                                                      "value" : "Pariatur:"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup",
+                                                                                  "sub" : "AXStrongStyleGroup"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            },
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-92arao.sand-jfdnhf.sand-43c9pm.sand-ta",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "sand-dj266r.sand-at24cr.sand-eaf4i8.sand-1xnkbjl",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXListMarker",
+                                                                                      "value" : "• "
+                                                                                    },
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText",
+                                                                                      "value" : "Mollit pariatur duis lorem velit fugiat elit anim ipsum."
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "sand-at24cr.sand-eaf4i8.sand-1xnkbjl.sand-1om1abp",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXListMarker",
+                                                                                      "value" : "• "
+                                                                                    },
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "sand-at24cr.sand-eaf4i8.sand-1xnkbjl.sand-1om1abp",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXListMarker",
+                                                                                      "value" : "• "
+                                                                                    },
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "sand-at24cr.sand-eaf4i8.sand-1xnkbjl.sand-1om1abp",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXListMarker",
+                                                                                      "value" : "• "
+                                                                                    },
+                                                                                    {
+                                                                                      "classes" : "",
+                                                                                      "role" : "AXStaticText",
+                                                                                      "value" : "Anim adipiscing fugiat exercitation consequat."
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXList",
+                                                                              "sub" : "AXContentList"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXDocumentArticle"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "3:33:23 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "3:33 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "Planner 3:33:23 AM"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message-card.sand-file-card-wrap.sand-message-action-anchor.sand--default-m",
+                                                                      "desc" : "sample-office-layout .pdf",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-file-card.sand-78zum5.sand-dt5ytf.sand-eq5yr9.sand-axxab7.sand-yt0td4.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-1n2onr6.sand-78zum5.sand-6s0dn4.sand-167g77z.sand-h8yej3.sand-euugli.sand-9",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "sand-kit-text.sand-11wthnw.sand-w8bs97.sand-14gdtuo.sand-1rhlpx6.sand-78zum5.san",
+                                                                                  "kids" : [
+                                                                                    {
+                                                                                      "classes" : "sand-78zum5.sand-1pha0wt.sand-euugli.sand-193iq5w.sand-1ghz6dp.sand-1717udv.sand",
+                                                                                      "desc" : "Open sample-office-layout.pdf",
+                                                                                      "kids" : [
+                                                                                        {
+                                                                                          "classes" : "sand-78zum5.sand-1pha0wt.sand-euugli.sand-193iq5w",
+                                                                                          "kids" : [
+                                                                                            {
+                                                                                              "classes" : "",
+                                                                                              "role" : "AXStaticText",
+                                                                                              "value" : "sample-office-layout"
+                                                                                            },
+                                                                                            {
+                                                                                              "classes" : "",
+                                                                                              "role" : "AXStaticText",
+                                                                                              "value" : ".pdf"
+                                                                                            }
+                                                                                          ],
+                                                                                          "role" : "AXGroup"
+                                                                                        }
+                                                                                      ],
+                                                                                      "role" : "AXButton"
+                                                                                    }
+                                                                                  ],
+                                                                                  "role" : "AXGroup"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "315kB"
+                                                                                },
+                                                                                {
+                                                                                  "classes" : "sand-kit-icon-button.sand-3nfvp2.sand-6s0dn4.sand-l56j7k.sand-2lah0s.sand-9f619.",
+                                                                                  "desc" : "Save sample-office-layout.pdf",
+                                                                                  "role" : "AXButton"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup",
+                                                                          "sub" : "AXDocumentArticle",
+                                                                          "title" : "Open sample-office-layout.pdf"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXApplicationGroup"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "3:33:24 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "3:33 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "Planner 3:33:24 AM"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message.sand-fc7y3v.sand-1lvvshy.sand-ja3w2a.sand-figyqd.sand-11ct0s3.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1717udv.sand-b3r6kr.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "",
+                                                                              "role" : "AXStaticText",
+                                                                              "value" : "Planner"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-message-prose.sand-78zum5.sand-dt5ytf.sand-euugli.sand-j0a0fe.sand-1dbef6d.",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXDocumentArticle"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "3:33:27 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "3:33 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "Planner 3:33:27 AM"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-kit-timestamp.sand-78zum5.sand-6s0dn4.sand-l56j7k.sand-9f619.sand-1fgtraw.s",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "",
+                                                                          "role" : "AXStaticText",
+                                                                          "value" : "Today 6:11 AM"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXTimeGroup"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message.sand-fc7y3v.sand-1lvvshy.sand-ja3w2a.sand-1q8iv8g.sand-figyqd.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1717udv.sand-b3r6kr.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "",
+                                                                              "role" : "AXStaticText",
+                                                                              "value" : "You"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-message-prose.sand-78zum5.sand-dt5ytf.sand-euugli.sand-j0a0fe.sand-ehausa.s",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText",
+                                                                                  "value" : "lorem reprehenderit sint?"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXDocumentArticle",
+                                                                      "title" : "You lorem reprehenderit sint?"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "6:11:05 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "6:11 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "You 6:11:05 AM"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-virtual-transcript__row.sand-transcript-row.sand--default-marker.sand-10l6t",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-row-content.sand-1n2onr6.sand-78zum5.sand-dt5ytf.sand-1h91t0o.sand-h8yej3.s",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "sand-message.sand-fc7y3v.sand-1lvvshy.sand-ja3w2a.sand-figyqd.sand-11ct0s3.sand-",
+                                                                      "kids" : [
+                                                                        {
+                                                                          "classes" : "sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1717udv.sand-b3r6kr.sand-",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "",
+                                                                              "role" : "AXStaticText",
+                                                                              "value" : "Planner"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        },
+                                                                        {
+                                                                          "classes" : "sand-message-prose.sand-78zum5.sand-dt5ytf.sand-euugli.sand-j0a0fe.sand-1dbef6d.",
+                                                                          "kids" : [
+                                                                            {
+                                                                              "classes" : "sand-dj266r.sand-at24cr.sand-10y958y.sand-126k92a",
+                                                                              "kids" : [
+                                                                                {
+                                                                                  "classes" : "",
+                                                                                  "role" : "AXStaticText"
+                                                                                }
+                                                                              ],
+                                                                              "role" : "AXGroup"
+                                                                            }
+                                                                          ],
+                                                                          "role" : "AXGroup"
+                                                                        }
+                                                                      ],
+                                                                      "role" : "AXGroup",
+                                                                      "sub" : "AXDocumentArticle"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup"
+                                                                },
+                                                                {
+                                                                  "classes" : "sand-row-timestamp.sand-10l6tqk.sand-13vifvy.sand-1ey2m1c.sand-tijo5x.sand-78zum",
+                                                                  "desc" : "6:11:11 AM",
+                                                                  "kids" : [
+                                                                    {
+                                                                      "classes" : "",
+                                                                      "role" : "AXStaticText",
+                                                                      "value" : "6:11 AM"
+                                                                    }
+                                                                  ],
+                                                                  "role" : "AXGroup",
+                                                                  "sub" : "AXTimeGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup",
+                                                              "sub" : "AXDocumentArticle",
+                                                              "title" : "Planner 6:11:11 AM"
+                                                            }
+                                                          ],
+                                                          "role" : "AXGroup"
+                                                        }
+                                                      ],
+                                                      "role" : "AXGroup",
+                                                      "sub" : "AXApplicationLog"
+                                                    }
+                                                  ],
+                                                  "role" : "AXGroup"
+                                                }
+                                              ],
+                                              "role" : "AXGroup"
+                                            },
+                                            {
+                                              "classes" : "sand-chat-input-dock.sand-1n2onr6.sand-1c4vz4f.sand-2lah0s.sand-zkaem6.sand-exx8",
+                                              "kids" : [
+                                                {
+                                                  "classes" : "sand-1n2onr6.sand-10dfj",
+                                                  "kids" : [
+                                                    {
+                                                      "classes" : "sand-prompt-form.sand-1lliihq.sand-h8yej3",
+                                                      "kids" : [
+                                                        {
+                                                          "classes" : "sand-kit-message-input-frame.sand-9f619.sand-h8yej3.sand-13l7odt.sand-4hv7ue.san",
+                                                          "kids" : [
+                                                            {
+                                                              "classes" : "tiptap.ProseMirror.sand-prompt-field.sand-fc7y3v.sand-1lvvshy.sand-ja3w2a.sand-j",
+                                                              "desc" : "Prompt",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "sand-1gslohp.sand-14l7nz5.sand-14z9mp.sand-at24cr.sand-1lziwak.is-empty.is-edito",
+                                                                  "role" : "AXGroup"
+                                                                }
+                                                              ],
+                                                              "role" : "AXTextArea",
+                                                              "value" : "\n"
+                                                            },
+                                                            {
+                                                              "classes" : "sand-prompt-actions-row.sand-10l6tqk.sand-78zum5.sand-6s0dn4.sand-1qughib.sand-4",
+                                                              "kids" : [
+                                                                {
+                                                                  "classes" : "ui-icon-button.ui-jyslct.ui-3nfvp2.ui-6s0dn4.ui-l56j7k.ui-2lah0s.ui-9f619.ui-exx",
+                                                                  "desc" : "Composer actions",
+                                                                  "role" : "AXPopUpButton"
+                                                                },
+                                                                {
+                                                                  "classes" : "ui-icon-button.ui-jyslct.ui-3nfvp2.ui-6s0dn4.ui-l56j7k.ui-2lah0s.ui-9f619.ui-exx",
+                                                                  "desc" : "Start voice input",
+                                                                  "role" : "AXButton"
+                                                                },
+                                                                {
+                                                                  "classes" : "ui-icon-button.ui-jyslct.ui-3nfvp2.ui-6s0dn4.ui-l56j7k.ui-2lah0s.ui-9f619.ui-exx",
+                                                                  "desc" : "Start voice chat",
+                                                                  "role" : "AXButton"
+                                                                }
+                                                              ],
+                                                              "role" : "AXGroup"
+                                                            }
+                                                          ],
+                                                          "role" : "AXGroup"
+                                                        }
+                                                      ],
+                                                      "role" : "AXGroup"
+                                                    }
+                                                  ],
+                                                  "role" : "AXGroup"
+                                                }
+                                              ],
+                                              "role" : "AXGroup"
+                                            }
+                                          ],
+                                          "role" : "AXGroup",
+                                          "sub" : "AXLandmarkMain",
+                                          "title" : "Planner"
+                                        },
+                                        {
+                                          "classes" : "sand-announce-polite.sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1717",
+                                          "kids" : [
+                                            {
+                                              "classes" : "",
+                                              "role" : "AXStaticText",
+                                              "value" : "Sort photo roadmap together"
+                                            }
+                                          ],
+                                          "role" : "AXGroup",
+                                          "sub" : "AXApplicationStatus"
+                                        },
+                                        {
+                                          "classes" : "sand-announce-assertive.sand-10l6tqk.sand-1i1rx1s.sand-jm9jq1.sand-kdpibf.sand-1",
+                                          "role" : "AXGroup",
+                                          "sub" : "AXApplicationAlert"
+                                        },
+                                        {
+                                          "classes" : "sand-ixxii4.sand-13vifvy.sand-1o0tod.sand-1xc55vz.sand-dk7pt.sand-b3r6kr.sand-g0",
+                                          "role" : "AXGroup"
+                                        },
+                                        {
+                                          "classes" : "sand-ixxii4.sand-13vifvy.sand-1o0tod.sand-1woyocn.sand-dd4er5.sand-nalus7.sand-q",
+                                          "role" : "AXGroup",
+                                          "sub" : "AXApplicationGroup"
+                                        }
+                                      ],
+                                      "role" : "AXGroup"
+                                    }
+                                  ],
+                                  "role" : "AXGroup"
+                                }
+                              ],
+                              "role" : "AXWebArea",
+                              "title" : "Grok Bot"
+                            }
+                          ],
+                          "role" : "AXGroup"
+                        },
+                        {
+                          "classes" : "View",
+                          "role" : "AXGroup"
+                        }
+                      ],
+                      "role" : "AXGroup"
+                    }
+                  ],
+                  "role" : "AXGroup"
+                }
+              ],
+              "role" : "AXGroup"
+            }
+          ],
+          "role" : "AXGroup"
+        }
+      ],
+      "role" : "AXGroup",
+      "title" : "Grok Bot"
+    },
+    {
+      "role" : "AXButton",
+      "sub" : "AXCloseButton"
+    },
+    {
+      "kids" : [
+        {
+          "kids" : [
+            {
+              "role" : "AXGroup"
+            }
+          ],
+          "role" : "AXGroup"
+        }
+      ],
+      "role" : "AXButton",
+      "sub" : "AXFullScreenButton"
+    },
+    {
+      "role" : "AXButton",
+      "sub" : "AXMinimizeButton"
+    }
+  ],
+  "role" : "AXWindow",
+  "sub" : "AXStandardWindow",
+  "title" : "Grok Bot"
+}

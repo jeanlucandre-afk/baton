@@ -1,0 +1,13 @@
+.build/
+logs/
+.DS_Store
+App/build/
+App/Baton.xcodeproj/
+*.xcuserstate
+.gstack/
+.claude/worktrees/
+dist/
+App/build-release/
+
+# Private session notes (kept locally, not published)
+docs/handoffs/

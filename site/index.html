@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baton</title>
+<meta name="description" content="Baton lives in your Mac's notch and pings you when an AI chat finishes or needs you.">
+<link rel="icon" href="icon.png">
+<meta property="og:title" content="Baton">
+<meta property="og:description" content="Run AI chats in parallel. Baton pings you from the notch when one finishes or needs you.">
+<meta property="og:image" content="icon.png">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f2eb;
+    --muted: rgba(245, 242, 235, 0.6);
+    --faint: rgba(245, 242, 235, 0.12);
+    --coral: #ff7866;
+    --gold: #f0c26b;
+    --blue: #87a8ff;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--paper); }
+  main { max-width: 760px; margin: 0 auto; padding: 0 16px 96px; }
+
+  /* The screen edge with the notch that pops open, like the app. */
+  .stage {
+    position: relative;
+    height: 300px;
+    margin: 0 -16px;
+    background: linear-gradient(#1b1b1d, #121213);
+    border-bottom: 1px solid var(--faint);
+    overflow: hidden;
+  }
+  .notch {
+    position: absolute; top: 0; left: 50%;
+    width: 300px; height: 34px;
+    transform: translateX(-50%);
+    background: #000;
+    border-radius: 0 0 16px 16px;
+    animation: pop 6s cubic-bezier(.3, 1.35, .5, 1) infinite;
+    overflow: hidden;
+  }
+  .wing { position: absolute; top: 11px; display: flex; gap: 6px; transition: opacity .2s; animation: wings 6s infinite; }
+  .wing.l { left: 18px; } .wing.r { right: 18px; }
+  .dot { width: 12px; height: 12px; border-radius: 4px; background: #333; }
+  .dot.ready { background: var(--gold); } .dot.work { background: var(--blue); }
+  .card { position: absolute; top: 44px; left: 24px; right: 24px; opacity: 0; animation: card 6s infinite; }
+  .row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--faint); font-size: 14px; }
+  .row:first-child { border-top: 0; }
+  .row i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .row span { color: var(--muted); margin-left: auto; font-size: 12px; }
+  @keyframes pop {
+    0%, 22%   { width: 300px; height: 34px; border-radius: 0 0 16px 16px; }
+    34%, 78%  { width: min(560px, calc(100vw - 32px)); height: 200px; border-radius: 0 0 26px 26px; }
+    90%, 100% { width: 300px; height: 34px; border-radius: 0 0 16px 16px; }
+  }
+  @keyframes wings { 0%, 22% { opacity: 1; } 25%, 86% { opacity: 0; } 92%, 100% { opacity: 1; } }
+  @keyframes card { 0%, 30% { opacity: 0; } 38%, 74% { opacity: 1; } 78%, 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .notch { animation: none; width: min(560px, calc(100vw - 32px)); height: 200px; border-radius: 0 0 26px 26px; }
+    .wing { display: none; } .card { animation: none; opacity: 1; }
+  }
+
+  header { text-align: center; padding: 56px 0 8px; }
+  header img { width: 96px; height: 96px; }
+  h1 { font-size: 44px; letter-spacing: -0.03em; margin: 12px 0 8px; font-weight: 650; }
+  .lede { font-size: 19px; color: var(--muted); max-width: 520px; margin: 0 auto; }
+  .cta { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 32px 0 8px; }
+  .button {
+    display: inline-block; padding: 13px 26px; border-radius: 12px;
+    background: var(--coral); color: #1a0d0a; font-weight: 600; text-decoration: none; font-size: 17px;
+  }
+  .button:hover { filter: brightness(1.06); }
+  .small { font-size: 13px; color: var(--muted); }
+  .small a { color: var(--muted); }
+
+  section { margin-top: 64px; }
+  h2 { font-size: 22px; letter-spacing: -0.01em; margin: 0 0 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .tile { border: 1px solid var(--faint); border-radius: 14px; padding: 16px 18px; }
+  .tile b { display: block; margin-bottom: 4px; }
+  .tile p { margin: 0; color: var(--muted); font-size: 14px; }
+  ol { padding-left: 22px; } ol li { margin: 8px 0; }
+  code { background: var(--faint); padding: 2px 6px; border-radius: 5px; font-size: 13px; }
+  footer { margin-top: 72px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="stage" aria-hidden="true">
+  <div class="notch">
+    <div class="wing l"><div class="dot ready"></div><div class="dot work"></div><div class="dot"></div></div>
+    <div class="wing r"><div class="dot ready"></div></div>
+    <div class="card">
+      <div class="row"><i style="background:var(--gold)"></i>Pricing page copy<span>ChatGPT · finished</span></div>
+      <div class="row"><i style="background:var(--coral)"></i>Refactor auth middleware<span>Cursor · needs you</span></div>
+      <div class="row"><i style="background:var(--blue)"></i>Weekly report draft<span>Claude · working</span></div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <header>
+    <img src="icon.png" alt="">
+    <h1>Baton</h1>
+    <p class="lede">Run AI chats in parallel. Baton lives in your Mac's notch and pings you the moment one finishes or needs you.</p>
+    <div class="cta">
+      <a class="button" href="https://github.com/jeanlucandre-afk/baton/releases/latest/download/Baton.dmg">Download for Mac</a>
+      <span class="small">Free and open source · macOS 26 or later ·
+        <a href="https://github.com/jeanlucandre-afk/baton/releases">All releases</a></span>
+    </div>
+  </header>
+
+  <section>
+    <h2>What it does</h2>
+    <div class="grid">
+      <div class="tile"><b>Pings from the notch</b><p>A chat finishes or needs an answer: the notch pops open and tells you which one.</p></div>
+      <div class="tile"><b>Every chat at a glance</b><p>Hover the notch to see what's working, what's ready and what needs you.</p></div>
+      <div class="tile"><b>Jump straight there</b><p>⌥Tab takes you to the next ready chat. ⌥N starts a new task.</p></div>
+      <div class="tile"><b>Works with your apps</b><p>ChatGPT, Codex, Claude, Cursor and more. It reads each app's chat list on your Mac.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Install</h2>
+    <ol>
+      <li>Download <b>Baton.dmg</b>, open it and drag Baton to Applications.</li>
+      <li>Open Baton. This build isn't notarized by Apple yet, so macOS blocks the first open once:
+        go to <b>System Settings › Privacy &amp; Security</b> and click <b>Open Anyway</b>.</li>
+      <li>The welcome window walks you through Accessibility and your keys. About a minute.</li>
+    </ol>
+    <p class="small">Stuck? See the <a href="https://github.com/jeanlucandre-afk/baton/blob/main/docs/INSTALL.md">install guide and troubleshooting</a>.</p>
+  </section>
+
+  <section>
+    <h2>Keys</h2>
+    <div class="grid">
+      <div class="tile"><b>Jev</b><p>Tells when a reply is finished or needs you. Get one at <a href="https://typesafe.ai">typesafe.ai</a>. Without it Baton lists your chats but can't tell when one is done.</p></div>
+      <div class="tile"><b>Gemini (optional)</b><p>Writes the one-line pings and task names. Get one at <a href="https://aistudio.google.com/apikey">Google AI Studio</a>. Without it, Apple's on-device model writes them.</p></div>
+    </div>
+    <p class="small">Keys stay in your Mac's Keychain. Baton reads your windows on your Mac; it only sends text to the services you set up: the keys you add, and phone pings if you turn them on.</p>
+  </section>
+
+  <footer class="small">
+    <a href="https://github.com/jeanlucandre-afk/baton">Source on GitHub</a> · MIT License
+  </footer>
+</main>
+</body>
+</html>
