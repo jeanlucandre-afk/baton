@@ -46,6 +46,12 @@ struct Ping: Equatable {
     var test = false
 }
 
+/// The front window, handed back from a read off the main thread (an AXUIElement is safe on any thread).
+nonisolated struct FrontWindow: @unchecked Sendable {
+    let pid: pid_t
+    let element: AXUIElement
+}
+
 @Observable
 final class AppModel {
     static let shared = AppModel()
@@ -171,10 +177,11 @@ final class AppModel {
 
     let engine: DetectionEngine
     /// Always handed to the engine, so a key saved later (Settings › Keys) works without a relaunch.
-    @ObservationIgnored private let jev = Jev(key: Jev.readKey())
+    /// Keyless until `start` reads the keys off the main thread (see `reloadKeys`).
+    @ObservationIgnored private let jev = Jev(key: nil)
     var classifier: Jev? { jevReady ? jev : nil }
     /// Gemini for words (summaries, names, steps); nil without a key, then on-device or plain text.
-    private(set) var smart = Smart.shared()
+    private(set) var smart: Smart? = nil
     var smartReady: Bool { smart != nil }
     /// Tasks whose window or chat you're in right now.
     private(set) var nowTaskIDs: Set<UUID> = []
@@ -201,10 +208,11 @@ final class AppModel {
     @ObservationIgnored private var keyMonitor: Any?
 
     private init() {
-        jevReady = jev.hasKey
         var config = DetectionEngine.Config()
         config.settle = Defaults[.settle]
-        config.summaries = Smart.shared() == nil  // Gemini writes them instead
+        // On-device summaries until the keys are read; `reloadKeys` turns them off if Gemini writes them.
+        // (Reading the keys here ran `security` three times on the main thread at launch, and a locked
+        // Keychain can hold that on its unlock prompt.)
         engine = DetectionEngine(classifier: jev, config: config)
     }
 
@@ -225,6 +233,7 @@ final class AppModel {
     func start() {
         axTrusted = AX.isTrusted(prompt: Defaults[.onboarded])  // first run: onboarding asks instead
         tasks = file.load()
+        Task { await reloadKeys() }
         reattachAll()
         engine.start()
         Task { await listen() }
@@ -329,7 +338,7 @@ final class AppModel {
         let away = minutes > 0 && secondsSinceInput >= minutes * 60
         guard away != idlePaused else { return }
         idlePaused = away
-        engine.setPaused(away)
+        engine.setPaused(away || !axTrusted)
         if away {
             sidebarLoop?.cancel(); sidebarLoop = nil
             // Phone pings on: keep an eye on the chats, less and less often, so news still reaches the phone.
@@ -349,7 +358,11 @@ final class AppModel {
     func recheckAccessibility() {
         let was = axTrusted
         axTrusted = AX.isTrusted(prompt: false)
-        if axTrusted && !was { reattachAll() }
+        guard axTrusted != was else { return }
+        // Turned off while running: every read fails, and an empty window read would reach Jev as a
+        // conversation that went blank. The engine rests until the permission is back.
+        engine.setPaused(idlePaused || !axTrusted)
+        if axTrusted { reattachAll() }
     }
 
     // MARK: Rows
@@ -709,13 +722,18 @@ final class AppModel {
     /// get their visible chat matched to a task straight away.
     private func reattachAll() {
         guard axTrusted else { return }
-        let current = AX.listWindows()
-        let attached = Set(live.values.flatMap(\.taskIDs))
-        for t in tasks where !attached.contains(t.id) {
-            for r in t.windows { if let w = TaskFile.match(r, in: current) { attach(w, to: t.id, makeCurrent: false) } }
-        }
-        for (tid, l) in live where l.taskIDs.count > 1 {
-            if let s = AX.snapshot(l.window) { resolve(tid, title: s.title, tail: s.tail) }
+        // Listing every app's windows waits on any app that's hung (half a second each): off the main thread.
+        Task {
+            let current = await Task.detached(priority: .userInitiated) { AX.listWindows() }.value
+            let attached = Set(live.values.flatMap(\.taskIDs))
+            for t in tasks where !attached.contains(t.id) {
+                for r in t.windows { if let w = TaskFile.match(r, in: current) { attach(w, to: t.id, makeCurrent: false) } }
+            }
+            let shared = live.filter { $0.value.taskIDs.count > 1 }.map { ($0.key, $0.value.window) }
+            let snaps = await Task.detached(priority: .userInitiated) {
+                shared.compactMap { tid, w in AX.snapshot(w).map { (tid, $0) } }
+            }.value
+            for (tid, s) in snaps { resolve(tid, title: s.title, tail: s.tail) }
         }
     }
 
@@ -725,30 +743,33 @@ final class AppModel {
     /// Naming the chat an app has open walks its window, so that read runs off the main thread.
     func updateFocus() {
         guard !idlePaused, !focusReading else { return }
-        guard axTrusted, let f = AX.focusedWindow() else { if !nowTaskIDs.isEmpty { nowTaskIDs = [] }; return }
-        var ids = Set<UUID>()
-        for l in live.values where l.window.pid == f.pid && CFEqual(l.window.element, f.element) {
-            if let c = l.current { ids.insert(c) } else if l.taskIDs.count == 1 { ids.insert(l.taskIDs[0]) }
-        }
-        guard let frontBundle = NSRunningApplication(processIdentifier: f.pid)?.bundleIdentifier,
-              tasks.contains(where: { $0.chat?.bundleID == frontBundle }) else { applyFocus(ids); return }
-        // The same window as a moment ago: its open chat from that read (walking it every second, for as
-        // long as you work in Claude, was much of Baton's CPU).
-        // With no mouse or key input since that read, nothing can have opened another chat: it stands for up
-        // to 30 s (moving the mouse back to the 3 s it had).
-        if let last = lastFocusRead, last.pid == f.pid, CFEqual(last.element, f.element),
-           case let age = Date().timeIntervalSince(last.at), age < 3 || (age < 30 && secondsSinceInput > age) {
-            focusOnChat(ids, bundle: frontBundle, open: last.open)
-            return
-        }
+        guard axTrusted else { if !nowTaskIDs.isEmpty { nowTaskIDs = [] }; return }
         focusReading = true
-        nonisolated(unsafe) let element = f.element
         Task {
+            defer { focusReading = false }
+            // Even asking for the front window waits on the front app: a hung one held the main thread
+            // (and every hover) for the read's timeout, every second.
+            let front = await Task.detached(priority: .userInitiated) { AX.focusedWindow().map { FrontWindow(pid: $0.pid, element: $0.element) } }.value
+            guard let f = front else { if !nowTaskIDs.isEmpty { nowTaskIDs = [] }; return }
+            var ids = Set<UUID>()
+            for l in live.values where l.window.pid == f.pid && CFEqual(l.window.element, f.element) {
+                if let c = l.current { ids.insert(c) } else if l.taskIDs.count == 1 { ids.insert(l.taskIDs[0]) }
+            }
+            guard let frontBundle = NSRunningApplication(processIdentifier: f.pid)?.bundleIdentifier,
+                  tasks.contains(where: { $0.chat?.bundleID == frontBundle }) else { applyFocus(ids); return }
+            // The same window as a moment ago: its open chat from that read (walking it every second, for as
+            // long as you work in Claude, was much of Baton's CPU).
+            // With no mouse or key input since that read, nothing can have opened another chat: it stands for up
+            // to 30 s (moving the mouse back to the 3 s it had).
+            if let last = lastFocusRead, last.pid == f.pid, CFEqual(last.element, f.element),
+               case let age = Date().timeIntervalSince(last.at), age < 3 || (age < 30 && secondsSinceInput > age) {
+                focusOnChat(ids, bundle: frontBundle, open: last.open)
+                return
+            }
             let open = await Task.detached(priority: .userInitiated) {
-                Sidebar.currentChat(element: element, bundleID: frontBundle)
+                Sidebar.currentChat(element: f.element, bundleID: frontBundle)
             }.value
-            focusReading = false
-            lastFocusRead = (f.pid, element, Date(), open)
+            lastFocusRead = (f.pid, f.element, Date(), open)
             focusOnChat(ids, bundle: frontBundle, open: open)
         }
     }

@@ -82,7 +82,7 @@ extension AppModel {
         // Followed chats per app, to look for one whose status word Baton doesn't know.
         let followed = Dictionary(grouping: tasks.compactMap(\.chat), by: \.bundleID).mapValues { $0.map(\.name) }
         let started = Date()
-        let result: [String: AppRead] = await Task.detached(priority: .utility) {
+        let (result, front): ([String: AppRead], FrontWindow?) = await Task.detached(priority: .utility) {
             var out: [String: AppRead] = [:]
             for app in NSWorkspace.shared.runningApplications {
                 guard let b = app.bundleIdentifier, wanted.contains(b) else { continue }
@@ -119,7 +119,8 @@ extension AppModel {
                 }
                 out[b] = r
             }
-            return out
+            // Here too, not on the main thread: asking for it waits on the front app.
+            return (out, AX.focusedWindow().map { FrontWindow(pid: $0.pid, element: $0.element) })
         }.value
         // Only what changed since the last poll is logged (and slow polls), so poll.log stays small.
         let took = Int(Date().timeIntervalSince(started) * 1000)
@@ -131,7 +132,7 @@ extension AppModel {
         for b in wanted where followed[b] != nil { DebugLog.changed("read|\(b)", result[b] == nil ? "\(b) NOT READ (no window?)" : "\(b) read") }
         // The front window's open chat, as this poll read it: the focus timer uses it instead of walking the
         // window again (47 ms a time in Cursor). Only a name counts; no name, and the focus timer reads itself.
-        if (lastFocusRead?.at ?? .distantPast) < started, let f = AX.focusedWindow(),
+        if (lastFocusRead?.at ?? .distantPast) < started, let f = front,
            let open = result.values.lazy.flatMap(\.openByWindow).first(where: { $0.key.pid == f.pid && CFEqual($0.key.element, f.element) })?.value {
             lastFocusRead = (f.pid, f.element, started, open)
         }
