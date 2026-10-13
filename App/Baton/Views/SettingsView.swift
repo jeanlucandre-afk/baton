@@ -61,6 +61,7 @@ private struct GeneralPane: View {
             }
             InsightSettingsSection()
             Section { OpenAtLoginToggle() }
+            UpdateSettingsSection()
             Section {
                 Button("Show Welcome Again…") { Onboarding.show() }
                 Button("Troubleshooting…") { NSWorkspace.shared.open(Onboarding.troubleshootingURL) }

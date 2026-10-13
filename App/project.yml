@@ -12,6 +12,9 @@ packages:
   Defaults:
     url: https://github.com/sindresorhus/Defaults
     from: 9.0.0
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: 2.6.0
 targets:
   Baton:
     type: application
@@ -21,16 +24,24 @@ targets:
       - package: BatonCore
       - package: KeyboardShortcuts
       - package: Defaults
+      - package: Sparkle
     info:
       path: Baton/Info.plist
       properties:
         CFBundleDisplayName: Baton
-        CFBundleShortVersionString: "0.1.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "0.2.0"
+        CFBundleVersion: "2"
         LSUIElement: true
         CFBundleIconName: AppIcon
         LSApplicationCategoryType: public.app-category.productivity
         LSMinimumSystemVersion: "26.0"
+        # Auto-updates (Sparkle): the feed on the download page, checked daily and installed on its own.
+        # Releases are signed with the private half of this key, kept in the release Mac's login Keychain.
+        SUFeedURL: https://jeanlucandre-afk.github.io/baton/appcast.xml
+        SUPublicEDKey: rKMXmf64vh0n9Mns1JzJS4Fm8mRhxr5OFylps3W2GQY=
+        SUEnableAutomaticChecks: true
+        SUAutomaticallyUpdate: true
+        SUScheduledCheckInterval: 86400
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.baton.app

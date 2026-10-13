@@ -28,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Insight.shared.start()
         UsageMonitor.shared.start()
         DisplayManager.shared.start()
+        _ = Updater.shared  // starts the daily update check
         KeyboardShortcuts.onKeyUp(for: .newTask) { AppModel.shared.openNewTask() }
         KeyboardShortcuts.onKeyUp(for: .nextReady) { AppModel.shared.jumpToNextReady() }
         SwitcherController.shared.register()
@@ -96,6 +97,7 @@ struct MenuContent: View {
         Toggle("Also Send Notifications", isOn: $notifications)
         Divider()
         Text(String(format: "Jev spend this session: $%.4f", model.spent))
+        CheckForUpdatesButton()
         Button("Troubleshooting…") { NSWorkspace.shared.open(Onboarding.troubleshootingURL) }
         Button("Settings…") {
             NSApp.activate()
