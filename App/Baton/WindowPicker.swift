@@ -84,20 +84,10 @@ enum WindowPicker {
         AX.enableTree(pid: c.pid)
         let wins = AX.windows(pid: c.pid)
         func distance(_ w: AXWindow) -> CGFloat {
-            guard let f = frame(of: w.element) else { return .infinity }
+            guard let f = AX.frame(of: w.element) else { return .infinity }
             return abs(f.minX - c.frame.minX) + abs(f.minY - c.frame.minY) + abs(f.width - c.frame.width) + abs(f.height - c.frame.height)
         }
         return wins.min { distance($0) < distance($1) }
-    }
-
-    private static func frame(of el: AXUIElement) -> CGRect? {
-        var pos: CFTypeRef?, size: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(el, kAXPositionAttribute as CFString, &pos) == .success,
-              AXUIElementCopyAttributeValue(el, kAXSizeAttribute as CFString, &size) == .success else { return nil }
-        var p = CGPoint.zero, s = CGSize.zero
-        AXValueGetValue(pos as! AXValue, .cgPoint, &p)
-        AXValueGetValue(size as! AXValue, .cgSize, &s)
-        return CGRect(origin: p, size: s)
     }
 
     /// AppKit (bottom-left origin) → Quartz (top-left origin of the primary screen).

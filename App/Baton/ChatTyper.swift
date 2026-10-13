@@ -167,13 +167,15 @@ enum ChatTyper {
         if AXUIElementCopyAttributeValue(el, kAXFocusedAttribute as CFString, &v) == .success, (v as? Bool) == true { return true }
         let axApp = AXUIElementCreateApplication(pid)
         AXUIElementSetMessagingTimeout(axApp, 0.3)
-        guard AXUIElementCopyAttributeValue(axApp, kAXFocusedUIElementAttribute as CFString, &v) == .success, let f = v else { return false }
-        var cur = f as! AXUIElement
+        guard AXUIElementCopyAttributeValue(axApp, kAXFocusedUIElementAttribute as CFString, &v) == .success,
+              var cur = AX.element(v) else { return false }
         for _ in 0..<6 {
             if CFEqual(cur, el) { return true }
+            // The app's timeout doesn't carry over to its elements: a hung app mustn't hold the main thread 6 s.
+            AXUIElementSetMessagingTimeout(cur, AX.messagingTimeout)
             var p: CFTypeRef?
-            guard AXUIElementCopyAttributeValue(cur, kAXParentAttribute as CFString, &p) == .success, let parent = p else { return false }
-            cur = parent as! AXUIElement
+            guard AXUIElementCopyAttributeValue(cur, kAXParentAttribute as CFString, &p) == .success, let parent = AX.element(p) else { return false }
+            cur = parent
         }
         return false
     }
@@ -184,15 +186,18 @@ enum ChatTyper {
         let axApp = AXUIElementCreateApplication(pid)
         AXUIElementSetMessagingTimeout(axApp, 0.5)
         func kids(_ el: AXUIElement) -> [AXUIElement] {
+            // Each menu element gets its own short timeout (the app's doesn't carry over).
+            AXUIElementSetMessagingTimeout(el, AX.messagingTimeout)
             var v: CFTypeRef?
             guard AXUIElementCopyAttributeValue(el, kAXChildrenAttribute as CFString, &v) == .success else { return [] }
             return v as? [AXUIElement] ?? []
         }
         var bar: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(axApp, kAXMenuBarAttribute as CFString, &bar) == .success, let bar else { return false }
-        for top in kids(bar as! AXUIElement) {
+        guard AXUIElementCopyAttributeValue(axApp, kAXMenuBarAttribute as CFString, &bar) == .success, let bar = AX.element(bar) else { return false }
+        for top in kids(bar) {
             for menu in kids(top) {
                 for item in kids(menu) {
+                    AXUIElementSetMessagingTimeout(item, AX.messagingTimeout)
                     var ch: CFTypeRef?, mods: CFTypeRef?, enabled: CFTypeRef?
                     AXUIElementCopyAttributeValue(item, kAXMenuItemCmdCharAttribute as CFString, &ch)
                     AXUIElementCopyAttributeValue(item, kAXMenuItemCmdModifiersAttribute as CFString, &mods)
@@ -233,7 +238,9 @@ enum ChatTyper {
             AXUIElementPerformAction(w, kAXRaiseAction as CFString)
             AXUIElementSetAttributeValue(w, kAXMainAttribute as CFString, kCFBooleanTrue)
         }
-        AXUIElementSetAttributeValue(AXUIElementCreateApplication(o.app.processIdentifier), kAXFrontmostAttribute as CFString, kCFBooleanTrue)
+        let app = AXUIElementCreateApplication(o.app.processIdentifier)
+        AXUIElementSetMessagingTimeout(app, 0.5)   // on the main thread: not the system's 6 s for a hung app
+        AXUIElementSetAttributeValue(app, kAXFrontmostAttribute as CFString, kCFBooleanTrue)
         o.app.activate()
     }
 }

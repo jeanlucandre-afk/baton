@@ -4,7 +4,18 @@ import Foundation
 public struct Limit: Codable, Sendable, Equatable {
     public var percent: Double
     public var resetsAt: Date?
-    public init(percent: Double, resetsAt: Date? = nil) { self.percent = percent; self.resetsAt = resetsAt }
+    public init(percent: Double, resetsAt: Date? = nil) { self.percent = Self.sane(percent); self.resetsAt = resetsAt }
+
+    /// Percents come from other apps' logs and windows and are shown as `Int(percent)`, which traps on NaN,
+    /// infinity or anything past Int.max: those read as 0, and the rest is kept to 0...1000.
+    static func sane(_ p: Double) -> Double { p.isFinite ? min(max(p, 0), 1000) : 0 }
+
+    enum CodingKeys: String, CodingKey { case percent, resetsAt }
+
+    public init(from d: Decoder) throws {
+        let c = try d.container(keyedBy: CodingKeys.self)
+        self.init(percent: try c.decode(Double.self, forKey: .percent), resetsAt: try c.decodeIfPresent(Date.self, forKey: .resetsAt))
+    }
 }
 
 /// An AI app's limits as last seen: the 5-hour window, the week, or (Cursor) one plan allowance.
@@ -106,11 +117,13 @@ public enum UsageReader {
     }
 
     static func number(_ v: Any?) -> Double? {
-        if let d = v as? Double { return d }
-        if let i = v as? Int { return Double(i) }
-        if let n = v as? NSNumber { return n.doubleValue }
-        if let s = v as? String { return Double(s) }
-        return nil
+        var d: Double?
+        if let x = v as? Double { d = x }
+        else if let i = v as? Int { d = Double(i) }
+        else if let n = v as? NSNumber { d = n.doubleValue }
+        else if let s = v as? String { d = Double(s) }
+        // "nan" and "inf" parse as numbers, but no limit, window or reset time is one.
+        return d.flatMap { $0.isFinite ? $0 : nil }
     }
 
     // MARK: Claude: its usage button ("Usage: Context 351k / 1M (35%), Weekly · all models: 39%, Resets Tue 10:00 AM")
@@ -189,7 +202,10 @@ public enum UsageReader {
         var stack = [root]
         while let n = stack.popLast() {
             if n.role == "AXButton" || n.role == "AXPopUpButton", let d = n.desc ?? n.title, d.hasPrefix("Usage:") { out.append(d) }
-            if n.role == "AXProgressIndicator", n.desc == "Cursor Models", let v = n.value, let p = Double(v) { out.append("Cursor Models \(Int(p.rounded()))%") }
+            // The value is the app's: "nan" or "1e300" would trap in Int().
+            if n.role == "AXProgressIndicator", n.desc == "Cursor Models", let v = n.value, let p = Double(v), p.isFinite, abs(p) < 1e6 {
+                out.append("Cursor Models \(Int(p.rounded()))%")
+            }
             if n.role == "AXStaticText", let v = n.value, v.hasPrefix("Usage limits reset on") { out.append(v) }
             stack.append(contentsOf: n.kids)
         }
