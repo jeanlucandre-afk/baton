@@ -98,7 +98,7 @@ public struct ReaderHealth: Codable, Sendable, Equatable {
     public static var fileURL: URL { Profiles.fileURL.deletingLastPathComponent().appending(path: "reader-health.json") }
 
     public static func load() -> ReaderHealth {
-        guard let d = try? Data(contentsOf: fileURL), let h = try? JSONDecoder().decode(ReaderHealth.self, from: d) else { return ReaderHealth() }
+        guard let h = SavedFile.load(ReaderHealth.self, from: fileURL) else { return ReaderHealth() }
         return h.relaunched()
     }
 
