@@ -76,6 +76,8 @@ public final class DetectionEngine: @unchecked Sendable {
     private var cacheOrder: [Int] = []
     private var calls = 0
     private var spent = 0.0
+    /// Jev calls failed in a row (offline, a bad key, the server down), for the backoff in `retryDelay`.
+    private var failures = 0
     private var typedAt: [pid_t: Date] = [:]
 
     public init(classifier: (any StateClassifier)?, config: Config = Config(),
@@ -304,9 +306,12 @@ public final class DetectionEngine: @unchecked Sendable {
                 t.inFlight = false
                 switch result {
                 case .failure(let e):
-                    t.recheckAt = self.now().addingTimeInterval(10)
+                    // Offline or a key Jev rejects fails every time: back off instead of asking every 10 s, per window, forever.
+                    self.failures += 1
+                    t.recheckAt = self.now().addingTimeInterval(Self.retryDelay(afterFailures: self.failures))
                     self.emit.yield(.note(id: id, message: "Jev error: \(e)"))
                 case .success(let a):
+                    self.failures = 0
                     self.calls += 1
                     self.spent += a.cost
                     self.remember(hash, a)
@@ -315,6 +320,11 @@ public final class DetectionEngine: @unchecked Sendable {
                 }
             }
         }
+    }
+
+    /// After `n` failed Jev calls in a row: 10 s, 20, 40… up to 5 minutes. The first success resets it.
+    static func retryDelay(afterFailures n: Int) -> TimeInterval {
+        min(300, 10 * pow(2, Double(min(max(n - 1, 0), 10))))
     }
 
     private func remember(_ hash: Int, _ a: JevAnswer) {

@@ -351,7 +351,8 @@ case "tree":
         if filter == nil || line.lowercased().contains(filter!) { print(line) }
         var kids: CFTypeRef?
         if AXUIElementCopyAttributeValue(el, kAXChildrenAttribute as CFString, &kids) == .success, let k = kids as? [AXUIElement] {
-            for c in k.reversed() { stack.append((c, d + 1)) }
+            // Short timeouts like the app's walkers, so one hung element can't stall the dump for 6 s each.
+            for c in k.reversed() { AXUIElementSetMessagingTimeout(c, AX.messagingTimeout); stack.append((c, d + 1)) }
         }
     }
 

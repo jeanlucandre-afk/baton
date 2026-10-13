@@ -45,7 +45,7 @@ final class UsageMonitor {
 
     func start() {
         guard timer == nil else { return }
-        if let d = try? Data(contentsOf: Self.fileURL), let saved = try? JSONDecoder().decode([App: AppUsage].self, from: d) {
+        if let saved = SavedFile.load([App: AppUsage].self, from: Self.fileURL) {
             usage = saved
             // Already at 90% when Baton starts: don't ping again for it.
             for (app, u) in saved {

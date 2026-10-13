@@ -83,10 +83,23 @@ public struct TaskFile: Sendable {
     /// without them): the file is copied aside as tasks.json.bad-<time>, and every task that reads is kept.
     public func load() -> [BatonTask] {
         guard let d = try? Data(contentsOf: url) else { return [] }
-        if let all = try? JSONDecoder().decode([BatonTask].self, from: d) { return all }
+        if let all = try? JSONDecoder().decode([BatonTask].self, from: d) { return Self.tidy(all) }
         let stamp = Int(Date().timeIntervalSince1970)
         try? FileManager.default.copyItem(at: url, to: url.deletingLastPathComponent().appendingPathComponent("tasks.json.bad-\(stamp)"))
-        return ((try? JSONDecoder().decode([Lenient].self, from: d)) ?? []).compactMap(\.task)
+        return Self.tidy(((try? JSONDecoder().decode([Lenient].self, from: d)) ?? []).compactMap(\.task))
+    }
+
+    /// Big tasks are one level deep. A file edited by hand (or damaged) could say otherwise: a big task
+    /// under itself, or two under each other, made deleting one recurse until the stack ran out; a
+    /// repeated id shows one task twice. Those are straightened out as the file loads.
+    static func tidy(_ tasks: [BatonTask]) -> [BatonTask] {
+        var seen = Set<UUID>()
+        return tasks.compactMap { t in
+            guard seen.insert(t.id).inserted else { return nil }
+            var t = t
+            if t.isGroup || t.parentID == t.id { t.parentID = nil }
+            return t
+        }
     }
 
     /// A task, or nil when that one entry doesn't decode.

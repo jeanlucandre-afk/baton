@@ -29,6 +29,24 @@ public enum AX {
         return AXIsProcessTrustedWithOptions([key: prompt] as CFDictionary)
     }
 
+    /// An attribute value as an element, if it really is one. Other apps' values are untrusted, and an
+    /// `as!` to a CF type checks nothing: a wrong one would be messaged as an element anyway.
+    public static func element(_ v: CFTypeRef?) -> AXUIElement? {
+        guard let v, CFGetTypeID(v) == AXUIElementGetTypeID() else { return nil }
+        return (v as! AXUIElement)
+    }
+
+    /// An element's frame (top-left origin), or nil if it has none or the app answers with something else.
+    public static func frame(of el: AXUIElement) -> CGRect? {
+        var pos: CFTypeRef?, size: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(el, kAXPositionAttribute as CFString, &pos) == .success,
+              AXUIElementCopyAttributeValue(el, kAXSizeAttribute as CFString, &size) == .success,
+              let pos, let size, CFGetTypeID(pos) == AXValueGetTypeID(), CFGetTypeID(size) == AXValueGetTypeID() else { return nil }
+        var p = CGPoint.zero, s = CGSize.zero
+        guard AXValueGetValue(pos as! AXValue, .cgPoint, &p), AXValueGetValue(size as! AXValue, .cgSize, &s) else { return nil }
+        return CGRect(origin: p, size: s)
+    }
+
     static func string(_ el: AXUIElement, _ attr: String) -> String? {
         var v: CFTypeRef?
         guard AXUIElementCopyAttributeValue(el, attr as CFString, &v) == .success else { return nil }
@@ -39,6 +57,8 @@ public enum AX {
     /// That costs them CPU and memory, so only do it for apps Baton actually watches.
     public static func enableTree(pid: pid_t) {
         let app = AXUIElementCreateApplication(pid)
+        // A fresh app element waits the system's 6 s on a hung app; this runs before every watch and read.
+        AXUIElementSetMessagingTimeout(app, 0.5)
         AXUIElementSetAttributeValue(app, "AXManualAccessibility" as CFString, kCFBooleanTrue)
     }
 
@@ -90,8 +110,7 @@ public enum AX {
         let ax = AXUIElementCreateApplication(app.processIdentifier)
         AXUIElementSetMessagingTimeout(ax, 0.2)
         var v: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(ax, kAXFocusedWindowAttribute as CFString, &v) == .success, let w = v else { return nil }
-        let win = w as! AXUIElement
+        guard AXUIElementCopyAttributeValue(ax, kAXFocusedWindowAttribute as CFString, &v) == .success, let win = element(v) else { return nil }
         AXUIElementSetMessagingTimeout(win, messagingTimeout)
         return (app.processIdentifier, win)
     }
@@ -101,13 +120,8 @@ public enum AX {
     @discardableResult
     public static func click(_ el: AXUIElement) -> Bool {
         AXUIElementPerformAction(el, "AXScrollToVisible" as CFString)
-        var pos: CFTypeRef?, size: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(el, kAXPositionAttribute as CFString, &pos) == .success,
-              AXUIElementCopyAttributeValue(el, kAXSizeAttribute as CFString, &size) == .success else { return false }
-        var p = CGPoint.zero, s = CGSize.zero
-        AXValueGetValue(pos as! AXValue, .cgPoint, &p)
-        AXValueGetValue(size as! AXValue, .cgSize, &s)
-        guard s.width > 2, s.height > 2 else { return false }
+        guard let f = frame(of: el), f.width > 2, f.height > 2, f.minX.isFinite, f.minY.isFinite else { return false }
+        let p = f.origin, s = f.size
         // Left third of the row: clear of hover buttons (pin, menu) on the right.
         let target = CGPoint(x: p.x + min(s.width / 3, 60), y: p.y + s.height / 2)
         let back = CGEvent(source: nil)?.location
@@ -126,7 +140,10 @@ public enum AX {
         AXUIElementSetAttributeValue(w.element, kAXMainAttribute as CFString, kCFBooleanTrue)
         // macOS often ignores activate() from a background app like Baton; through Accessibility the
         // app can be made frontmost reliably.
-        AXUIElementSetAttributeValue(AXUIElementCreateApplication(w.pid), kAXFrontmostAttribute as CFString, kCFBooleanTrue)
+        // Called on the main thread (Jump): a hung app mustn't hold it for the system's 6 s.
+        let app = AXUIElementCreateApplication(w.pid)
+        AXUIElementSetMessagingTimeout(app, 0.5)
+        AXUIElementSetAttributeValue(app, kAXFrontmostAttribute as CFString, kCFBooleanTrue)
         NSRunningApplication(processIdentifier: w.pid)?.activate()
     }
 

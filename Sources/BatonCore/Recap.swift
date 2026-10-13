@@ -16,6 +16,19 @@ public struct RunRecord: Codable, Equatable, Sendable {
     public init(taskID: UUID, title: String, bundleID: String, appName: String, start: Date) {
         self.taskID = taskID; self.title = title; self.bundleID = bundleID; self.appName = appName; self.start = start
     }
+
+    // Tolerant decoding: runs saved by older builds lack newer keys, and an outcome this build doesn't know is no outcome.
+    public init(from d: Decoder) throws {
+        let c = try d.container(keyedBy: CodingKeys.self)
+        taskID = try c.decode(UUID.self, forKey: .taskID)
+        title = try c.decodeIfPresent(String.self, forKey: .title) ?? ""
+        bundleID = try c.decodeIfPresent(String.self, forKey: .bundleID) ?? ""
+        appName = try c.decodeIfPresent(String.self, forKey: .appName) ?? ""
+        start = try c.decode(Date.self, forKey: .start)
+        end = try c.decodeIfPresent(Date.self, forKey: .end)
+        outcome = (try? c.decodeIfPresent(WindowState.self, forKey: .outcome)) ?? nil
+        stuck = (try? c.decodeIfPresent(Bool.self, forKey: .stuck)) ?? false
+    }
 }
 
 /// A task you ticked off.
@@ -31,6 +44,13 @@ public struct ActivityLog: Codable, Equatable, Sendable {
     public var runs: [RunRecord] = []
     public var done: [DoneRecord] = []
     public init() {}
+
+    // A record that doesn't read is dropped alone; the rest of the history stays.
+    public init(from d: Decoder) throws {
+        let c = try d.container(keyedBy: CodingKeys.self)
+        runs = (try? c.decodeIfPresent(LenientArray<RunRecord>.self, forKey: .runs))?.items ?? []
+        done = (try? c.decodeIfPresent(LenientArray<DoneRecord>.self, forKey: .done))?.items ?? []
+    }
 
     public static let keepDays = 14
 
@@ -88,9 +108,9 @@ public struct ActivityFile: Sendable {
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         url = dir.appendingPathComponent("activity.json")
     }
+    /// Insight saves straight after loading, so a file that doesn't read is moved aside rather than replaced.
     public func load() -> ActivityLog {
-        guard let d = try? Data(contentsOf: url), let log = try? JSONDecoder().decode(ActivityLog.self, from: d) else { return ActivityLog() }
-        return log
+        SavedFile.load(ActivityLog.self, from: url) ?? ActivityLog()
     }
     public func save(_ log: ActivityLog) {
         guard let d = try? JSONEncoder().encode(log) else { return }

@@ -32,7 +32,7 @@ public final class ApiMeter: @unchecked Sendable {
     public init(file: URL?, now: @escaping @Sendable () -> Date = { Date() }) {
         self.file = file
         clock = now
-        if let file, let d = try? Data(contentsOf: file), let saved = try? JSONDecoder().decode([String: Day].self, from: d) {
+        if let file, let saved = SavedFile.load([String: Day].self, from: file) {
             days = saved
         }
     }

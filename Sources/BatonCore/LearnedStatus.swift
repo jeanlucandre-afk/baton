@@ -12,7 +12,8 @@ public final class LearnedStatus: @unchecked Sendable {
 
     public init(url: URL? = LearnedStatus.defaultURL) {
         self.url = url
-        if let url, let d = try? Data(contentsOf: url), let w = try? JSONDecoder().decode([String: ChatStatus].self, from: d) {
+        // Read as plain strings, so one status this build doesn't know drops alone, not every learned word.
+        if let url, let w = SavedFile.load([String: String].self, from: url)?.compactMapValues(ChatStatus.init(rawValue:)) {
             // Older versions learned PR badges ("15 · open") as statuses; those are dropped.
             words = w.filter { Self.isWord($0.key) }
         }

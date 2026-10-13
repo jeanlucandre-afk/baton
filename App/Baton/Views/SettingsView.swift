@@ -69,6 +69,7 @@ private struct GeneralPane: View {
                 Text("The welcome walks through permissions and keys again. Troubleshooting opens the install guide on GitHub.")
                     .foregroundStyle(.secondary)
             }
+            DebugLogSection()
         }
         .formStyle(.grouped)
     }

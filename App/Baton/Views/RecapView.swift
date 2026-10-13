@@ -157,8 +157,13 @@ enum RecapWindow {
         w.title = "Today"
         w.contentView = NSHostingView(rootView: RecapScreen { close() })
         w.center()
-        NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: w, queue: .main) { _ in
-            MainActor.assumeIsolated { if window === w { window = nil } }
+        // The observer goes with the window: left registered, it kept every recap window ever opened alive.
+        nonisolated(unsafe) var token: NSObjectProtocol?
+        token = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: w, queue: .main) { [weak w] _ in
+            MainActor.assumeIsolated {
+                if window === w { window = nil }
+                if let token { NotificationCenter.default.removeObserver(token) }
+            }
         }
         window = w
         if activate {

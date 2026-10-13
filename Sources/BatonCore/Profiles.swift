@@ -155,6 +155,23 @@ public struct ProfileBook: Codable, Sendable, Equatable {
     }
 }
 
+extension ProfileBook {
+    // Saved books outlive builds: a profile this build can't read (a status word from a newer one, say)
+    // is dropped alone, and missing keys take the built-in values, instead of the whole file failing.
+    public init(from d: Decoder) throws {
+        let c = try d.container(keyedBy: CodingKeys.self)
+        version = (try? c.decodeIfPresent(Int.self, forKey: .version)) ?? 1
+        apps = ((try? c.decodeIfPresent([String: LenientProfile].self, forKey: .apps)) ?? [:]).compactMapValues(\.profile)
+        fallback = (try? c.decodeIfPresent(Profile.self, forKey: .fallback)) ?? ProfileBook.builtIn.fallback
+        notChats = (try? c.decodeIfPresent([String].self, forKey: .notChats)) ?? []
+    }
+
+    private struct LenientProfile: Decodable {
+        let profile: Profile?
+        init(from decoder: any Decoder) throws { profile = try? Profile(from: decoder) }
+    }
+}
+
 /// The profiles in use. Loaded at launch from the built-in set plus
 /// `~/Library/Application Support/Baton/profiles.json`, which repairs and updates write to.
 public final class Profiles: @unchecked Sendable {
@@ -172,11 +189,9 @@ public final class Profiles: @unchecked Sendable {
 
     public var current: ProfileBook { lock.withLock { book } }
 
-    /// The saved profiles alone (not merged), or nil if there are none or the file doesn't parse.
-    public var saved: ProfileBook? {
-        guard let d = try? Data(contentsOf: Self.fileURL) else { return nil }
-        return try? JSONDecoder().decode(ProfileBook.self, from: d)
-    }
+    /// The saved profiles alone (not merged), or nil if there are none or the file doesn't parse. One that
+    /// doesn't parse is moved aside: the next repair would otherwise write over every other app's profile.
+    public var saved: ProfileBook? { SavedFile.load(ProfileBook.self, from: Self.fileURL) }
 
     public func reload() {
         let b = saved.map { ProfileBook.builtIn.merged(with: $0) } ?? .builtIn
