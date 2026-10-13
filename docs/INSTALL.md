@@ -40,8 +40,11 @@ Then hover the notch at the top of your screen. Baton has no Dock icon; its menu
 and Settings live there too.
 
 ## Updating
-Quit Baton, drag the new version over the old one in Applications. If Accessibility stops working
-after an update, turn Baton off and on again in System Settings › Privacy & Security › Accessibility.
+Baton updates itself: it checks once a day, installs new versions in the background, and the new
+version starts the next time Baton opens. **Check for Updates…** is in its menu; Settings › General
+turns automatic checks and installs on or off. (Version 0.1.0 had no updater: install 0.2.0 or later
+by hand once.) If Accessibility stops working after an update, turn Baton off and on again in
+System Settings › Privacy & Security › Accessibility.
 
 ## Troubleshooting
 - **"Apple could not verify Baton" / "Baton is damaged".** The build isn't notarized. Use **Open Anyway**
@@ -57,6 +60,8 @@ after an update, turn Baton off and on again in System Settings › Privacy & Se
   hidden it's a thin sliver that opens on hover.
 - **Nothing happens on hover.** Baton has no Dock icon. Look for its menu bar icon; if it isn't there,
   open Baton from Applications again.
+- **Reporting a bug.** Turn on **Settings › General › Write a debug log**, reproduce it, then
+  **Reveal Log in Finder** and attach `poll.log` (it contains chat names; skim it first).
 - **Still stuck?** [Open an issue](https://github.com/jeanlucandre-afk/baton/issues) with your macOS
   version, the AI app and what you see.
 

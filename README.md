@@ -9,6 +9,7 @@
   answer, the notch pops open and says which one.
 - **Every chat at a glance.** Hover the notch: what's working, what's ready, what needs you.
 - **Jump straight there.** ⌥Tab goes to the next ready chat, ⌥N starts a new task.
+- **Updates itself.** Checks daily and installs new versions in the background (Sparkle).
 - **Two looks.** Dark (melts into the notch) or Transparent (Liquid Glass). Screens without a notch get a
   virtual one.
 
