@@ -431,10 +431,19 @@ final class AppModel {
         var apps: [String] = [], names: [String] = []
         for k in sorted { for (a, n) in zip(k.apps, k.appNames) where !apps.contains(a) { apps.append(a); names.append(n) } }
         return TaskRow(id: g.id, title: g.title, apps: Array(apps.prefix(3)), appNames: Array(names.prefix(3)),
-                       // A ready task inside wins over Now: the big task you're in still says something waits on you.
-                       created: g.createdAt, state: state, group: ready > 0 ? .ready : best.group, line: parts.joined(separator: " · "),
+                       created: g.createdAt, state: state, group: groupOf(kids, ready: ready, working: working, best: best),
+                       line: parts.joined(separator: " · "),
                        updated: kids.map(\.updated).max() ?? g.createdAt, onScreen: kids.contains(where: \.onScreen),
                        steps: [], isGroup: true, children: sorted)
+    }
+
+    /// Where a big task sits: something ready inside wins (even over Now: it still waits on you), then
+    /// the subtask you're in, then any AI still working. Only when nothing runs is it your turn.
+    private func groupOf(_ kids: [TaskRow], ready: Int, working: Int, best: TaskRow) -> TaskRow.Group {
+        if ready > 0 { return .ready }
+        if kids.contains(where: { $0.group == .now }) { return .now }
+        if working > 0 { return .working }
+        return best.group
     }
 
     private func appSaysUnread(_ t: BatonTask) -> Bool {
