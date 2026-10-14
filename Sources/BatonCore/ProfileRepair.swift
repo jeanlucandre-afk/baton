@@ -15,13 +15,19 @@ public enum ProfileRepair {
         public let rows: [ChatRow]
         public let knownFound: Int
         public let via: String     // "list search" or "Gemini"
+        /// Statuses the window shows ("Running") that these rows don't carry: names read, statuses lost.
+        public var missedStatuses = 0
+        /// The profile in use already read this well: nothing to save.
+        public var unchanged = false
     }
 
     public static func repair(root: AXNode, bundleID: String, appName: String, known: [String], usual: Int,
                               smart: Smart?, book: ProfileBook = Profiles.shared.current, localSearch: Bool = true,
                               log: (@Sendable (String) -> Void)? = nil) async -> Outcome? {
         let current = book.profile(bundleID)
-        if localSearch, let o = findList(root: root, current: current, known: known, usual: usual, notChats: book.notChats) { return o }
+        if localSearch, let o = findList(root: root, current: current, known: known, usual: usual, notChats: book.notChats) {
+            return checked(o, root: root, current: current, notChats: book.notChats)
+        }
         guard let smart else { return nil }
         let prompt = request(appName: appName, current: current, known: known, outline: outline(root))
         log?("List search found nothing; asking Gemini (\(prompt.count) chars)")
@@ -33,6 +39,33 @@ public enum ProfileRepair {
             log?("  comma=\(v.comma) hidden=\(v.hidden): \(rows.count) rows, e.g. \(rows.prefix(3).map(\.name))")
         }
         return best(variants(of: p).compactMap { validate($0, root: root, known: known, usual: usual, notChats: book.notChats, via: "Gemini") }, known: known)
+            .map { checked($0, root: root, current: current, notChats: book.notChats) }
+    }
+
+    /// Notes whether the repair changed anything and whether its rows still miss statuses.
+    static func checked(_ o: Outcome, root: AXNode, current: Profile, notChats: [String]) -> Outcome {
+        var o = o
+        o.missedStatuses = missedStatuses(root: root, rows: o.rows, skip: o.profile.skip)
+        o.unchanged = o.profile == current
+            || Set(Sidebar.rows(in: root, profile: current, notChats: notChats)) == Set(o.rows)
+        return o
+    }
+
+    /// How many active statuses (running, needs you, unread) the window's status elements show beyond
+    /// those the rows carry. Above zero, names are read but statuses are lost: the row's status element
+    /// moved somewhere the reader doesn't look, which a profile can't fix.
+    public static func missedStatuses(root: AXNode, rows: [ChatRow], skip: NodeMatch? = nil) -> Int {
+        var shown = 0
+        var stack = [root]
+        while let n = stack.popLast() {
+            if skip?.matches(n) == true { continue }   // the conversation: a step there isn't a chat's status
+            if n.sub == "AXApplicationStatus" {
+                let text = n.desc ?? n.title ?? n.kids.compactMap(\.value).joined(separator: " ")
+                if text.count <= 40, let s = Sidebar.status(of: text, exact: true), s != .idle { shown += 1 }
+            }
+            stack.append(contentsOf: n.kids)
+        }
+        return max(0, shown - rows.filter { $0.status != .idle }.count)
     }
 
     // MARK: Checking a candidate

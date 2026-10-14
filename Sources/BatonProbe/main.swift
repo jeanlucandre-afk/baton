@@ -158,8 +158,10 @@ case "relearn":
     var book = Profiles.shared.current
     let working = Sidebar.rows(in: root, profile: book.profile(w.bundleID), notChats: book.notChats)
     let health = ReaderHealth.load()
-    let known = health.known(w.bundleID).isEmpty ? working.map(\.name) : health.known(w.bundleID)
-    let usual = max(health.apps[w.bundleID]?.usual ?? 0, working.count)
+    // Health is kept per tab (Claude: "Claude" chats vs "Code" sessions), as the app does.
+    let key = Sidebar.sections(in: root).first(where: \.selected).map { "\(w.bundleID)|\($0.name)" } ?? w.bundleID
+    let known = health.knownForRepair(key).isEmpty ? working.map(\.name) : health.knownForRepair(key)
+    let usual = max(health.apps[key]?.usual ?? 0, working.count)
     if args.contains("--break") {
         // What an app update looks like: the chat list moved and the status labels changed.
         var broken = book.profile(w.bundleID)
@@ -175,7 +177,7 @@ case "relearn":
         guard let o = await ProfileRepair.repair(root: root, bundleID: w.bundleID, appName: w.appName, known: known, usual: usual, smart: Smart(), book: book, localSearch: !args.contains("--gemini"), log: { print($0) }) else {
             print("No profile passed the check. Nothing changed."); exit(1)
         }
-        print("Repaired via \(o.via) in \(Int(Date().timeIntervalSince(start) * 1000)) ms: \(o.rows.count) chats, \(o.knownFound)/\(known.count) known found")
+        print("Repaired via \(o.via) in \(Int(Date().timeIntervalSince(start) * 1000)) ms: \(o.rows.count) chats, \(o.knownFound)/\(known.count) known found\(o.unchanged ? " (same as the profile in use)" : "")\(o.missedStatuses > 0 ? ", \(o.missedStatuses) statuses missed" : "")")
         for r in o.rows { print("  \(r.status.rawValue.padding(toLength: 11, withPad: " ", startingAt: 0)) \(r.name)") }
         let enc = JSONEncoder()
         enc.outputFormatting = [.prettyPrinted, .sortedKeys]

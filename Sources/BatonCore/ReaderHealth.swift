@@ -46,6 +46,17 @@ public struct ReaderHealth: Codable, Sendable, Equatable {
     public func verdict(_ bundleID: String) -> Verdict { apps[bundleID]?.verdict ?? .unknown }
     public func known(_ bundleID: String) -> [String] { apps[bundleID]?.known ?? [] }
 
+    /// Chats to check a repair against: the tab's own first, then those of the app's other tabs, so a
+    /// repair still has names to look for when the tab Baton last read isn't the one on screen.
+    /// (`key` is "bundle" or "bundle|Tab".)
+    public func knownForRepair(_ key: String) -> [String] {
+        let bundle = key.components(separatedBy: "|")[0]
+        let others = apps.keys.filter { $0 != key && $0.components(separatedBy: "|")[0] == bundle }.sorted()
+        var out = known(key)
+        for k in others { out += known(k).filter { !out.contains($0) } }
+        return Array(out.prefix(60))
+    }
+
     /// The latest read looked normal, so a chat missing from it really went quiet.
     public func trusted(_ bundleID: String) -> Bool {
         guard let a = apps[bundleID] else { return false }

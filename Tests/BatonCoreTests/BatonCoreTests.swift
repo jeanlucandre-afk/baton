@@ -573,6 +573,79 @@ private func read(_ name: String, _ bundleID: String) throws -> [ChatRow] {
         #expect(Sidebar.unknownStatusWord(for: "Pricing copy", in: window) == "Snoozing")
     }
 
+    /// Since Claude's October 2026 redesign the status element is hidden inside the button's label, with
+    /// the word as text under it, and the row menu sits one group further down.
+    func redesignedRow(_ name: String, status: String? = nil) -> AXNode {
+        var label = [AXNode(role: "AXStaticText", value: name)]
+        label.append(AXNode(role: "AXGroup", sub: "AXApplicationStatus",
+                            kids: status.map { [AXNode(role: "AXStaticText", value: $0)] } ?? []))
+        return AXNode(role: "AXGroup", kids: [AXNode(role: "AXGroup", kids: [
+            AXNode(role: "AXButton", title: name, kids: [AXNode(role: "AXGroup", kids: label)]),
+            AXNode(role: "AXGroup", kids: [AXNode(role: "AXPopUpButton", desc: "More options for \(name)")]),
+        ])])
+    }
+    var redesigned: AXNode {
+        AXNode(role: "AXWindow", kids: [
+            AXNode(role: "AXButton", title: "Projects"),
+            redesignedRow("Fix the export button", status: "Running"),
+            redesignedRow("Weekly planning notes"),
+            redesignedRow("Bakery menu copy", status: "Unread response"),
+            redesignedRow("Pricing copy", status: "Snoozing"),
+        ])
+    }
+
+    @Test func readsRedesignedRows() {
+        let claude = ProfileBook.builtIn.profile("com.anthropic.claudefordesktop")
+        let rows = Sidebar.rows(in: redesigned, profile: claude)
+        #expect(rows.contains(ChatRow(name: "Fix the export button", status: .working)))
+        #expect(rows.contains(ChatRow(name: "Weekly planning notes", status: .idle)))
+        #expect(rows.contains(ChatRow(name: "Bakery menu copy", status: .unread)))
+        #expect(!rows.contains { $0.name == "Pricing copy" || $0.name == "Projects" })
+        #expect(Sidebar.unknownStatusWord(for: "Pricing copy", in: redesigned) == "Snoozing")
+        #expect(ProfileRepair.missedStatuses(root: redesigned, rows: rows) == 0)
+    }
+
+    /// Sessions with a pull request: the badge follows the name ("<name> Open · 2 pull requests"), and
+    /// some buttons carry no name at all. The row's menu names the chat either way.
+    @Test func readsRowsWithAPullRequestBadge() {
+        func badged(_ name: String, badge: String, titled: Bool, status: String? = nil) -> AXNode {
+            AXNode(role: "AXGroup", kids: [
+                AXNode(role: "AXButton", title: titled ? "\(name) \(badge)" : nil, kids: [AXNode(role: "AXGroup", kids: [
+                    AXNode(role: "AXStaticText", value: name),
+                    AXNode(role: "AXGroup", sub: "AXApplicationStatus", kids: status.map { [AXNode(role: "AXStaticText", value: $0)] } ?? []),
+                    AXNode(role: "AXStaticText", value: badge),
+                ])]),
+                AXNode(role: "AXGroup", kids: [AXNode(role: "AXGroup", kids: [AXNode(role: "AXPopUpButton", desc: "More options for \(name)")])]),
+            ])
+        }
+        let window = AXNode(role: "AXWindow", kids: [
+            badged("Calendar sync alerts", badge: "Open · 2 pull requests", titled: true, status: "Running"),
+            badged("Inbox banner for new signups", badge: "Merged · 4 pull requests", titled: false),
+            badged("Atlas · Part 2 — merge #7 #8", badge: "Open", titled: true),
+            // The open session's title bar: its rename button and menu are not a row.
+            AXNode(role: "AXGroup", kids: [AXNode(role: "AXButton", desc: "Weekly planning notes, rename session"),
+                                           AXNode(role: "AXPopUpButton", desc: "More options for Weekly planning notes")]),
+        ])
+        let rows = Sidebar.rows(in: window, profile: ProfileBook.builtIn.profile("com.anthropic.claudefordesktop"))
+        #expect(rows == [ChatRow(name: "Calendar sync alerts", status: .working),
+                         ChatRow(name: "Inbox banner for new signups", status: .idle),
+                         ChatRow(name: "Atlas · Part 2 — merge #7 #8", status: .idle)])
+    }
+
+    /// A repair that finds every chat but none of the statuses the window shows says so, instead of
+    /// reporting the sidebar fixed.
+    @Test func repairNoticesMissedStatuses() {
+        let lost = [ChatRow(name: "Fix the export button", status: .idle), ChatRow(name: "Weekly planning notes", status: .idle),
+                    ChatRow(name: "Bakery menu copy", status: .idle)]
+        #expect(ProfileRepair.missedStatuses(root: redesigned, rows: lost) == 2)
+        let claude = ProfileBook.builtIn.profile("com.anthropic.claudefordesktop")
+        let names = Sidebar.rows(in: redesigned, profile: claude).map(\.name)
+        let o = ProfileRepair.findList(root: redesigned, current: claude, known: names, usual: names.count, notChats: ProfileBook.builtIn.notChats)
+            .map { ProfileRepair.checked($0, root: redesigned, current: claude, notChats: ProfileBook.builtIn.notChats) }
+        #expect(o?.unchanged == true)
+        #expect(o?.missedStatuses == 0)
+    }
+
     @Test func readsTabs() {
         let tabs = Sidebar.sections(in: window)
         #expect(tabs.map(\.name) == ["Claude", "Code"])

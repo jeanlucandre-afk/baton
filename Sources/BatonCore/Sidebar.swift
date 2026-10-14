@@ -270,11 +270,11 @@ public enum Sidebar {
                     // Claude's chat tab: "More options for <name>" beside the button marks a chat; the status
                     // element beside it says how it stands, none = quiet. An unknown word: skip (learned later).
                     // A badge there ("15 · open") says nothing about the chat.
-                    if row == nil, let menu = p.rowMenu, let up, hasRowMenu(up, menu + label) {
+                    if row == nil, let menu = p.rowMenu, let up, let name = rowMenuName(up, button: n, label: label, prefix: menu) {
                         if let d = rowStatusDesc(up), LearnedStatus.isWord(d.trimmingCharacters(in: .whitespaces.union(.punctuationCharacters))) {
-                            if let s = status(of: d, overrides: p.overrides) { row = ChatRow(name: label, status: s) }
-                        } else if label.filter(\.isLetter).count >= 2 {
-                            row = ChatRow(name: label, status: .idle)
+                            if let s = status(of: d, overrides: p.overrides) { row = ChatRow(name: name, status: s) }
+                        } else if name.filter(\.isLetter).count >= 2 {
+                            row = ChatRow(name: name, status: .idle)
                         }
                     }
                     // A chat in the app's chat list with no status is a quiet chat.
@@ -291,6 +291,28 @@ public enum Sidebar {
             let g = nextGroup; nextGroup += 1
             for k in n.kids.reversed() { stack.append((k, g, parent, kidsInList, n)) }
         }
+    }
+
+    /// The chat a row's button stands for, named by the row's menu ("More options for <name>"). Since
+    /// Claude's October 2026 redesign a session with a pull request reads "<name> Open · 2 pull requests"
+    /// (the badge after the name, not before), and some rows' buttons carry no name at all, only their text.
+    static func rowMenuName(_ row: AXNode, button: AXNode, label: String, prefix: String) -> String? {
+        if hasRowMenu(row, prefix + label) { return label }
+        var level = row.kids.map { ($0, 0) }
+        var name: String?
+        while let (k, d) = level.popLast(), name == nil {
+            if k.role == "AXPopUpButton", k.label.hasPrefix(prefix) { name = String(k.label.dropFirst(prefix.count)) }
+            if d < 2 { level.append(contentsOf: k.kids.map { ($0, d + 1) }) }
+        }
+        guard let name, !name.isEmpty else { return nil }
+        if label.isEmpty {
+            // No name on the button: its first text must be the chat's name.
+            let first = button.kids.lazy.flatMap { [$0] + $0.kids }.first { $0.role == "AXStaticText" }?.value
+            return first == name ? name : nil
+        }
+        guard label.hasPrefix(name + " ") else { return nil }
+        let rest = label.dropFirst(name.count + 1).lowercased()
+        return rest.contains("pull request") || pullRequestStates.contains(where: { rest == $0 || rest.hasPrefix($0 + " ") }) ? name : nil
     }
 
     /// The row holds a menu button with exactly this name (two levels down at most).
@@ -313,9 +335,23 @@ public enum Sidebar {
         return false
     }
 
-    /// The status element beside a row's button ("Unread response"), if it says anything.
+    /// The row's status element ("Unread response"), if it says anything. It sat beside the row's button
+    /// with the word as its description; since Claude's October 2026 redesign it's a hidden element
+    /// inside the button's label, with the word as text under it. Either place, either way.
     static func rowStatusDesc(_ row: AXNode) -> String? {
-        row.kids.first { $0.sub == "AXApplicationStatus" }?.desc.flatMap { $0.isEmpty ? nil : $0 }
+        var level = row.kids.map { ($0, 0) }
+        while !level.isEmpty {
+            let (n, d) = level.removeFirst()
+            if n.sub == "AXApplicationStatus" {
+                let texts = n.kids.filter { $0.role == "AXStaticText" }.compactMap(\.value)
+                let s = [n.desc, n.title, texts.isEmpty ? nil : texts.joined(separator: " ")]
+                    .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }.first { !$0.isEmpty }
+                return s.flatMap { $0.count <= 40 ? $0 : nil }
+            }
+            // Not into the row's menu or a nested row.
+            if d < 3, n.role != "AXPopUpButton" { level.append(contentsOf: n.kids.map { ($0, d + 1) }) }
+        }
+        return nil
     }
 
     // MARK: Tabs
@@ -396,7 +432,7 @@ public enum Sidebar {
             if n.role == "AXBusyIndicator" || n.role == "AXProgressIndicator" { out.append("…busy") }
             if n.role == "AXStaticText", let s = n.value, s.count <= 24 { out.append(s) }
             if n.role == "AXImage", let s = n.desc, s.count <= 24 { out.append(s) }
-            if n.sub == "AXApplicationStatus", let s = n.desc, s.count <= 24 { out.append(s) }
+            if n.sub == "AXApplicationStatus", let s = n.desc ?? n.title, s.count <= 24 { out.append(s) }
             if d < 2 { level.append(contentsOf: n.kids.map { ($0, d + 1) }) }
         }
         return out

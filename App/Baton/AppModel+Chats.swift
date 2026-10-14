@@ -579,23 +579,44 @@ extension AppModel {
         lastRepair[bundle] = Date()
         let pid = app.processIdentifier
         let name = app.localizedName ?? bundle
-        let known = health.known(healthKey(bundle))
+        let known = health.knownForRepair(healthKey(bundle))
         let usual = health.apps[healthKey(bundle)]?.usual ?? 0
         let smart = self.smart
+        let prune = Profiles.shared.current.profile(bundle).prune
+        let blind = health.verdict(healthKey(bundle)) == .blind
         Task {
             let outcome: ProfileRepair.Outcome? = await Task.detached(priority: .utility) {
                 AX.enableTree(pid: pid)
+                // The conversation pruned, so a long chat can't use up the node budget before the sidebar.
                 guard let w = AX.windows(pid: pid).first,
-                      let root = AXNode.capture(w.element, maxNodes: 8000, maxMillis: 2000) else { return nil }
+                      let root = AXNode.capture(w.element, maxNodes: 8000, maxMillis: 2000, prune: prune) else { return nil }
                 return await ProfileRepair.repair(root: root, bundleID: bundle, appName: name, known: known, usual: usual, smart: smart)
             }.value
             repairing.remove(bundle)
-            guard let outcome, (try? Profiles.shared.save(outcome.profile, for: bundle)) != nil else {
-                readerNotes[bundle] = "Couldn't re-learn the sidebar. Watching the window instead."
+            guard let outcome else {
+                readerNotes[bundle] = blind ? "Couldn't re-learn the sidebar. Watching the window instead."
+                                            : "Couldn't re-learn the sidebar. Open \(name)'s chat list and try again."
+                return
+            }
+            let active = outcome.rows.filter { $0.status != .idle }.count
+            // Names found but statuses the window shows aren't read: a new profile wouldn't fix that.
+            if outcome.missedStatuses > 0 {
+                readerNotes[bundle] = "Finds \(outcome.rows.count) chats but misses \(outcome.missedStatuses) status\(outcome.missedStatuses == 1 ? "" : "es"). Baton needs an update."
+                if outcome.unchanged { return }
+            }
+            // Reading already worked: nothing to save, and no "re-learned" ping for a repair that changed nothing.
+            if outcome.unchanged {
+                health.reset(healthKey(bundle))
+                readerNotes[bundle] = "Reading works: \(outcome.rows.count) chats, \(active) active"
+                await pollSidebars()
+                return
+            }
+            guard (try? Profiles.shared.save(outcome.profile, for: bundle)) != nil else {
+                readerNotes[bundle] = "Couldn't save the re-learned sidebar."
                 return
             }
             health.reset(healthKey(bundle))
-            readerNotes[bundle] = "Re-learned after an update: \(outcome.rows.count) chats"
+            if outcome.missedStatuses == 0 { readerNotes[bundle] = "Re-learned after an update: \(outcome.rows.count) chats, \(active) active" }
             notifyText(title: "Baton re-learned \(name)", body: "\(name) changed its sidebar. Baton found your \(outcome.rows.count) chats again.")
             await pollSidebars()
         }
@@ -615,7 +636,10 @@ extension AppModel {
         let custom = Set(Profiles.shared.saved?.apps.keys.map { $0 } ?? [])
         return health.apps
             .filter { followed.contains($0.key.components(separatedBy: "|")[0]) || $0.value.usual > 0 }
-            .filter { k, _ in !k.contains("|") || k == healthKey(k.components(separatedBy: "|")[0]) }
+            // One row per app: the tab on screen (Claude: "Claude" or "Code"), not also the entry from before
+            // the tabs were told apart, which never updates. (Two rows for one app share an id in the list,
+            // so both showed that stale "Not read yet".)
+            .filter { k, _ in k == healthKey(k.components(separatedBy: "|")[0]) }
             .map { k, a in
                 let b = k.components(separatedBy: "|")[0]
                 let name = NSRunningApplication.runningApplications(withBundleIdentifier: b).first?.localizedName
