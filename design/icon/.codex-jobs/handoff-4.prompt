@@ -1,0 +1,6 @@
+Use your built-in image generation tool to create exactly ONE image.
+
+REQUEST:
+macOS app icon for 'Baton', a menu bar app that tracks AI chats running in parallel and taps you when one finishes. Full-bleed 1024x1024 square artwork for a macOS 26 squircle icon (the system applies the mask), centered subject with generous margin, crisp edges, readable at 32px. No text, no letters, no mockup, no device frame, no drop shadow outside the artwork. Subject: two abstract rounded bars passing a short baton between them in one clean motion, geometric, flat shapes, black and off-white with a single coral accent on the baton. Background: solid off-white. Swiss poster minimalism, bold geometry.
+
+After generating, copy the PNG into /Users/jean-luc1515/Developer/Baton/design/icon as handoff-4.png (overwrite if present). Do not create any other files. Print the final path.

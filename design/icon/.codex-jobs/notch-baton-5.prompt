@@ -1,0 +1,6 @@
+Use your built-in image generation tool to create exactly ONE image.
+
+REQUEST:
+macOS app icon for 'Baton', a menu bar app that tracks AI chats running in parallel and taps you when one finishes. Full-bleed 1024x1024 square artwork for a macOS 26 squircle icon (the system applies the mask), centered subject with generous margin, crisp edges, readable at 32px. No text, no letters, no mockup, no device frame, no drop shadow outside the artwork. Subject: one horizontal black pill shape that reads both as a MacBook notch and as a relay baton, with a short coral end cap on its right end. Background: warm off-white paper with faint grain. Flat, brutalist, one idea, zero ornament.
+
+After generating, copy the PNG into /Users/jean-luc1515/Developer/Baton/design/icon as notch-baton-5.png (overwrite if present). Do not create any other files. Print the final path.

@@ -1,0 +1,754 @@
+queued 2026-10-12T22:06:45 model=gpt-6-luna effort=high
+started 2026-10-12T22:06:45
+OpenAI Codex v0.162.1
+--------
+workdir: /Users/jean-luc1515/Developer/Baton/design/icon
+model: gpt-6-luna
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+session id: 01a131b9-8ac9-7991-8ac1-5970d01a77d0
+--------
+user
+Use your built-in image generation tool to create exactly ONE image.
+
+REQUEST:
+macOS app icon for 'Baton', a menu bar app that tracks AI chats running in parallel and taps you when one finishes. Full-bleed 1024x1024 square artwork for a macOS 26 squircle icon (the system applies the mask), centered subject with generous margin, crisp edges, readable at 32px. No text, no letters, no mockup, no device frame, no drop shadow outside the artwork. Subject: one horizontal black pil
+
+After generating, copy the PNG into /Users/jean-luc1515/Developer/Baton/design/icon as notch-baton-5.png (overwrite if present). Do not create any other files. Print the final path.
+warning: Exceeded skills context budget. All skill descriptions were removed and 134 additional skills were not included in the model-visible skills list.
+codex
+I’m using the imagegen skill for the icon, then I’ll copy the generated PNG to the requested path and report it.
+exec
+/bin/zsh -lc 'cat /Users/jean-luc1515/.codex/skills/imagegen/SKILL.md' in /Users/jean-luc1515/Developer/Baton/design/icon
+ exited 1 in 0ms:
+cat: /Users/jean-luc1515/.codex/skills/imagegen/SKILL.md: No such file or directory
+
+exec
+/bin/zsh -lc 'cat /Users/jean-luc1515/.codex/plugins/cache/openai-bundled/imagegen/SKILL.md' in /Users/jean-luc1515/Developer/Baton/design/icon
+ exited 1 in 0ms:
+cat: /Users/jean-luc1515/.codex/plugins/cache/openai-bundled/imagegen/SKILL.md: No such file or directory
+
+exec
+/bin/zsh -lc 'ls /Users/jean-luc1515/.codex/plugins/cache/openai-bundled' in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 0ms:
+browser
+chrome
+code-review
+codex-app-tools
+computer-use
+unified-computer-use
+visualize
+
+exec
+/bin/zsh -lc 'cat /Users/jean-luc1515/.codex/skills/.system/imagegen/SKILL.md' in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 0ms:
+---
+name: "imagegen"
+description: "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not 
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has exactly two top-level modes:
+
+- **Default built-in tool mode (preferred):** built-in `image_gen` tool for image generation, editing, and transparent-image requests. Does not require `OPENAI_API_KEY`.
+- **Fallback CLI mode:** `scripts/image_gen.py` CLI. Use when the user explicitly asks for or confirms the CLI/API/model path. Requires `OPENAI_API_KEY`.
+
+Within CLI fallback, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default for normal image generation and editing requests.
+- Do not switch to CLI fallback for ordinary quality, size, or file-path control.
+- For transparent images, ask built-in `image_gen` for a transparent background and preserve the generated alpha.
+- Never silently switch from built-in `image_gen` or CLI `gpt-image-2` to CLI `gpt-image-1.5`; ask the user first unless they explicitly requested `gpt-image-1.5`.
+- The word `batch` by itself does not mean CLI fallback. If the user asks for many assets or says to batch-generate assets without explicitly asking for CLI/API/model controls, stay on the built-in path and issue one built-in call per requested asset or variant.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, Codex saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+- For many distinct assets, do not use `n` as a substitute for separate prompts. `n` is for variants of one prompt; distinct assets need distinct built-in calls or distinct CLI `generate-batch` jobs.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default, including transparent-output requests; fallback CLI only if explicitly requested or confirmed.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI `generate-batch`.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input images.
+6. For every input image, label its role explicitly:
+   - reference image
+   - edit target
+   - supporting insert/style/compositing input
+7. If the edit target is only on the local filesystem and you are staying on the built-in path, inspect it with `view_image` first so the image is available in conversation context.
+8. If the user asked for a photo, illustration, sprite, product image, banner, or other explicitly raster-style asset, use `image_gen` rather than substituting SVG/HTML/CSS placeholders. If the request is for an icon, logo, or UI graphic that should match existing repo-native SVG/vector/code assets, prefer editing those directly instead.
+9. Augment the prompt based on specificity:
+   - If the user's prompt is already specific and detailed, normalize it into a clear spec without adding creative requirements.
+   - If the user's prompt is generic, add tasteful augmentation only when it materially improves output quality.
+10. Use the built-in `image_gen` tool by default.
+11. For transparent-output requests, ask built-in `image_gen` for a transparent background and preserve the generated alpha channel.
+12. Inspect outputs and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+13. Iterate with a single targeted change, then re-check.
+14. For preview-only work, render the image inline; the underlying file may remain at the default `$CODEX_HOME/generated_images/...` path.
+15. For project-bound work, move or copy the selected artifact into the workspace and update any consuming code or references. Never leave a project-referenced asset only at the default `$CODEX_HOME/generated_images/...` path.
+16. For batches or multi-asset requests, persist every requested deliverable final in the workspace unless the user explicitly asked to keep outputs preview-only. Discarded variants do not need to be kept unless requested.
+17. If the user explicitly chooses or confirms the CLI fallback, then use the fallback-only docs for model, quality, size, `input_fidelity`, masks, output format, output paths, and network setup.
+18. Always report the final saved path(s) for any workspace-bound asset(s), plus the final prompt or prompt set and whether the built-in tool or fallback CLI mode was used.
+
+## Transparent image requests
+
+Ask built-in `image_gen` for a genuinely transparent background and preserve its alpha.
+
+## Prompt augmentation
+
+Reformat user prompts into a structured, production-oriented spec. Make the user's goal clearer and more actionable, but do not blindly add detail.
+
+Treat this as prompt-shaping guidance, not a closed schema. Use only the lines that help, and add a short extra labeled line when it materially improves clarity.
+
+### Specificity policy
+
+Use the user's prompt specificity to decide how much augmentation is appropriate:
+
+- If the prompt is already specific and detailed, preserve that specificity and only normalize/structure it.
+- If the prompt is generic, you may add tasteful augmentation when it will materially improve the result.
+
+Allowed augmentations:
+- composition or framing hints
+- polish level or intended-use hints
+- practical layout guidance
+- reasonable scene concreteness that supports the stated request
+
+Not allowed augmentations:
+- extra characters or objects that are not implied by the request
+- brand names, slogans, palettes, or narrative beats that are not implied
+- arbitrary side-specific placement unless the surrounding layout supports it
+
+## Use-case taxonomy (exact slugs)
+
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural — candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup — product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup — app/web interface mockups and wireframes; specify the desired fidelity.
+- infographic-diagram — diagrams/infographics with structured layout and text.
+- scientific-educational — classroom explainers, scientific diagrams, and learning visuals with required labels and accuracy constraints.
+- ads-marketing — campaign concepts and ad creatives with audience, brand position, scene, and exact tagline/copy.
+- productivity-visual — slide, chart, workflow, and data-heavy business visuals.
+- logo-brand — logo/mark exploration, vector-friendly.
+- illustration-story — comics, children’s book art, narrative scenes.
+- stylized-concept — style-driven concept art, 3D/stylized renders.
+- historical-scene — period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization — translate/replace in-image text, preserve layout.
+- identity-preserve — try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit — remove/replace a specific element (including interior swaps).
+- lighting-weather — time-of-day/season/atmosphere changes only.
+- background-extraction — transparent background / clean cutout. Ask built-in `image_gen` for actual transparency.
+- style-transfer — apply reference style while changing subject/scene.
+- compositing — multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render — drawing/line art to photoreal render.
+
+## Shared prompt schema
+
+Use the following labeled spec as shared prompt scaffolding for both top-level modes:
+
+```text
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Input images: <Image 1: role; Image 2: role> (optional)
+Scene/backdrop: <environment>
+Subject: <main subject>
+Style/medium: <photo/illustration/3D/etc>
+Composition/framing: <wide/close/top-down; placement>
+Lighting/mood: <lighting + mood>
+Color palette: <palette notes>
+Materials/textures: <surface details>
+Text (verbatim): "<exact text>"
+Constraints: <must keep/must avoid>
+Avoid: <negative constraints>
+```
+
+Notes:
+- `Asset type` and `Input images` are prompt scaffolding, not dedicated CLI flags.
+- `Scene/backdrop` refers to the visual setting. It is not the same as the fallback CLI `background` parameter, which controls output transparency behavior.
+- Fallback-only execution notes such as `Quality:`, `Input fidelity:`, masks, output format, and output paths belong in the CLI path only. Do not treat them as built-in `image_gen` tool arguments.
+
+Augmentation rules:
+- Keep it short.
+- Add only the details needed to improve the prompt materially.
+- For edits, explicitly list invariants (`change only X; keep Y unchanged`).
+- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
+
+## Examples
+
+### Generation example (hero image)
+```text
+Use case: product-mockup
+Asset type: landing page hero
+Primary request: a minimal hero image of a ceramic coffee mug
+Style/medium: clean product photography
+Composition/framing: wide composition with usable negative space for page copy if needed
+Lighting/mood: soft studio lighting
+Constraints: no logos, no text, no watermark
+```
+
+### Edit example (invariants)
+```text
+Use case: precise-object-edit
+Asset type: product photo background replacement
+Primary request: replace only the background with a warm sunset gradient
+Constraints: change only the background; keep the product and its edges unchanged; no text; no watermark
+```
+
+## Prompting best practices
+- Structure prompt as scene/backdrop -> subject -> details -> constraints.
+- Include intended use (ad, UI mock, infographic) to set the mode and polish level.
+- Use camera/composition language for photorealism.
+- Only use SVG/vector stand-ins when the user explicitly asked for vector output or a non-image placeholder.
+- Quote exact text and specify typography + placement.
+- For tricky words, spell them letter-by-letter and require verbatim rendering.
+- For multi-image inputs, reference images by index and describe how they should be used.
+- For edits, repeat invariants every iteration to reduce drift.
+- Iterate with single-change follow-ups.
+- If the prompt is generic, add only the extra detail that will materially help.
+- If the prompt is already detailed, normalize it instead of expanding it.
+- For CLI fallback only, see `references/cli.md` and `references/image-api.md` for model, `quality`, `input_fidelity`, masks, output format, and output-path guidance.
+- For transparent images, ask built-in `image_gen` for actual transparency and preserve its alpha.
+
+More principles shared by both modes: `references/prompting.md`.
+Copy/paste specs shared by both modes: `references/sample-prompts.md`.
+
+## Guidance by asset type
+Asset-type templates (website assets, game assets, wireframes, logo) are consolidated in `references/sample-prompts.md`.
+
+## gpt-image-2 guidance for CLI fallback
+
+The fallback CLI defaults to `gpt-image-2`.
+
+- Use `gpt-image-2` for new CLI/API workflows unless the user confirms a different model.
+- CLI `gpt-image-2` does not support `background=transparent`; ask before using `gpt-image-1.5` unless the user explicitly requested that model.
+- `gpt-image-2` always uses high fidelity for image inputs; do not set `input_fidelity` with this model.
+- `gpt-image-2` supports `quality` values `low`, `medium`, `high`, and `auto`.
+- Use `quality low` for fast drafts, thumbnails, and quick iterations. Use `medium`, `high`, or `auto` for final assets, dense text, diagrams, identity-sensitive edits, or high-resolution outputs.
+- Square images are typically fastest to generate. Use `1024x1024` for fast square drafts.
+- If the user asks for 4K-style output, use `3840x2160` for landscape or `2160x3840` for portrait.
+- `gpt-image-2` size may be `auto` or `WIDTHxHEIGHT` if all constraints hold: max edge `<= 3840px`, both edges multiples of `16px`, long-to-short ratio `<= 3:1`, total pixels between `655,360` and `8,294,400`.
+
+Popular `gpt-image-2` sizes:
+- `1024x1024` square
+- `1536x1024` landscape
+- `1024x1536` portrait
+- `2048x2048` 2K square
+- `2048x1152` 2K landscape
+- `3840x2160` 4K landscape
+- `2160x3840` 4K portrait
+- `auto`
+
+## Fallback CLI mode only
+
+### Temp and output conventions
+These conventions apply only to the CLI fallback. They do not describe built-in `image_gen` output behavior.
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete them when done.
+- Write final artifacts under `output/imagegen/`.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
+
+### Dependencies
+Prefer `uv` for dependency management in this repo.
+
+Required Python package:
+```bash
+uv pip install openai
+```
+
+Optional for image inspection and downscaling:
+```bash
+uv pip install pillow
+```
+
+Portability note:
+- If you are using the installed skill outside this repo, install dependencies into that environment with its package manager.
+- In uv-managed environments, `uv pip install ...` remains the preferred path.
+
+### Environment
+- `OPENAI_API_KEY` must be set for live API calls.
+- Do not ask the user for `OPENAI_API_KEY` when using the built-in `image_gen` tool.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+
+If installation is not possible in this environment, tell the user which dependency is missing and how to install it into their active environment.
+
+### Script-mode notes
+- CLI commands + examples: `references/cli.md`
+- API parameter quick reference: `references/image-api.md`
+- Network approvals / sandbox settings for CLI mode: `references/codex-network.md`
+
+## Reference map
+- `references/prompting.md`: shared prompting principles for both modes.
+- `references/sample-prompts.md`: shared copy/paste prompt recipes for both modes.
+- `references/cli.md`: fallback-only CLI usage via `scripts/image_gen.py`.
+- `references/image-api.md`: fallback-only API/CLI parameter reference.
+- `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
+- `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
+
+exec
+/bin/zsh -lc "python3 -c 'import base64;open(\"/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png\",\"wb\").write(base64.b64decode(\"iVBORw0KGgoAAAANSUhEUgAABOYAAATmCAIAAAAKnjl9AABcZmNhQlgAAFxmanVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAXEBqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjY4NmM5ODVhLWRjODEtNGIyOC1hYjM5LWQ3NGYzZmIxMjliYQAAAAx8anVtYgAAAClqdW1kYzJhcwARABCAAACqADib
+2026-10-12T20:09:05.804561Z ERROR codex_core::tools::router: error=exec_command failed: CreateProcess { message: "Rejected(\"Failed to create unified exec process: Argument list too long (os error 7)\")" }
+ exited -1 in 0ms:
+Failed to create unified exec process: Argument list too long (os error 7)
+codex
+The generator returned a PNG payload directly. I’m transferring that payload into the single requested destination file now.
+exec
+/bin/zsh -lc "printf '%s' 'iVBORw0KGgoAAAANSUhEUgAABOYAAATmCAIAAAAKnjl9AABVeWNhQlgAAFV5anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAVVNqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjRiNWY0YTllLTk4ZTQtNDRiNi1hZmNjLTc1YTE1MTc4NzAwNgAAAAx8anVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAJ0Wp1bWIAAAA7anVtZEDLDDK7ikidpwsq1vR/Q2kTYzJwYS5pY29uAAAAABhjMnNoqhrzslPniIP6g+Dy85r5qwAAABdiZ
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'SWCgtRYRCgFtapIyW6llWA/G2KHo53OcmS61TMOkoLVm089mmYkdpbbWJE3jVIqytQhFiTaMLafa9621UvoSQmppYaSgACrK1rK1lilFRJRa2tRam7AlKaLU2qaGJNnpkErXtdacjghCmU2mtWa7lFJKcZpAKG0gWyoUJTBI2M6c2pStlVIknNmaI6LrO7ANkJk2EQGSFBHjejkM61LrYmOjTe3SpUu2jx07ESWQAAxIQiFnOm2cTgAkScZg3NU6DcNqvZRiPluohLFRSM5EZEtnSkhSFIWypQAhKdNSSLJtZ0S0ZnAENrZLCdtImRbCloQAtWzYtruuSjJqLaMEOMdpmiZJUaLW2lpKkhiHURIQEaUr4zDVr
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '1lLCtoQzp2kC+vnc6VK70tUopdZOpTgtYbuNTbj2ne1paqWUWkvapaul1mEYWhujdrV2CJWICEmKEIpSBCQRihJCkhQSilJUlNmmMZ0JaQAjCSKilGJTakQpzjR2Gii1IDkzSlGESimlKGRbEW1qJKUrERpWQ5sGTCm1lJCwLaRaohRJkiQwpQQgSSFJ2AoiIpAUUUNSy1ZLCJVSal8BcO1KNpciKRARkpS2UIRKBCBFZpZakFSi1k4RQETYKFRqlWhtklRKiVKzNUVEiYjIzDZNkLXvsrXad87EbtNEupRQiYggNI0tW3Nm7XtAoTZlrSGB7XTUAiiKFKWGICJaS0WEkCIiVAIbo1KEopTa9TZRiiQkcETYz
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'RgmN4wjCRIQAO6Qo4bQibLeWkmaz3railBK11sxsrU3jmHapUbtSSgGBECFFBICIKLZLiVIKoVIqAI5AISybCEUJiYiICJUwYCIUEZIiZDwMg1uTADmNiCgRIYWkiEBka62N0zQhlRIRkiRJItOZlBqlqxJRailVQYQkhDIdJaJUbKRSQraKFALZhKi1ImFJEUFRGNI5jlNOOU6TbUGUiKgRYVAEYJPZIiJKFBWbiAAInM7MCNVS2zQpBMZEUalVKEKllCjhTBQRgRSSIDNLKa0126GoXc3m1nKapojoZ13pepso0aYmSZJKkEiKElI4s9QigRQRUYozEa211pqkWgsQEaBSikGSoJTIzNaapFKqbIWAUgSOK
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'pCihCGSnI0ISIEEIWwpJUYqTKNGmZtLp1lxqiYhQqJQIRYRQCAWlqxCAQkilhELTNAEKSQpBKEIRIRElMhPI1owzDUiShIlaJUWEICIUQTYyQbWrEcXNUSJCkiLU2pR2RIkoEYEAAIWAQAZJiAiw0wAKpnE0CRSFIrq+A9daIMBdVyNCotbidNTItERECDXnNE0RUUrYGRGZTaQzs03gKCEJ23ZElFJKxDSNkJnZ0gp1fSfLIAHCLl3FmdlaS0WUWkqttu20LUlSFGFhq6jr+3TalFpLCVugUESpUaLWUkpI2IoaAoVKCYVsy6hISFKUiIhMhyi1OJ2ZERFE1JCw3XWzrptlgqi1RghJkk2ppatVIUkh2WAga
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '2YpisbFZur6NI26ZGaV2fUco04rAjlIwUQrOTLdxykxskyHVrhNSCUWAM1uEFKGQjUJAREQEzmmcMp3ZiIgICTuFSy21VhCodgUxjVPLlFRKLbVGCBylGAspVD7j0z5ZKhCYYVhP01ikiECqXY/CdkS0qUWJKKVNk6Ta94ZsLiUQbgl2OiKANk1RSptaFElqY5OUBidICAEJOU3jOAzIpVRB6arTzgSmcSQbYmoupXa1ZDMpRdiOKFLYdstsGbVGRBrZklubpnEC2xhKrVIoCihbSpQS2VLKUmqUmpYQthQKtWZJUcJp0mAbhYwxwtlGZ4bcximzlVJsO9MYjIlQKaXU4lRmIpxOp7MZO40IeRpbtmZnNpeu6
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'IiJUbAOZSEhu0+S0iCiBHRHgaZpKKVGKoLWMIKKoFNJuAFE0TYlFKDOzUUpkIqnUIoUiQpFOKWQbCyTalHZGRKZLKdmmNmWpVRGZqESUkg1AoZYZpZbagWyMoigUpVYRNhJgG2MbG9uSEBgAu7VUyLYEJm2bKJE2SBGZIAmVGqUrmIgSUTIbOCLa1JwNJAFRaldKYFuAIlRqzTZJATZ2ZkhRSpTSsmUiQM5sGJXitIVMm5ozI4oty2FPU0O2bRuEISKkzOZ0lGhpTCklnW5pY0tSiHS21sA4h/V6GsdsGSFEa82ZUUKiNQuhMDjTaeGQmpudpQQWRiFjwEnaRkQAEgpsnImFBLIdUYXSAAQRYSszjUK2ja0IR
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'MhEYiIhSAGwhDFKJiFKiFKGWKdT1fem6lmAjIQRSSAERhczmTNtgFdkYQKC0TUhSyCgzowRS1/cYQApsO7MZU2p1y8zMdCmlKErI2abWJElhCAmBXUpkJhABJpsRTkcI09JSgOzEDhSKlg0UEWCDpMwkwumIAFpLIYlMl1qcBrXW3LJ2VVKUaMM0TU0iDc42NmMJCARS2k5HiTTYEWrNtksJYGoZEYK0M60ISbanccKuXbUtJLFar52tn82NbJwphTMRKqI5MwURynSmSy1FymytWRGC1lpmllJKyHZrrY2TglDY2A5JQjhtnK2lbWcCEWEDgZStgZBzmrI1nEISBpJSis1lAc5pam1ShGCamjNzaihq7dxsW
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'BTuzBeSUlkstmRmKiLAdilqrpGypEgoZQiFCEaGIwIAUJaSICC6TKFG6fobINCHbSFEK4EyLUgOFpYgiYWctRSVsR8gmIhQhrFJKFIyFEKJEsWmtcVkm4FprBG2aWmtSdF0ptaIotQobIdmABU4iQpLs1pptEmxjDFBCKLANXe1DZGvg2tVsLrUAnqZ0yqkSEXJiDG6tZWbtqtPYijBEKaXrkWrtEZgoApUapVbShhLFzlpL6ep6PQKKmMYxFN2sn1raCUhhAwYQwDhMmS2ilNpJgS0JMDib7cwGtCklRQk7s2WmSy1SpHOapmytlCilllKEMKUrAlA/m2HZRCiNnQoZg8AhnGQ6AknYgG1AEQo5s5QSpTrdW
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '3ZWIEpJQlFIAg01E2A6pTRNuiUsNG6MSMazXze66qlBOGUW1lJymtJ2EFDUiItNSlBI5jVNrXd+5tXEYS4BRRPmsz/gUKSTZjhKyhRUSKAKppTNdSkQtERGlALWrXTeLElHk1ob1ehpH41Jq2lHCaWciSikRoZClCCGDbAu1bNmy1MiWmZOCbBPGYFS6DqQIRaQtUCgzo0QpZRymJGsXElNr2Ryi1E4REaXUUmpJ01pKihC2TWvm2YTkKcESobBBSLIRiiKZ1qaWliIiMLZBSEC2lmmnDZIk2QC1q6CWjq5GBLYUNoYIGQHYrY0StesEbga11sCKkBRS2hihiHB6HEdwiQAkMp1pRShCEa2lFKUEaUCyDYBtJ
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'LIGkCNUSETFNU2ZzWgqJKKWNTRJIRRIhSikQERElkKLUKEWEcSkxDuvl0RFQSnE2sIJAFsIRpXZd7apEa1O2VmqJEtma3SSVUkstnpBQLTaCiEgD1BK2cU7jlJk2krBlLBQBYRtcIlSUmemUZDszoxQpJIXCkiQIG4JSisCZrTVJEQqU0NKlVoWcDgmplApubZyGcRzHEooSmWkjBcIIqUjOXK9WU5tqKQpN04TUzzopMqdMSypdpxLZrFJKKEIkTgtUwrYAHCG3TMCOEuM4AbVWQ2suNVCAaldKKKfR6XQGQgLASDaGKIHkJCEiJIUkyXaUSDun1loDuq6XApAEkgKICGwssO1parWWUktrBtWibEhRaglFT
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'XS21hmR5GidCmJYtQk6jiAiplK60qSWZrWFHISLalIBKAJkGIgSepsw0uE2TcUhIpZbW0k5FkbFbVI3rcZomhBBW1AJq49hycrrrO4NBEbYlSWRr2Vq2VESUSFugEIZMhCRMQkggO4FSw83ZplDM5/PS1drVNE5HKaVWcGZzm6KWUiqSMNBaA7BtgyVaS4UUZKZs24YIIqKUKoUQkJlpZ7Og1Mg0SYRKKRGRU0Yp/axDoSilhLPZdrZMlyJEm6xQlIItsHKapmwNW5JtQ60VyelpnBL3tYsSNkCEMhO71KpQtlaKsNvUIoKINqVCklobx/V6mkawQpkJUkiQLUEqgQ2ys9QKapkRAmxLIRXAItMCsG1jbNt2G
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '02RTotjOTEUIsCQBmenMUktXayklIkCl6wTOlCSRtjBpOxVKN6ejFKRsTaCIaZoy0wYImMZpnMZSonYdhB1IUghaa84GzkzbEQG4WRJOpK6fZdJaRkQU2WApyGzpjAhB2iBJpRQpwIqws40DdkQBI2U6opRSMi2EZdtOjAAjEcGwXq1X677ricjMUoqkUNSu2hlSqdEaEaESToBSio0kp23XWqKEMxVCltzGNk3jOI61lH42RxIKKSKiFAlMqKQ9jVObJqEIkWmnTUiys03TODqzFBkyXbuulFprQSolbJdSur6XiFDt+mxGUbtqN2dO41RLUYmcmp0RZHOppdRqU6KUUvtZJwUijZOIKLW2KRUhCeGEBGWtt
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'FABUa1VENpcIlYIoEbYzE5BIOxSl1lILhO1SQgrbEUURERERSBJOohREphUREba5wg5hAIzJREgAhCCAECaFooQMco3ITECoRJQakmwiUETU0vedpJzSaTsl2jTZLUKlVmzbpRSL1lxKRAikkCJaawpFlMwmhUqAJDmzlMDKtEpEFCWHBwdA7XqukBDZWmYKIsLOiGhTMyjCNlaEFCGptZatSZYcpZSicRgzWynRdV1mzmZdZkqEJIWNsJ0RslMSxqZElBpAqdHa5MxMRyk22ZoUpYSd2OM0lloiSkRgS8pEdpSQwiCplFJKOFPYqYhQKKLYlkpIEtkaCpVASMIWlBJOt2xuTRGllIiQpJAEeJymQCEisCAdp
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'lYKxFChzatOIHbU41aYJnNlsY2otpe8kZaYU2VqUEorWUhBFQGtpW6K1BrYUkiQhICKsKCVIm2xTRqklIjPTGSEpnNlakxjHKUIKlVKlIGhjk2itlVJsQpKUmeM0SBGhiMjWau2iFNtGEthpnCnbuERMU4tagMyMKFFiWK3TKdHVLjORJAmMFGrThAErSkSRAJC4oiVCElJrKeyIiBABhASkLTnTQLYWoXEcpei6KhVjgW3btiUBAkgnpau2MjNKOJszwSolW2stM933nTMlOVOl2AYygZbp2lUbUERIZBrsbAI7MQaFprGVWvr5hu02DpKFMrEk4WkcxtHWfD6zlK05s3S1lIpwM9hOJcbGNq2lgq7rgDa1i
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'HdBam8axZQKlRGvNBjtbZmaEuq44U1KtRYooJSKEM7O1CbLUKgkUpUQARERmm6YpM6MUSQLAaSmiyIBdSpVoTtsRIWSwHaFSiiBKkYQptZOEFFGlKDWQs1klalcjiiQkTJQwKEIliiQJ2WlJtXaKEiWEsjUJg4SkzMzW7GytSdH3fURRSBEk2FFr7So2GIgIQJLCpRZM2phSIyJqV9xautkpqbXJ6drVEpGtdV1FSBFRSgkpJE1TE5QaiGxZa0VIQpTP+ezPLLWWUjBAGycyhUzaOJvtiMjEppTIzJC4LIJxmgxCCmWCFUVtmjJda7WRpUClZBqkiMwEAdhIEQEISimtOSJAmenESSmByGZFMXYqSkjOybajh
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'nQo5E5GJpFI7oDVLAqZpzEwpShSbzFSIkNO2MydJtXY2rbnWTqVMUwNKjbSzEaXYCQrJdmtZIuxsrWVrmG7WK6JEqbVmOtMR0aZmKCXamBBdrels02gshZAzjVVKTu66Cm5TRlRJaUNO4xglSpTWLCtCma1NrZvN5hsb2ZxTSpKQJClbgqdpam2SHKHMLFG62SyTUvsSgY2kYJqaFKWWiGitYRCSau26ftZaYku0lqQVAe7nM0ymjQSlhmFYrduUpRaSUjvk1qbV8kgRIOxaO6TWMmrJZjAAWWrXMp0I9V1tzc4sXZE8DmObspZAkWmn2zjUWelmfY6ZToFtgmmasjmKokSbpjYlQBIlohRniohQqUWotYwap
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'UTQOU5SCSWdr6cwoZRobqJQyTU0iQtM0RUSJyHRrozMRbUpFkSQIhaGNE7IAW1BryZZtmjItKRRtSkWUWiPC2SJKKaU1GxSy0yZCmGwJSFJEm1pIpURO6UxMZqbd1U4SqNYatba0UEQgQJmt1JItna5dzZbOBLKlRNfVotrPeimmcSqltEwbSaVERJlaesooxWlh29M0YmdLt6aIkMdhQKpF2C1Vui7TbcqIiAjj1qaIooh0YoVUpDaN4zjk1OyEQEIC2wbsxGlnhGpXQopSS5GztWxRonSlTelMiYjIlmmDWssInG6tSco0yPY0jIhaI1tmOiJUAnBDIYnWsqUxgbPZ6SjK1sZxMgKmcZSIUkutbXS2tMCut
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'Laep1doZ2cJIRCk2bUqjkGxnGlsREQopSkXKljaKALKlcYScztYkJLKlpMyptQkFIJSZh4cHy+WylFJqEbSWwzBElIhiG7dpHO2UpFBrqQgFdgKtpQG7TRO4RGlTA2pXsW2XUkWk3VoqggCIWqKE5MzW2tTalK05WxpwKQW5ja1NY6YVlFqdzrQkjKHW4nSmUaQdUpvSkkRm2o4QUkjTMCmkiGzNRqHMzMzaVyfT2KJENtuOCAljpzObFJJKKaHa9R0oWyJFhDOnaVKETLYstYKyUUpEKFtO04gUEZlISjsk29jgbGm71JKZrSWEIhQymiaXrkOBJAnJdoQQrY0tJzdjSi1Aa4ZiEVK2Nk2tlGpwOm2kQBHhR
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'Ta017FIClJml1GnM0vVCrTVJtmVsl9A0rFubyAwp7alNgDOxQSgASdkSUIRNpm1qLZnNLbNlZrq5lIgIm67vSwmbiILUpmZcamCQMHbKFm6tYdtNRoqIUmotpURElBqlujlbU5HszHSmMzMbbiFsZaZCtsdhsK2QDbadNpgoUUJSCDmdmcgRATKBBISUrTkdUVraSYkIRaDMlpkKoXBLScI5NQWSnCnJ9jSNJYqiZGsRQpGZQKnFdptam6bMFqFMY2zaNEUIaNMUpZBkZoQEOU3OrLXWvmujbSKKREQJRURk5rCeJEqtochpcrqUWrs6TRMmSijUWkoC0omlEiZlO1u2Nk5jtgYoQlKUyMQQJbDBOI01LC9IJ
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'MFIBDEBm2hjaNIFLiWzpZoUQgUoJRWRiiAiZnJrTpQtbrWWEIoqkTIMUIbCxLcnpUgLRxhGbkNNgSQpJYbtERC2YbAkIpTOkaZycdF1nEJRabLBBNsaSIqK1lnYUCbWWmW1YD8M4lgjhTNeuttbcXLqQmaaGkdT11SgkUCkFnHZImEwLpAAyAUWpNplGApyZmZLccprGKNJ6eVFShNyMyHQpxXZmOtOZCvXzvrWUAmPAlgA7PbVWSgzrdWtT181m84UxODPbNGXL2nXCimLbzmwNCEXU2lqThJQtna41Sq3ANLWIMMZSRIRsG4SQbAsDiDZObZqSrKVGRCnFtpFC2ZqdESVUgLRx4nRORJTSjWNDKZiGFiWiK
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'SoRBoVI725lpZxunKHJmJuBSSkSUUhJJalOLEsKSIFRKm0ZBJrZLKQqyNUU4E+E0loJSS2uttZbTpIgSpdTaWmvTZGdEiSgInFEC7KS1VIRCbs6cMlvt+4iYhqm1htR1XYlqkOzMaWoS4MwEQLYjotZOCoJpHNarZdRSorRxam1CMZvNuq5DsjE5jWOJUroKcmtImVbIiaRSim3bIEOEnKmIzJQg0xgoXdfG5swogZSZEUWgIKeWLWtXDa21iMjWbJdaopRslpTZbFsqpbglOFsrXWlT2rYzVGqtiNaydqVNk23sNk0qpetqTomkCIlpmiICKFEyHbVkZijsBGPARhHRpsnQWtZaIkIRrVkCiFC2FlEQmTmNY
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '02S7dtVp2xGltRYlBAbsiLAUEW4tnZkupYAkIaZxWq9XJbTY2Mi0FaVETsM0TRGllApSMK6Hli2z9X3nRu3qOLbSFUWQOQ5DRJRSbRSSNA5DqbWUGIfRtqTadSCnEcJAS0cp2M42jmNEgG2DulnNKaXITEQoSldzSpXizNZGp22XUkqN1jIU6XQaKKXYLrW21oDWWi01SUkgZ4akkNMK2ZlJqTWkTCOAzLRdS+SUYBQqGodpWC+Na511tYtCTplOQyhKKdFVp52piGypUJRow5CtIYCIiNA0NRSllCiRmW2a7MQoStd12dJOYUQaFCGiFMAtiQAyUxZYkp2ttYgoJZotRUjDejVMY4koUU2SznTUqLVmZmuJ5
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'gUJSRAACQYSihEJOC6KEmyVKCaejSIJ02lFqRCgIRZSCiVA6Q1G7rtaKjUmnUJQotaYznZmZLSV1s97pKAVRSikRXT8TKqUIokSmwS3TjdJ1s/kCRa2dRJuaASg1ooSkiLCRhIgIiVIKAmy763rhiJAim6OWUoM0omVDiiJwQNf3KhERraVCUaKN0zRNpFXUzWZOhygluq7YmqZWuyJ5msYSpZ/Pau1s22knppRau4osSSiKhBTCZNq4dBUhRakFaJkRETUykSJKwSgAbEdEKZGt2c7MNk0R6mZzSXYqCnZmIgxtnDJbmzKkWktrbRzHUqKUEhHI4NpVCZtSIqIYsmWUYhERkpzZMqMAlFJK10uBiYgoRQpsh
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'KSXAzjYNQqWWUACKohDkNE3gKKEI0th2OrOEhGx3fQW3cWpOSYoopQhLUUqxBC61kAY7G3btu1Jqa00i25TpaRqncXQ2maghCUAgRQlJJWrUAIGBru8z2zAM6ezmM0GtdRzW4zDVrpZSpJAEKIQESIqIqMWZpdR0Ckottda0JRWFIoyiVtmSbGNLEaXYkJRaFYGRAttQSql9zcy0QUApJSIASRESEYrSVcCm1M6Z0zCWUqKE04hu1pWomOhKFMlkpp1RSpRiJ+nMRIoSmAhFCYlsLTOlqDWwI6KU0qa2Xg9Tm5x2UmpECUyUohIYIFsCUUISllCUkISpXYeNstSaRioowCWkECRQilprraUE0LLZTOMEWWstt
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '2c60JECSRESAnY6uRCCIkCIiIrMNwxqr9l2EZGdLRVERoFBOaVxqAbVswhLCmY6IUkOgqN2sl2TbSaml1GJrGkY7u66WUpwZJSKQJIUCwpluUxOUCAQ2eBonk+ASRSJwm5qzgSU5KQXZmS1KSIpSJY4Oj1br9cbGhkpprWVLky3TOEoBRRRBtqyzWkoBRUiKiCgRpZS0FeHMCNVaSi2tOUJARKSNVUpRRLaMotZaZmamRBSVT/uUj8dkm1rLUksoWnOU0lqbxjFqcbajw8O0+75vLZFas3GpNVuWUkoJKaTIzIgg1KYmAoiIiMCWyNZsl1oiYpqaUCnFNgg7FFEiG4pQFFsRYWwTERinFSHJCCxJktMChZyWh
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'pSRFkEQtSK0ZjO00wqa1JhERmQlRuz4iWkMRtZQ2tWwJgMFtmoBaK5mJJElARIQRSCFQthQgOZ0tJbLZtiRJTk/jOE2jQBG2Sym1VkVEKdlSoUyHiiTbGCAzQa2lFFEim7FTypYiFIEtRbYJALWW/WwmlM1RojUrSinFmVGLDCJKtNamqZVSuq4TkqSIacoopdSCcQqsIFsLaZrGcRy7ri+l5tRqVyWmqWHV2mU6IiJCoVq7UkqmSykR4WZJdkSRUAQhpnFyOhNJxjmlUCklSgFlNjcD2FKAbNsWipAzp3Fya4RKiTZNrbXMlBRRJHJqzowIJKdDMhgklYjMhi0pm0NFwnap4bTTdmY2N5cILGNnGqKWCE3j6
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'YSuQim2FJI/j4Myu70G2IuScpmkSCsm2pLQllQjS0AQ2BoytWqtF2kC2TNtpkEIKSUpnpltLhEIyhojA2aZJRaEiSUISzkxHqSA7na1NLW1FAMYYKWzbzinTWbrSppYto0SbmiIA26Uo3VozSApJpZYIJRY4jSQJAbSW2VrXdaUUp7OlYRqHbK3W0qbW2qTAmcjZDCBny9LVUksbx8wmjGQTIkKINk2tTVEkaFMDur5m2qZ8xqd9krAkUKkFg8h0a63UgjOdXVez2RChCGVmqaVly6kpKKUIIpSJ0xGKUrLZphSVUhBOopYakdOQzmlsCGc603ZE1NpFxDSuc5xUo5TITKcjpFBrLaRSIxR2Bqq11r4aSYoST
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'WKL2VbbtaZqmcSwlSqmYqCEJUCkSNuBskwSi1Npaw0QEIdu27QRCGEKKEsZAKEqEAsm11jRORwQmSpQSdtqOCAlF2Da2U1BKKbW6WWAhCVkATNOUmVJIKrVIkZmSooQtYclRQiqYiAAkRQSGTCBKKIoUgNPYUYUkIiJynFo2Y6l0pS+12AhJApNWqHY1SqEZqdSCEBFBZsuWpaqWgp2Z2ZKwDbZEhDIlqdQikKLUIqm1nFrLlghFhAKMUSFCmWlnKQFMrWVr6YyI0hVnllIlZWZ0IckgCTszM7N2PSAAFAFgI0WEJKEoJUoRBkRkTsMwTONYa40SmQm4tdJVKSQEBNiSopZSCmkpJXJqdnZ9dUuEoE1jKREl2
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'nS1xErKNFKXYblMrJVSKAAk7MwUiStdFCTdUwlJmAqEAJGotTmcSUolAdpuACAGl65BKhCKcnqYpSUml1FJCUtpcVkpFRATGxnZmy8xSi5CQIrDb1BQBtKlhVBRRDCXCdma2TCkQ09gAO1vLIpWuOO3MNqUhSigKTkCKUqrTSBJAZmYaWwG2JEWUUm0BkoCcpsyMUCnFEQAYAEUICeO0IhSBLal21SBVSSohsIVUSoSw0y1VqiS31loCtSuBWqYkCIWkSJtEEYqw3TIjyJaldKVWpJZpGzsk29ittWyTIiKQwgmi1GhtatNUIqKU1tLGGIxBtJY4UTodpZRawTlNaQNBGAMREUWttWlsCkWETaYjiCJJpFubg
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'IopUFEzjFEGJoohpTNuSVMKZ2NM0IRQVSSFBkqHSzXopUNSuixIChUotTisKyACSFKEIWmuyFRERmCiS5PQ4jpIxTpcgSkzDkDm1KSMUIYUMgJCkUgo4MzG1FAC7dFUwTRMmSkFCcqYkQzYLsAHbtStd3wvSrU1TaxNGITuzZWaTKEV2TtNkZ+m6iJAwgHHaKEKlqBTAtiCiIOU0ZTZAERhDiQA5UxJSRFEJQ04Gd11Idst0gkHgltM0ThEqIexQKVGilAhlokBF2G1qmUYoJGTkbLYyHSVAmKgVkZkSaUeUKCEpM0tIIltiK8AihI3ktITTyKFCRIRA4FprpsHGzsxMiVBwhQ22M1sCGARIUoQiJEmh1iabU
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'ZlFKQTG1qeUIDhWpWIQUJTKNLQkIhXEbm4JaiiJCUWrpuiowRISNbWMBBhwRXdcpFCVam+xEdH2VYxjH9WrdMhVRuw4IaZrGNk3GJUraEeTU7AQLSdSuSpIEaWebxtamEiVqtTEIbNu2HREllKb2XaazZZQAsmXtama2NtW+z3TUAtiZmXZGidaaIEoIt9YiIhNQKBTKTAnbtp1pAGpfbWcmZOY0jpNtQRQhAGyJqTUnkmxHiShhK0oBwAACQaYzwZmOUAmVosy00wLkdCkFsF1KYGcaDLadTogoAQqIGpIkKUKSQBJOOzNTERGRLRWl1IKxrZAkbEEtXe26iJCkEAhRa5Eim0sNm2mcDJIxkkpRlGIwwkYgw
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '2yqSBEQJE1Gi1BhXw6Xdi+vVWhFdVwmBnI6IUkqUUATITpuIUoRt7NrViOqWJiWBJIXkTJsIlVqciS1xmSKKsTNr1yFnNtvZprQjUCgznS5FkiICcDpKjVIwEQGAQjIQQspEilJrREhSiLREiRIhkO02jrajSBFpO60QUkgSaUqEMZlphwKyZWvTGGg275CcGaHMVERms7PUGkVuVkSppZSCQZrG0XZEsV27DmgtQwClRClFqDWXIoxESJIyLZFtQiqlOB0RtQu3No0TUul6TIRw2hZIUUoAmVlKkQIJk85pmsC16zITiFCbWgTYiGwNu7WMIDNt2y5FbUrjKCWqMEBmIqUBRQi7pXFikJzNmZkpqdQaJUopZ
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'aldK7cZhxM7Wau2ihKRhnCRCEaWoBNkyHRHZMkJtashIINu1q5ktVMZpcuZquSpFGxsLRbWJKAbb2ODWMkKICOVkZENAmlLCmS3tzIiotebULKLIaUkgIJ1SGCKiTRMgoQgkjDCQ2Wggoqtypt0yA9nOdCmBsBEYIsLZEgWKGjlNtgzgzBRERCnVuLXWpibRdVVRMlMSIk1wmTGWBJKUaWEFmXZmZrMdUaOERGZmWlJESIqITAspZFsyl0mapsZlEUICTeM4DOu+77t+3trk1pwmcFpWc4tQpoUQpZSIUCltalilSCWypbAlqdiWsJ12iRIlcmoSLTNKtGmSM6JKGseBUFerLWcqmDJFCEC2owSgCE9JyM4Q4
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'EBHGgJ0C52QDAkCSohanwSCwbRuFaldtJEUAymy2aw2F7Mw2OQ1OLMJGJVBg1xqQ2Vz6LiKyOUIS2VCtgcZxysxSAilbSipdKVFUSlpuTRK4JVGqRRtbKdF1tWUiJLWptdZaSww4FCBQIsE4TtmaJECSM52OiFLCOJuRuF+EWstpXAO171TCbm5pwCBA2FGi1gqCkGSB7TYqoutnGMlSRIlsE9i2pTTCObVSixROEBFyYpuIzNbGjEJI69UqnQrl1No0IfV9zSktnF6vVrZrjUxLZMsoAYiIkEKtNaF0kpmtZZsyHRG2BYoAZ8vMrKVEBKi1BoCdliQp29TVKsnOUus0tZYNky0z3fc9UjrblBGl1KoAO1vLT
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'O+1So01Zax+l5mSDQna2aTLgxNhWRK0dkltr2bqu72pnaC1BCmEjIhQlpMhMbEtRJGhtcrqUkgobwDaBFNlSUYyxFUjK1myDS2A7swEgSyGcxmSzMdDGCVFKyZZArRUwAtlkpkJgQiKQai2gbJbCtnGtxfY0TsaAMyVst5ZpRylSGGMMoGyOkKRMRwRSaw0otWRma4llS1KpJTNbm0C27XSmjVRK7SSAiEA4jVGEUMsEQ2ZL25KEIFqzIlBgSsiAQmIaJ6exM911FTwNwzROtetm81kJIdk4KaWUEq2lbYnW2jRNkkqpTiOcaTudtqOWiGobpIhsrU2TUKm1lNoybdW+a1O2llGKRITaMGVmiZjGaWqToEQgM
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'Sm2tCQvbLUKgbC0koE1pDLSpSQBODHagEESQmThsbCuUaUStVVJraVuilGpjk86IyMQgY2e2VkpkMjU7iYhMY6LUkOx0ehwbSrdGuqW72mU6W5auZsvMBNqUEqWWTFpzZmZLpxUqpUzThGTb2UhnaxHKlsLYdtZaW2ta7p9ViRIlWyLGcRCqtUYUy1itZQSCKOF0lNKmZiilSGEMTOPQprGU0s0XzkYaACSpRGZiCWzbiQREhI0zpzaVElIAtiVh0glShEARtts0TdNUa4mIqJEtsQGnJRSRabAkUGspSOc4DJlezOddP6OUzGan0zlNpZba1dYSScZOg9MhIqKlASlKqGVmm6ZpQkRIihJhPI2Js9SiElIXI
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'UkIS0MYxanEzgRQ4p3FC1FpKrU4QbWqSbWyiFEluLQ1QSqQdSCEbm8usiGwpbDtbQ6q1ZqZERLRMSaXE1FLCxs0KIYElACeAbeRQ2AYbsN3cciq1oOhq16bx3LnzinLy+PGoMnKzIjJbkZAI0ZpK2BJEiUymYUR0sw7UxkkRBNmmNlkhQdf1mdmyCUqt2GlncymBLHAaKVtLOyKE2jRFDadDilKIaOOkiGkaBXZGKbX2SCTI2NlSIQWtJWIaxogSEQARzoyiKLWNTUGbppza1FqttfadTISAcZi6WZeZtnNKRCmhULY0SJRSIIBMR8iZ0zRlZu27UEQoW0M4DSAUkS0zm4QISgkVYaC1ESmitCklalHLjFLal
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'qCoR2Ww7qpy2AymESmnTFETUALK51JAwtMmKkHC21rKWMIoQyEg4IrIZbDsCg6VA4zROw1RKlFIQbZwSY7q+czptO0toGqeu6yyXKNmcbq1l7SpWlDCE1KZmZ2YilVJqra21Wmtm2m5tAgGlhBSKyObMFCkJIWQ7nVIAUQKTrSFJhGIcJ0RmllJsIkI4SozDVGqNEGIamyRJEtmaBBJStpZtWq1WXe26vkcSzvQ0ZddFiaJas6VtiStsr1frUmsJAZIU0TIDIaJGpkJyc2aWrgqmaSolgKglp5zG9TiOtfb9rB/HERylrJZL0vONjYhqp+RpGltL27WrpFprQEDpaqnVBmTstLFIpzMzSq19ncbmTDCAna2VW
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '20iKWqLM2jQqwtmQQsK01kqt2aaIyMwokS0B2xGRtiIwEeHWIFtmKSVNG8eQVYszMcOw6vteUUut0zCsV8tpakgoIsp8Me9nM4ykYbWKCNt2RqmZGUKSnUiZCWCXEuMwla6UWts4DePgpJRSa6dAkm1bEjaIEgUM2NgGRWhqrbUWWBKoFDI9jZOh6/valaODw8P9g8Vivtjewoxjk6LrK8hphTCtTQpCaq1lukREKUg5NcvgUEQUY6dbtjZNXe1KKYbMDJG201ECPE2TJIxCNhHhdGstnSHVWiNimhqo9hVjy3aE7JQUpWZrEcVubZpay1oLEiYzSw1Ma6miiOLMKBUAt6kpQpKkbA3ZmW1qRqUEUGq17WwCC
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'orW0JdnGql3JTKMokZnZEpAkhUJAthbSNE04JdW+ay3b1GotmWmnIhCl1GmcJGW2vu8zPY1jlFJrTbtUjauhtYwoXT+zTQgbyNbGcUQuEdnc950iWmtAlJKt4TSuXTcNkyGTftbl5Gkaa19r103rAaEIEBAlnEi0NgkyM0qxXaJM49jaKKnW3iJEa1lqwVKEsWyMbaSImMap1ILTdqYJCUlkawYgJONS6zROUaozFRECaK0p1FqGJJEtkWqtmZZCGDy1EdzSQZRSETaSpLBxtqiBc3W0slhsbLQpJUoV6ZZ2JqKUmi1VokRka7ZBlBIR2aZpnNo0CpdSopbWUgoM0HWdJNtTS0QpYQOSwGkuSyNsJDIN1KpMZ
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'IpxWlNp1gJAikMDTNOWUfdcpJFS7jstay4jo+67WUvu+9r1gGgenu65TFEUAESUzS4lSq7Fw6WoohBRSSJIAS0IhQTprrdM0ZiYypnRdrbVNTaGoBeO0pChSyJmGkEoEpnQlE2cqJJGZEpJKiTaNJaIUSYGliLS7rmbmNE2tTVLU2nVdn1OLKuw2tdrVUitJqcW2pIiICBGlFIlSi9PZmu3WWimldl1OmXZrEwCqXbVxWlKUAEWppQip9jUinAZju6UUUQMIyU6nixRdBSICbGM7EykwTtdawK2lnYAkRVUEGDuilBqSWrZsDSwpokQAilBIBEBAKSUCME5DtszMKEUhsCRJmTmNE7iU0lrLbCViGkfh2tVSS
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'CkmgyJYSEradRISdUSJbk9SyBUKgcBob4bTlruvaNEVEpnkmIZVap2HtbFKUWtNIYABn2o5Q+dRP/vhSisKks7VhGLK1WrvW0qbU0lpmOko47aSUsGlTixKCkLq+L6VEhKSc2jhOpZS02zBFKCKmqUVES9sSILcpMQjsaRqmYQjZOKcERylAKOps1tLTlKXWWnu3BKXJRAKRaQkJ2dM42iiUmaHiltM4Ymdzm1qUCDGOU5uylKqIbJlpcGvjOK7H9ahQREzTOI3jOAytpcGJcakF1JptCaIIKVszSMoGNnZrk40iJGGEEJDZEpAUJZzOZiIksDFRJIQdRZmZadsRYchm24AkRQCS0tnGVqJ0fRdRDCHl1FprE
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'Eww4p9ZawxmhzKxdVaiUgu1McJphvcpskkARkZnZMiKkaM2KCMk2mQJB1/dSkZAUEZnGGRHpbFOTFKEoMY5TtlZqsZ3N6SylTMMUUYyyZZQCgWgN22BgHMfMVBTbEoLWmo1ERNi4WRKAyZbjOJaIKF2mQSEhJCG7tWytTU2hWrvMRFG6WZsyIhDTMIzD0FrDBmemFN18HlGzNdm2cTrttC0AYZNpCcQ0ZaZLBChbulklbHKypOhKKWUax2lstRYUmY6IcVgtj47sdOY0jKoh5EzjcT1GxHxjHqU4kVRqaa3ZxkSJKMUNZwLZUqXUUmrXdf0sG9M0lpDC43ps06RQ5tRaIzNtAMuZCoA2TUJRKiKnBEcE6YSIy
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'FSmcjogipW0jhSIktcyICraptUQUpIhQFDvbNAFtmmxLAQKPwzCNUwhnTuPgbBGBwc5EyCZtp2tXoxQgMwWttWyOoLVpHIbMZtsinTllKTLZpgYpNA5jlFJrAUqtUUompRSs1jJCxm45tRE7FLbblFHK1FqbWqm11AKybVuKqU0gm8wMELRMiWE9tKn180WtXUtwlhISGLc2Tk0hg+3adWmXWqKojVNODdKZ2VKB07YlJGVrOG1joYha3CycbQIjIbK5pSOKRKnFra3X677vau2mqQFRlG6YTEcI01rLTJOZxggiItMCYxskbEkhyCxd13Vd7XqIbFYoauCcxpbZoqiN2bJ1tUgxjBO4dh3YmbXvSi1pMt2mL
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'YCsUpToTonYF25lRYpoSqF0JBTbIzVECRHMpBWituU2tZZSAqF1nqTVqV+xpHMZsKbm1BkSEATyNTZIiQpEmSkhubWpTGktEKbZJgyUNwzpbllKi1GxNku1SihSZDiglpimliFJArTnTUUoEbRzHcYoSpYQgWwNHaBrbMAwlout7ULaGiZAUpVZMpksJhZzpTKGpZZRAOC2FhBQtm4iurwphSimCzIyQ7ZxSIaGWFEkR2bKlSxRjJ04jwKCur0AojAVuCaTtNMKJAtltmiRLkS0VQiG7hBSRmdmsECZtIQk7szWnS1eE3NLYzja1zBYlZEcoQs4kZGNQKBMbKYSIaC0xEpLBcrbW2pQ1CrIUmDZN2MZOFGHAV
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'FZBEZraWpShCma1NDUUUKZQtkUQkluTMUkqUyJbIJdSmNk0tIiSViBIhyWlDtoxQZmZmTg1orXVdzWYbQymBaa0BXd9hQ4Jsova1q6BSwpl2tqlhsEGyS4k2NS7LllIJKSIyM1sqQoo2NcBQSkU4iQhFRKkREaU60wYTytbSWApwCSG31owiIkKSSi1GESVNmohSSy0lbKJEhISdtg3YNsaySaexW7PttC2EQrbTjhDOaZyMu66zlWlKhNRaSq61goRqqRCgKAUbOzNbGqnU4rRbptO2FAgkICJKKUA2nBYABtu2kZxGREQbp2kcjZ3NttOtTW0cWzpqV/teSIDbNE3ZHKVEiVCE1Fq2liUkUUIqJdM5NUsRE
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'FJHpKALcWoQiwpkKCSGi1FBIigjAJjMjIluzMzNbJiZKiVIiItNR5EzbiFIrUlGJUlQCA0SJUqvTkmqtUtiJmFoDnM02UEqxkQIZ7HSUIglnqdUkJiKQQDk1KcAREWAbWyUiopaCQZJobbJduoJJE5IUToMUESEbI8E4juMw2EiBUUQpYRMhSQJjA7h2fSkFJdjOTGdmiNpVSW6OiChhExGhkBCyHRES6YwQslOllFqLQiWKImyXCJlaqiIyEwRhOyIk2WlbEKVIsq2IlpnTRBoopSBQSLSxpRMD4FSUnJqdioiQbVBmZptKiSjhtCKQ0xZI2JIQkoSRSFtBlKi1A7rZLEAlbJcShlIKAG4tSylIpYYzDRElI
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'TTk1UKmln/UYsCQuy+YoCikiIortUsK27YgAFFJEpm1KLRJtnGxKSCHsUiIzc2pRonz6p3wCqHZFkm1EKVWhkKKodLVNU2vNmelUCHscRmdGlBC2IFtLlQCyZUQIMhNwGgE4E4hQG8dhWI/jWFRq3wll2ggckqGUgl0iUNhgcMu0IrBtsCWN45QtS4naVVCI1gwqIUzLlBQqQNSKwYpSkEhHRFTl1JAjorXMdK0hZLtNth0RmdiOkLFbM9ggFGTLNk0tm0AhLpMwJlOgCDtbmyJUSghKyDCOU4QiSmYaIU3D1KYpRC0VREREgYIdJSICwAlkJkiSpBDOzEyMJWcrIZvWWtQilC1LLZIz05mtTemMUmvXlVJUw
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'to3bmKVG7btMhEoppVanQaUUlRAYAUiSs6WdWBJCGBtJpVYpIsI4M7GNsbCRFCVQlGgt29RKqaWWnKZhaBK1q4LMTFuSAhJE2lLIGEvK1sZxFEQEJkotiggZt6lFRC0RtTohcDqzZcsoUWoFASEhZxuncQIUgdSmKadWQqUrSpAybSJKsV37mQSo62YRYTuiAJkpJEXUEiGIiJAkYZCECBFFzuZMgw2olMjW3BrINlaUyNYyEyyEpBC205IiZANIESUkRYSxbdsCS6QjZGitRQhLsnG2qbUmYWNcS6eITFsSlmhjhqJ2NUJOZ6YhVErtau2QbELY2CnJYIgoNgYFoIgAQIootZZabSNKLVwmqZRChLlMckshS
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'SwmMbUm2hUqJ1jJK1K5kS5BtQFKEjEopaYMihJ1pm4iIUGttGga3BlFqpG07Qm1KSZLcspQoXcWAsrVpnFRUam0tMzOzZWa2llBK1NI5XWpECMgphRWhiFD0s5kTSbXvIqKUEhGZRgBtagqVWtrUQJIk2YoIwJlRopSwDUiqtWSzTelqZtoGIUWUzJSkkFsqIiIyU6GIcKIQNhjhRKESIUWJolKcjhJSIDLTCSABomAAla66TQcHB9kSKdOl1lKK04qQZLvUEGBqXyUiapRAgmhTKqh9zZZYEQLVriu1ZksbcJuaRClqrdmAaleQQBEFFBKYK0Igm4hQCADaNA3DOluLKBGBZaNQhGzSDgHOzMw0DoWEDciZS
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'SolS2jRla5KMJE3jIFKlRgQIAWCAULQ0OEJpJEUJT02ynUeHR5mezWe16yTZkCAkiAKWbSlb2o4Q0FqbprHWrtTqdJQaMshu0zhlZmbW0nV9jSjpbG2yLQkkiXTLtN33fURM2aZxCjlqCZWc0lBqgKchrey6XhG2gTZNMlGEIrMplGMDJ5SuyAKRSWgcxgikADIzohiVomxNEbZr12FntkyTVpFCbUxJpRQpEKCEAIRtt5Z2FGFhI5yOIpsITeOEFAKptay1QyZzGMZSIqTMRBElQBJtahGBM+1M165iWjanIwIZa5omQdQiicQic7JdS22thaJfzNwyW7YcI5SpKKXUKmlcj2nXrgNN0+ic3EbJU2ZE7fp57
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'mwDbIHGZuUJggSWDEAKMuUICwAAgxP1swDyTkLjCsnlOBiQBIAMYSYC4nywwkhA2IAwA2EiAEZdZyCDARiBsY4SMwZJs2wYwgNOSAAMYsCyDzGVCgAUYAxhkJJAxCGwJ20IAtiQgSSGEwFgIbBsE5n62Jdkgg5wpcYXEA5jLDIBtCTAAsg1CgAFJ2JK4TLLNc5HAALKRuExcIYSMAQyYKyQBAEI8kAEjAbYlECASAFkSIEDGYAwCEM9kERYYY0BgGRvACCOexeYKGwkwCCwB2ACSANsYixAYg2yEjQ2AhAHAIMDmfgaBwBgkBLYNIDD3swEQIIMMwiBsBBbYCAQ2IAkbZGyBBQhsCxBYwka2AQxYwjZCYCMBY
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '2SZCxoAkQCAJYyxJYJBkA44Q2LYkGwDbPIvAgCQus5GQsJEEgLlMwkYCZFuSwDYSxhAh20IJgMAgyQYhhLCRQMYCEJhQGAOSkG2ksBEgrhDCBiEADAKJZxKXCSEAAWCexZJAXCZhA0iAJUAAAoFBwggjgwBACLAkgZFkW0hgG8BIMkgCJNkGJNkGkMAAso0kZIwUkgAwkhC2EDIgQAJsJEmABYBtgyTbgCTbEiBAEmA7EAJkDJKwkcQVQhKXScJCXCaBMeYKCUBI4jKDQQAgyTYgSUiSDULCNiDJBgFIAoGFAAESz49B4gpJtiUJ2ZZkEIAxCgEgCUCSbUASYFuSESAJA0gCgxCSwAYpJOxUhG1JYBACEyHbI
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'si0wAEIS9xMylmQD2AaEkJyWZIwBARKIyyRsGywhCdtYCAxgLpMsxBW2kQAJJNuAFAAGDEgyyJawLIQRWLItYWQjyTaAwCBkJAEAwlgIA9hISDLYgAkAg4wk24oAsBEYEDK2BUgSRmCwDUgCLHOZkLEQ2CCJZ5NthMDGRpIAcYWxkCTbIIkrbEsCJGwQYAAkCQBLsg0YA5K4QmCDBEI2kmw7UQiwjcCSZDtCQKYjAiOEsG0Ql9kOyUYSYBAC20jCCFmSbAOSsJEsybbAICRJkiGcaRCYZ5IENgASOCRjWxIYg8BGwiCQDYAAA0bCAJKwjSQBCAkQYCxhbCNJCAMgDBhJkmwjIYR5JhsQGAssCWyBZYwQYJAEY
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'AWAQIAkZIUm2QCAAhCQQgAUCEADmgSSuECAABAIBSGABgACBJElIksSzCIFEhI7Wwxtef+IVrj01pSFDyCBJIJ5JSEKYZxICEBICEEIGBAIhAEkCIQAEgA3iCkkYITAC82wCBCCEBQACxHMRCAGShBGAEICEBEgSAoGMhEDiMiGeSUiAJMkIEAACcZkAMFfYAAgZgwAQgLifAAkkAAyAEFcYCHDp++HO2+uLPbqcvHEcGhGhUCjTUkTQphayFCGVWjJTUikFSQrAmRhUutpJkW0KCaftrq+t2UnUaNOEcCZORbHJzJBsSyKdzVEC1KYWJSTGYcixIWqttsAYN1RCYpomMIQTo8wEalcxtrEUyszWpq7rai020
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'otaq6LLZLRWln2Hb6Vq7rittGsexlVK7vp/GiRCSkYKCJEkutUxT85TdfOaWUxuxE7XlShFd3wlHkE6Svq9OxvWAUUSNWruujS2CzBS0bBExNeQmVGttbkIgTERIAGlUSrQUdLPORgJFZpMoXcnmdE7T5Mwo0dVwehgGcFdr6WpmGkdf29QQEaW1DEkKFApqV2xLAkpfsmXLBGqtERFIYUvTenS20hWFAiS11iQRiLQllG1stkrpa4lSIooRODKjlDZNEZE4FM6U0gCehlFIEbWEkYlSamtNZNfVNmU6owQIspY6jqMzbU9TAqWEDRAh7PVqXbuuBNMwpD2b9f2sN9GmoVo4s02t1pqhaRiNAYQJSbP5XJDZk
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'MrXWptZaKiJCTnJyBKFoU0NSiWxGgKUopWTLlgmUWpHalFEC8NQCqdTWbKdCzjZNWUrBbpNLKdg5JWJsGRERtDYN61WoRA3jcT1FKCKc7maBYlxPUQUqcum6TKdr6arbmK1lpg2EmKIELdvUMLXvsmVrjggwYOMkbUy6KQTCTtstJZVanEpjbDuncRybnQzjbGMnp2xtiqJMmyYpW4sIGazad61ZtqQopY2TIoAKUUooInMKCXAaEaWzRwWttVIiatiehnWptdbIzAglklRqzdaiFC5rzaXUiAAhDDbgUguATVGmnU2SE+NsiZEAy1KRoETNtDOFHI4SSpeQrYgAq6tpZ2atJWrNqRlkACmwQGmXCEU4U5DOK
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'Z2ueqLVkOlvWrgils43NxaWGQgLInFobxzrrSy1tSsu1q3a2YcrMUktEmXKapkmmtYZR4PTYErAz07VGm9ImSsWuXVdKaa211kIFcHPDJXBztpatCfWzOWnboNaylFJLsdO4lOIppzb1fSfwlAinE8tWRD+rbco2tRIF3NokBWgap4goNYBs2drkdCkFPAxDmw66ri9dj+miOjy1Nk2tNXd9H6UCwsZtnIC0BdOYUaJ21cZTq10dxykbREQhbZprV2xnphAo7VKrJCeYqTXJkpwGWmYpJaKuV0eQEDC1ll0tEOMwdn2sDo/O3XMuFE47jWTbtm1jLpP41xKAbPNs4rnZBvFsAsAOKW3bkoy5zEaSjUGSDSCwQ
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'RUVyyyiB6On7rldEm5qZatdjsk2KiKjRhyTAie1pGIEogW0bk5mlRJQCAgtKVaanacrWpOj6LrO1ls5EkhSBZDXAtZZpGJwZpdSuZmZElBK2bSSVWmupbZpKLZmZrakUlRiHsXZFXZ3GsVBqV6dxql0d1iuhrqtGzS2ipDMUUQIAR4lsrXQFbFs4Ishpa3Pr2LFjZ89djCqDQBIAAsAgwOaZBIDAgAFbEmCQMBgAYQySbEtCAEIANpKNhG1JtiUJITASNpIwBmwAYQOWZAOWxP1sC0kCJAG2jSWBJSFsS7KRZBsMSMIgACFjEFiSDRiEjRAAtqXgsswEIsK2FLKwEVLYBktI4plsA4RkS8LYaQESIARgSwAYE
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'UsJ2m9K2hCS7rdeDoJ/1tqexRSA5RDPGstM2kpwtbaKGLAyQaWRZhEotbZpappBtSX3fGTAJZEpqU4YUUexsk6MoSrRmQynh1jBRZdHGpqpu1jsdUSCHcSzZIkpEhDSNE+kp01N2s1lrrbWsXUfEOE61FGMUrRkyoqjgNk3T2FqWojZmTq2bd6XUrusys02NUEiotDa1bF5bCoVA45i1q06ESsitATmOpV9cf931AtuALTAA5n6SAEDYCHE/AZJ4JklcIfFABiGeTTLPJGyDADBgwCABYBmEkA3YRoBtQACAASyBbRAAEgaMEGBbArANAglsS8KWAGxLAgRA2kJgCREANpIRGNsIkABsA5JsS4CMJQG2EQLsB
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'bnNhe5xGSUDpgrG1qUWhdmHCmbZbJsYYKDVQOEwQoUwUKhE2mel0OkuJQKOboWW2zIhSas2W3azDlFqdSah2FTud2JLSLiUSZyb2NGUp0c/6CGVLRTgzNL7ua7/GDddfv39wVKKYBGxLgHgONsgCwDwPicsMCIx5wcxlAvM8JGwAjLFAErYQz2QQxgIEoBDm2YRtSbZBEQLZALYlEEK2EbaxJNmAAGyBwVYEgG1sSQBIIjMBSQAoAhvbEggbkAyyARMSwpg0CINASEiQ5jIJUNoAIZ5FwrYtCbABIUlCOJECjISxLRGSDYBBIAGABMi2JMmZjohMS5KQII0wBpCwJABJgLnMSBIggREgQJJtbCkkJCFsJNlpC
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'ZxFCYADEZZK4TJKQMSAB2AZCMkgCA1LYloRtEAKDpbCRJGFsGwgJYVsSAhtJkm2wJBtBSDYISQCQmRIgi1CAhRG2JWEDkmwDgCQAbAFgJCRhQjLCPIsQRgo7ASTJtqXASEIYwJJshwLJtiTbXBYS5grboJAk2QghICXZBiTZNpYkCQMoZAyAbEtIcpoQMnZINgoBxgACW0KSsYSNJANGEgiQxGVCkmxL2JbCNggRkm1DhCSlLck2YKMQ95MExpZkA5aEZFsKRGaGAgAkCWxCMgZJ4jJDRNgWzyQJkASyDUgCbAsBxpK4TBJgW5JtSTyTJNmWkHgW28ZCCAnbXCYJCRssiQewsR0h24AkACEJkxgQCNmyHSHAt
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'GiQhSYAESJIUEbYVwgYkKWSb+0khAUghJMm2JEBCkiQhAMl2RAgAKcCSAEkIIQBhAwYkhSQJI2EjSQoJyQoZSxJCAEgCSWBJIEmAhCRJSJIASQAoJAGSJEmAkARYEgaQwCgCG5BkG5AkC9kgCSEAkAyAEBJIkiRJkiTZRpLECyAkgSSEeA5CPJAACUDCgHgWiSsESAJJCEASCBACA4CRBIgHMgDifgKDJAEWkiQhEEgIjDASAmMkrhBgECABEoAEQgIhgxAYAAlzhXhOAsRlQiCEhBCyhCQkEEgCECAhIfEsAkkIJAAhhJAElmRbEiAQmMsMgAAwAoWOxumNrjvxSteeaghZkgAhIyEuE4CQQGDAmOciAJkrx
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'SQKDEIC4zEiAeAAhYSPJPJMACRDPJEmSAhRCpWo5DK9/3fGXv/ZUMyYDy8YGC2HuJ55JXCEBAgABAgQgAPNsApBBvBDiASSBwJgHkgAwlwkJLDAAYASWeU4CkLifeA7imSQBEiBJGATiMoEwAAIECEAQUgBgqUbE0d5+ffXXnL/D++TOqXFcK0pIrbVQRCnYIUWRbBS2nQARsu1sraUzpWhTQ5RaBHbKjpChtTYOa0m1dlFqZss0AIoSQCmldp0UmSlR+76U6kQiisA2mU2KiJDUWpNCIWeGcJJOQtPUJEUpmIiIAJzj1Kbs5zMUxiVkp+1SikpktjY1oNQiyNYQERGldl0XodYQgMlsU0MOySabJZxtXI8Yh
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'FZFpCQQklhDiMkvYBknYSNgGQEK2kTBCYJCxJARpIQDbGCwAkAAQdmJJkmwjAIxl27ZCIDBXSMK2wAYkAdgGAcK2JJsrJAG2AUmSbSRhC5CEbBsBEiA7EUgC2wJJtiUAGyAQAsAmQQCSABtjgxC2kW0JwEYSz48EYHOZbEAS2JJsMJIAIYRtsCSQbUvYkmxL2OYyCRsQNsKAAARYCADzLBJYCIPAgA1IAswV4goJc5kBxBUSIBtAPJMwgAQA5jIJm8tsJC6TBGCQkUBcJgwCGwkjYVuSDWBL4jJhI9mWBAIE5jIZBJZkACQBILC5nwAkARjAApAE2IDBPIABgUACDJIQSIAkC0sCSYBtAINIAMBpABsBBkBG2
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'wsYS2TIppYCztcwpk1qLImyAUuWkTVNmK7WCgiCMhO0kagSaphYRBsC204YSwm5pRO06yW2c0imkkI1tIEqRyGmyHVFQKEJ2y4wIRYBtMApJctppy5JqKemcxglbCmSM8NQmm4hSu4KZpqmULrqSY2ttBEOUIimy2RC1SHK2Nk2IUjoTUWS3HDNKRAnbbcoI2tSQSRRRShhaa1JEiRKltUTIBhkDrbW0hUutIdnOdITSDgRuTpuQMienM7Pv+9p1mZ6mjCDTwplZa4lQZk5jU2ArIqapZTZJpZRSu4jINuEcxlGKWqsiShREtkTKlrbTLUJOQqpdzcz1el1KKSUiwoRAwiG3BmQ6Qk4rNIyTbEm1q9laNhRCy
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'Sy2ZOaxHidL1hlIinW6OiIiIKBERoTa1aRyypUIoaikRxWCrlIgIhXJqrWXUWrsuQjlNrbVSa5QaJQSlaJoathQRkdmm1gxRa2YKSYqQbcE0TdhRwmlFQQopwgZMtiZsp3CbWmYDZbZu1isiWxvHMRu16xRhS0GUaFOqRClFSKESIcl2GxvKzOZM26XKlpMIlRJAZoJtT9OEDZIESNgowGSmhCKwgZZTtgxJISGJNrUpp1KrSrERsh1Rau0MoCglQhEhKacEogTQplSgELYkiSjFaadLrRFhRZRQyHZrFiiipSOi1HA6s7XWIiJKOEFRahHhzNZatobCBig1BNlSEaAopeu6TLdsEZWIqAEG20SEQzZIUUuUC
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'rbVEuOU4DE7X2iFhrsjMNiUoIgA7KYISEaWUUGQ6QpKczjS4hFo2t1Rgu00NyKkhSTgzoihkiAiBm6NEKQXRWtoZJVTCacCAXUpEKNNCChmcBpcSknJqBoVst9bSjoiWmZkKBNmaUZRoUwKlVIVs2QZJTOOQrSGZBMkISi3ZLMnGdpQi4bShRulnfSkVMU2TW5ZapUgTNaYxhVSKJGMpVIok25kpIchMSbZBmSnJxpltbJKwcQIqkc1OK2SIEs7MtMlaClbapXbZkhB2ZtZaIyIzBbVW44jS2rRerbK12nWl1GyWpIhsKVFKZNrp2tVhvd4/2O/7vpvNSNIutfBMauOUzlrrbLGIUjIThQCQFKXk5MyMEpZAE
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'JkzXdxbONMakMyJqrZIkhe20MSDZWEggGchpymxpAzht106SpnECKzQOY5qu6+x0y1Ii05kpka21qRnA2ZpCmMzJU5vNF30/a60RpXZdtgZICBSBwGAiQiEbp0tIAhS1ADaS7MSUEtkMKn0vRZQSUWbzWZTixLi1aRrH1hotV6uVaaUUBHaEnOnWpKi1TGNTKErI2NQatatRIpNsqRBStpQCjLDBjlJKKZgIlVosZcuEWkqEWjPIYBACIAOBsCMUodYyQpnGtl0iFAWrlFK6YuxMRZGkiFpr2m1strGnaZzalG2apkmi1NKm1lpD2HamQkJulshs4zBObXJLyIjiZkmlVlCJiFqFnACKEGRzOkuNEMN6aNPUW
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'TmOMBBHYwpLS2Ol0lIgIQ5QAYWpXa1cllVIUmtZThGqtQGYCEQHk1KapgUspTpBrV6QQIiQopZZSAEmSMzNKlCJFSDhTgVQASpRSsrVSiwS2IqIUIJujFAGBkEUbJymyNaDUIhinMbO1bDVKP5sREZIIREQptdZanY5QZiOdtgKsKKWUgiQUIUklIkpEFKNaq21FRAQKAGkax9aaRCmBiRIRwthWkcGZAgURYTtba61lZkQIIYNLCUgpsmVERAQgKSJIl660ljLOHIcJqLVKlpQtQeCIiAgnODEtUyUkCdWuUwTpKCFBZsshWwtF1Nra1MYpWxqXUgChCDmn1fJoWK+6vi9dLxFBZnNmKSVCdk5jA2qtEaWUW
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'dipKrdXObFYpUcKZ0zAIl1qRkJwWImRbNmDbaUkSiUoonQJFpI3JJAJs26UWI0AKZ0pgkLCnaRzHIaIoJAFRooAVgUIht6bAzenE2GmnokzTJIVwiULIBqPAaYkoRVEy7TQiQlyWLQWlFtA0jsYYQBGSDLUWZ2ZO09iwo9ZSIpuRg7AUEbYlbMBgpyWpFMBpRYAl5TRltmnKiFCERImS4NYA2yUCKSKQpmkYlqvSdRJRihNwKaEoNkjYkiBtt3GaWjNZJCwVARibtKOUrutCoVqzTZ4mBaBxylKLANLpbEZ0fZct07YdUUoIhZ3G2JJsATYSCAwykC0l2YldajVky4iw3aaMUFRJkS1tl67k1GwsOzOQCEsKy
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'jSSJzFRIROJpHHEjiVIVPJMY1yMwm/dSTFMLiRA4p8xGy0ao72qEAEW0qWWbsmUpJWqdWgsotWCQSgmn07ZTIRzYBCTONEYqpdgGqRQnkgUtmyBtMg0lCiFJgsxs2WQsiiLtiIgIbCuAbJPtNk7g2lUTgEJAlGjjRITIw/2DiNLP57bbOMhEKbXrSt87c5rGnKZMK1RrFxFR6jiMtQtnTi1Xh4cgxKzvI6QSoEw7m0knpdYopURtU4uiNrXWstSoXRmHMdOSur7H2ESAlC0VymxCoAi11to0Ja6l1q46DUi0qUUJgxB21OKWtjOzlJKZCBuFnJlGIEXUUiLaOI3jGqmWagBlyxAqAZ6mFooogQ0omMYWJbBtl
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '0JBKDRTZpmxZqiJKm9K41pKZ0zQFMhmlYGxUIlQUwh7HoZRau962nU63acyWEYqqNra0MVFqrYHCmSqBkbBRhE1EARA5TRKZKWQbWRFSOFGRpwYGiLAzIjJT4JRJQGIcW9dVYFwP6db3HQpJQJQCatPUsoUUUSLCzohorSGcRAQoQpkGZxuRIgJkAGOwEEIIleKWtgGnSwlE2hEREXZmJgkSYFshQxhDy5atZWsRqrUabNsGYwxgEbWrmcbYKLAtRUSQdiBorYnMtKKUUiNCCmM3A1EC3KbRuERJOzMjgsva1NLpbF3tVIsQzrTH9YisEl0tJApaOkq4ZdrT2CSQutqp1AhlSxABkqeGFBE2ma3WCqBwTpLaO
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'pRRL4GzNthSKEKiUbAlguzWFSlfGYao12tQyXWtRaBomFZHYHqfRdt/3pVYpkDIT26aUMqzXgEJd14/rwVhBRLTWohSZKBU7na1N2VpE6ftumiYJRWnjFLXUrsu0AJimJilCLTOICCsi0y3TmaUEGIcEiswmpJAUmdmyubWIqLUSxbYNtiSJzGmaJkm164E2joScma0hYSKi67rMtlotS4m+n9mhCENma625ZQSSWrNEqKQzQqVW25KkcE5JZnPtOqE0ETJ2yzZNxpIUIZCEbUVIwrYSwEUy6VQUZaYktwYoAqlNDYytUogIIjNrqYhMS0ZqU5OYpjFbdl1XohBhchqbsJ2KwJRSJGUmIiJsJIQyQVYo01KJC
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'm43TURRRxmFq2fq+w16v18O4DlFLV2qNUiRlyyiVyySBp2nC2Voah6LrCpYiJNrUpmlEznREZBIRkgRIte+cFmTLqCEpWxvHybZKzBeLaRhrV9swKWTAaUslBFFqay1bi5AibKMgDS61OtMG4TQ2ULpqp6Q2Tg7JkgyAJAAMkiRDmyYgpKglpxalZEuVADKnNjaFQir9zC0zm50RkdlKLa05ItxsqLW01uyUJEIh4fV63bLNZrOIMg4DUiklbaGIcJoSJZRpbAlF5NQs2ykVZ0YUbJUAyGzOkECgiILcpgaAkQJJTNmwWyZJmya7ZWZE6fqum82dzsyIkMAYZ8uIUJBp2+l0ZpQiJIWKPKWkqMWZ69VSUu16S
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'uJTa0hGyATJTUkhR1KZUhDMVai3tjJAicmqlq5jWmlQkYyO35lI7KWy7ZanFpNOICLWptWlq6RLq+l4R0zA6XWoAIJXIltmmKIoorbl0nVtrbZIUEZlIRCmAW0vARITkTCQp1KYJLBSlIGVmlCLy4rmz4zjuHD8+my0MUmAUAto0CVSKjULOtDMk2wkRIp0tSy2SnEaSZLdxvULq+h4FCaF0Ok1mm1qppdSSCUghWktnlBKltGFs2aKUiDCEAmMMxigKUrYspRBu05TTlM7adaHI1sRl8upoNbXsZ/Ou79o4ZMtu1kkaVwOBoXZdlBIqrU1cZqeNRIlisV6uxvW61Dqb9VBKXyXZxihEQihbKiQhGFZrk+BSi
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'aw1AUYCcWtTSWgOczZkqRZadktNEhE0p0VrLzGxZa5RSUGnTFDWcKKJNLUJAiGmaDG1qtdRSS5RiA0JgZ2apdRynKBFC0jQ1wJlOR1EpkUkUObNN03K5rLXOZvPSddkaUrYmqU0tSoRA0abW9d00jKWrmZYUEXZKIiJbkyJbK6W21hDOzExJtas5tVI7MFKbxtamkEot09RaZkTBztYUilBESAVkJwZRuz5bgizTEhEl2jilG7jUms1Rok3T0dFBa217a7vWOo4TCNui6zqnowSAyWaVkCRhc0WUyGYbhQBsQCFJto2dJlFEhFubFEW4TdMwjOBSopQuDVbtikrYDMvD1qau66PWiHDLNjaVEkVtanaWUiTSt
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'oAB7GqeIWvsuswHYTkuSbDubEVEKYCwi2wS0tKR+PgPlOCFLwrKQlM4S0aYERwjRpiYFWApAEhg5pwmQIkpMQ2tubZqAru9r12VaigjZxiABgTInJKeNjYE2NqB2Xe26nJrBTtuAJJylhO00tiXZLqW01kLKTEWxMzMlalfHYUTKZjB2P+uytdboZ31mjus1oKJ+NhvWEzJ2KSVCCq3XQ4kClIhpahEB2I4IRGtTa63vanRdjmkbsK1QrV1mCjIzATsigFJLSNPU1uu17RARERERNTOjSArAtkJtmuwEQkUlotScUjiKsrVMW7ItiAhJtp2pUhSBbQssOVvalhSlIOXUQFEKchtH21FCKkKmDes1qOu6iELIr
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'XS0RmFJrRAARCsm2pAgBw3qNKTUUEShCpUgKo1I0Ta2UKCUkGQCnbUKh0DROCDunsUmUWjC2jZ0ZEbVWQZSiiFIrJkoYl1KwWmulloiYpglTa1VBChlEKaV0NUoFARHRpnG9XEUJiSillEKiErXrBOMwTK0JIoRoUxogbUsqJUAoFIpShWyXErXvMaXIyE5FtMyIKBG2JSmIEoDTIanI0KYJqXa9LacjIiIAiVJKKdFaa20KqdYOsG0oJaIokKG1BCGpRCklSokIAAmkQApJCiHJBkoR6XQiWmuZ2dymsZWiUkqJUkpHBFKA3ZyZbWqtIYDWElBEiZBJO6cJGyGplFIinI5SWqZRqaGAUERMrSkISRHgUkpES
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'hqhdzUba2VqEhBVFCkltagokKaJNTXLmhCNNKVFqwc40KKSopU1pN2FJtkNhhclMQgIkO21bEVGKWyI5DYARmZlTdrWo1jZOSJlNAiTZmYqIKMA0TdkcQelKNmc6Sti2XUoBgwSZLTNDJWqRlLaQQm7ZWkaEhEIKZeY02elSVWrBtCmjiHRmRg3ACSHZmek0UkQoIk0J2c42QUqBwrZNiZimKVsqqLViSgkg004TTNMYioSQopRQGBThNjkBFAIjjcM6W8Pu+i5tUE4tIhTR9f20HhGWSlFm2sa2VWopXZ3WY5Qw5JSlqzmNrTUJKUJRumqTmYAkRLbMzFIUUTIdEXba2Fk+6zM/TRFRotRKOm3jaRyztak1S
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'er1u02jaNLaIqgDIlpktIhSlTQ1ZuE3TNI3OVruaGZmpIEoI2Q4BmVPLljk1QIpstlEoM6dhzGxtbNil6wwYSThbZkQg2UiKCEzLFArJaaGISAupltJaG9ZLbClsFFFqBbUp3TJq2Nkaiq52fS09KEIoMh0hSZnZWkYQESDbKgU7W0YoM1vLiIhSMi2FMajWLjNtRygzbZcSTjJdSikR2TJFlABPU7ONDWS2bC1CIaIU220cBa3Zdu0r9noYRPSzvk3jMEyllhKRzWl3XdeabUqptkqR7WG9LrW2NqUTA6lAAkU2R6kqkS3Bbcra1YjODQTOabSiZJIta1cE2ZrtbBkKpDY1KSQQzgRLOG0TUrbMTOyIkN1aR
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'IaxM24oiJ0atJVBKZGt2Sspm20A/nxmmoZUapavZyHSIqCUichpbZpRqCwG0lhIhJAO2UUREiMyWzjYNbZyajWljy0yJbG0ahxLRdb3TGEmZVgiRrTktgWUb2063KTO7risRmXbaeBompAi11jDCEbSWzmyZUSJKaaMho0Qpkm0nAGpTRhGWDYAEykyJbGkjCRSS3SyPwyiMEyOcmaVErVVSplvLUmuUyPQ4TRHhTIxkDKTSbjmNQ9q1Vkm2QzhbtlZK6bouahVgZ6YUUkkkRZqIIiJKiYi0wUgRYRQRIdktMyXVrkpCKjVaa2R2s04SqEQppUQtpKepSVFLtObWpqhVCkVktnEc04CixDRO2aZpajZd3zkNC
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'iSiBPU1ZaomotpGiRGYqQgobCWdO4+jMUorTwrVoapPtaZqyGeRsUUo3m2XLNLXvnUbR9bNS+9p1EE4MoNbSEAoFbokARZQ0YNttapIE09QU2LYdteJQgCKnqY3NptQK0aYmgQBKiWzNGMhM2ZLaNDkdpWDbVsjGRsIGFCVAmSlhnJltalEI0abW2gjZWtqASilSYLBLCcBOAAkTUul6ktbGWisRCtVaQ5JJA1KpbbIliWlspVTS0zQpijPb1EC1FqebKRGSFJJIA7KddldKKUUR0zhO2WrUUmsppTVnGhMhSZjLMrM5E9R3syg1IjIdETa2JTW3aZxqV7IZRdRSSnFmtiYZU2uNUhQFKZuBkBCGiCKp1q52v
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '2S3T2A6plC6iIiLCaTsjSpEyE2TcpjQIKRQRbZqmcVCo6zub1lxKgEGSbGOEBIqwwZZkYzskEChbliIknGBwGxvYtlDXd2DsUjRNU5smSAWtGamUDimNJOQ2tdZSklBLhwREhO1sGRGZTlslMJLAmaCw0+k2jaGioHz2Z30admZObSIdUUhHFAkbSW2aWk5takillFIKoAhJ0zTJDslI0NrUWstsFrXUUquNBJKdzoxS0haA2zRmS6dLjSjhJJNSQiik2vWSBIFMAlHClgwBtoq6vpcKUteViBBEBLZAEQqZHIdhHKeIqF0vyWSttSokSUVSich0QO0KiW0bAbi1DKn2VYpMRy2lFtvZrAJinMbVctmm1tUaU
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'GMdhtVpKAWrNtaullG42F2SzIqRwOqQoUYpqrWlLiogISSq1lFqlaK1FqNRSanWCkEIiW4NAKqWWEiaHYZLUdZ1t5H7WYxtaG9s0jeMoESEAqF3NtKQITWNKlK5ImtZjqSWKpikjVEJtauO4zubalQjZjiJjLMB2hAApSq02QggJge1pHNs0lRoRysxSiw1SRLQ2IfXzHpAkCZCidh0oQgggW5MQBiskAZIkCQRECUGb2pRTKCRCAjszokSQLUnqrK+1tKkhFIqI2vclwsYmQrZba06XUkotIkJYYVsCCVuSIpwGMCEplJlARDizlDA4M0oB7FQoQgqhcNp2SBGhCDCmZWY6QhFhWxERUgQgZCMRIds5ZZQiR
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'I8IQJaZhxJYopRqcCcYupUYUQ0jYlts0ZZva1JAignTLKaSIWrraWjptERHYKiVbi4goIVDImXYiZVoipIiwHSXcWto2EkgRpfa9ImxKKSXCJhQIQJJNhATYISE5M0rwLOkooYg2NUmlRGutKLq+s1FIpRRF7bvadVIo1DKBUoXTaUUIheS0QhIRUUqxqV0XUWzXrpYIJINtSRgbp1UUEbYxEVLgNBARzgSwgVKrJScRIGfLbJmknYBtoNTA2VqLCJCiOJszuy4ktSkjIiLcJoGkiFCoTc2ALcnpzFZqAbVpChGhNjacpatIITIzM9MpyThCUUqEQKUUSQo5KRESAE7Adssch9F2KaXUIhSlYDCl60opJUo36
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'IltSBAFRuuoEJAlUuz5CmZZcu0q21pohStiyjYkIgEwBYhwG2zKSnIktyWC7RhiP67VxrV2UIkWpJRRCpetK7QAk7MxUhCIgAiP183nt+lCUEq2lUJQADJJaa6VUSWnLUimKkIRzWK8iynw+F7IzJISd2NM0Rajv+4iqErXrbLu1aWzIQKkV2/Y4ThLOVAgjKdOgCIXCLRVhUAhoLSNKpiOilhKBlNlspyKihKC1qbUWEVFKSJgomqbmzExAUaIUZdoSSBFuLjWiRhG2MxuolBIhlZBUokhhq5RSa3F6alO2ltnalKVEhNqUkkrpJELYNpaRVCIiwnZrliwFJiIiEB6ncRqn2vWl1tacUwK1VknTOGW6q10pR
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'mVMisAXRd7Jajtjj1IRqVyMqtoKpNUmYaRzb1EKolpAUkopNLXI6MzMTbOwEW0WyECVCUVprmZaIEiBJ6cRkyygSpMk2lVojNA3raZpq34eKIaLYElYJbEkIp50GkJ1pI4EkBDLZWsvMkIQUoaJsSaIgbduhKDVAEiJay8yUkJxO2xEhATKywRmotUaEJGzjkGypBERIoSDAaSttQLKcSJmtNZdSFBLY2CgCyOYIKRBka2k7rVCUgpRTQ4oIhTy1zJzaJEVElIjMRNDSOGqRhUhnJioRFoEIbIIo0cYRMIQKGJimSeC0SpFtbCwFIClbRoRC5TM+/ZMFCBRI09SytW7WdV0vldrNSFuoRCimNoGwnTmNU2ZCS
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'ME3NJiJyaukEahEmW9auIGVrTqcToyIU2SzJmeM4ZkunAUGbmkIRsi0JjF1qaVMiKchMSaUWlZCULYUVRERrRkQpTiNsO1GELUOUKuRMhG1syFrLNDah0nUYZ2ZrNqWUTHddnVqGQhHY2do0NQlsIySBW4JrreC+rxhCIAnsKMUGICRFlBIKhUjbJrO1DIVtsEJuWUrpug6k0DRN2SYC7GlqtVQbQ4kSXc2ptWnK1kTYOLPWGhHZUiVs24QEzkwhkBCilLCNJYmQ06AIYSRFKaCuKxG1pW3buLXWrIgItdYilNO0Xq7Xq6VzSqvrehE2pUQUYUopigA5bSzJbq1NWLUW2y2NkRQRGFtCCtnZpsk52Y4SJUprC
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'm8ZpnEKO0NRSUkjpFLZlo8AwtWmaxmEYQBGyHSWEMy2ElG1qLcmMEopAKqVkJratiEBgFKHAiZCigJBKKdkSoRIistmZUSIUUgDC2VJRSi3TlKWWiMjWbEeJbIAUIbAtNJvPoxRFKVEkRYQTRQgBoXAmWJCtASEBmZktMycT/XwWUduUiFILqOs7FG1qkiLCbq1lqbWlsYFpnEqNnBLQ8uA8qKsFkDwMo0JODBERIUVItHEchyGi9LM5UW3bRDgzJbI1CUmAMyNKa20cBpUym82lsA3GZBolFoETyU4jalczwUQJZyI5U8JA2lgojd0iJAVIkFiSM7OlsCKmnIIAjIESgRDRpqaQlaHilgplSxtjRJQaUaRQC
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'lYhQhI0kydM0ZWZESDgtkCLTDpco2NkyIgg5bWwbFLXaJl0KU2ttnCRUIhRtzFKjdl2mWxKBhLON6wHR9Z1UsJANEZFpcIRst3HKNLirxZAtI0RoHMewogaKNk1CpZYoBYvA6SjRplZK5NSQFLJlp0qQSAIbsCWtV8vMFiq175FCZDPYUEo4nXZmdrVGhHGbmlQUkoQhhA0GbABFuKVJZ6ZbG6dSu9rVEiXTFjYRAc7Wsk0Gp7u+tKlFKUEYZ7MiFNhkGjsikMCgENM4Ttm6vqu1a21aLZeh0s3mUYpbqkgCYwhpmkZswEnLjJAzJalEiUgjSSaqnHZLQ0RIGGUm4Gy2M1MiSo0oLR0R2aZsE6bre0vO1jKxu
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'lgQaVqtxverns/nGxjRN43qIEl3XC7VpmtoUUSJActq4TSmp1Igo2VIh26WUzJyG0ThCUo0QIJF2lGhTRgmnIwKIKEjGYGfmlBFqrdWugkHjNGKkKDVoaUCBjJFkGwBFKRgJIDMzW4RCYZHNkmxLwgkQEdI0jCoBKrXLzAhht2ytZahIjiK3xCgiatfaJDBgq0RBrU2GUgowDKPTUaUILDlBEWpTonQ6ag0VQm0cEK012yFq12dzplubIlCUKF1IEWrTBJaU6amNEQFKOxSKEjIIIYRwa7ZViiQb0gR2Oi2kEgAGO21DyKUUJKft1qaWppSQSpSikFtLZ+bUpowotRabzCwR2EgKIdlEFAsBZKbbet0ySymlV
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'zQYJMIDTmVIoyJaAIjKRFKG03VIik9YaOKIAmZmZoChy5tRSRiFJXddFRKYVMY1Tm6YoUWsttetnM0VELaA2TemMUBsbonRdNrfWJEUNoUwrwrYJIKJgO9POzIyiUmKamu1aA0g3sAwwDiMQESHZdF3npLU0Mkgh0VqCSldBTmcaqKXUWkGC2lVF1K5z0qYpW5Oi62al1GwJFmRrbWoR0VqLUmycWbs+DdmypTMVsg0SqMiZ09iMo9TW0kmEsjWFMLYjVEpEyCZCklprggjhdGvZJjtL7Wza1CRJgLMlQnYbx2kcJCnC6XSGhJ3ZsGutoNayRNi0dK3VzsxERARSNlqb7MzWnCiQyNamllFCkC2jFhRtTCGJc
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'JKI4AaKojdM0tZatlFJr17IhZU7r5UpBKR1gkWMLTBXYadvZJmemiYiIsHMaRzsRJTAIIGUTUaK0lpIlZZsk1a7vagdkc9qqUWt1Y5zo5/NSSrZUqESZppSIEm1KwE5JmYkNOU1tmiYFbRxby9JVqbTJkmqttau11FJLNgMo2jgplLawIrIlAFKotYaIiMyGbTdsZzodJUCZ6XRIUZSZbZpsY7q+M4oSVozrodTSWrNdumrTJteuGmRjMMZAKbXUUkpk0qaUFJIial9LFBBQu9JaAqVGtkRERBsnQlK0sUUppRRJtZRSajozLamlsyERoZzSRjJyNrIZshaBImjjmG6ZOS5XzoYkXEppbWxT1toJZWsIsLPhL
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'myYkRclGSKUWrBJlbGObpr6fATbRFWe2lpktSjhtEmjjaKdEZgsJlJkKlRLTODnTXCamsUmyTSqi2HYaCcAArbXMlAAybbsURcgtJWVmprFLqZkAEeFEKGpgDcOQzRjbUUpOTRChiIgIECAp2yRlSG2aptZs175CtJaZJp12m6ZpnCRL4czMNo6jQohsFopas6WNItLG2Ckp09kctUgxTQ1FKSWh66qkzByHQZJCCCnalLXrstlGEU5nWjXc7HRE2E4rpGxZunCjpaNWUkTUGjbZWraW2YA2TbWUKGpTKiJNNpfaSSpdVZQ2NZWSLTEgKWpXhcdxBGcalAlgIG0DdrY2DWlsat/XWls2T2lTumqrNUcEzvV6A
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'JbK1aZyKCpLtCIDWmk2pJdNOR4RbZptsSqkKtcm2bRCKaC0RkjJt20YQNQBnOi2EyJZg4cw2TdM4joBKZCa20pkpqdYyjpOh1GqTrTmz2ZKmsUUtIEwpQrSp2ZYCaRpb2qFAOLHT2ZxZa5U0Tg0JyJZRi1CmcUoI0ja2DbYtFCKzmcypAQq5ESUiIlsqwi2FMltOWWddKSVKGccpFKUUoDUbIooiMtN2RAAkxhEqUbpZX2rNlrYj5GzgzIyINjYD8jQ0lQJkS5DtKAXbNsbOrqtSlBo249giIoraNCGcbq1JEaE2ZmtZSik1Wkup1NqnIRODVLqCo9Sudl2U4vRquQS6fpbObJakkNPZHDUUMU2JJRQRSNlcS
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'tiW1NgHOhl1qZAOp6zvbmQYyXUpx5jisM11rHSfb1K66ZZtaZpZanUBEqE2ttaQgaRqb3SLUWrYpo4TTbcpSC7YzW8soUUq0ZhtFtKlFRNrZXEoIsjXk2nWGUosiJNWuhGQb3FqT5MSWIkop2ZogW4sgE8M4ttaydgViGidnc2vO5nRE2LZTqLVJCmdKipDtnFq2FiWwp8xpHEstUaKNk42wAomcGkG2nMYpSoTUphZS13dROhQR1UaWATDOzGxJGlRqiRLTOGVm15dpaq21WjuDnQLbbWrgritCpUQ/n6NCOoqcbm1Kt2kYbZdSbGpXS6lO11qiaJqanSXCmTa1RrY2jRMAAqZxdGapRQqVUroaCkOtJdOZl
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'Vax0AkilFqDUQmZms9MtAUVkpk1LA6VU2a21tEstkpwYQNlaRNgtcwKyZe1ra8aOEtlaOksp05SkFbIBMhNconR9ryjTlBGhULaW04ScSanRWgIRksK2W9qAMi3ZIEWUki0lRS1pZVJKjYgIgaep2QC2JWGMEcM4kdQaUxvbNClkW1I6p6El6dbsVGgap2kabQu3aXK6dn2p1TYom1tmlAiFIkDOBGcm9jCsp9ZQ1L5Dkc2llghJkgJhY2e2ZrvWIoXtlpZcothu09RaKqJEyUyg1tKyZUtFQESpUWpEBJIkZLvU2tVumlprWWqJkDNbcyhMZjYyFdSusz1NqRDgNKbU4rTTikinUUTYnsY2m3WhmKZWSlEJS
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'tcQgQnLaNkghgZ12StjCOG0bBUFEZGuZlFqm5rRLKa21bFm7EqVEiTa5tVZqFaq1pnOaJqcjok2tlGK7tUZmy2zjFBJSm7LWWmsXtcuk1lr7ThKodh3OiBjHlulSS6YjhMhMLBBYkiGbcXZ9hx0lsJ0pycZGwngYRmcznoZxmlrX1X4+t62g6ytCRK01pDY18DRN2SxRanG6jVPpakTJzGyNzFIDKzMVEsqWIZW+s7GVaYxEplFka8al1jZOmQYpVEuVJKlNbZoaIiKczdOUmdlSEV3XRy12tGzTNAIiopQ02JJaa9PUJAECrLSFVFT7zmk32wAKOcmWmels4IiiKE5CYTxN02zWd7NOaBxGJxFFIUkKrVfrl
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'OAkJFJRSo1Y3g8dpyswoJVsKAW2apnHqu772tSiyZdSIWtqUoUg8TU1ya1NOE1C6ms0SCmWm0wpFCYybMzNCEWBaywgFChnJrdkZEVjOzExMhBSiZWZiQiolSledtLRERGBaS0UppdjYlnA227PZonZ9a02yJLfJmYZMq0SE3Gw7FNkSOYqwp2HMlkKZVgQqLTMkiTZO2bKUyPQ0pWRQaw4JQ0RrZHMtka3Z1FpsMm1bxgAGh5QtIyiSndnSOCLCZNp2OoGI6GoVMkzjBHRdaVOOU+u6KoxtW1EiQhGlFilas22n7damyVJRsV1KODNbKmgtSYPJNg5jtmmamiAzs2XtKk5btmuptattyrQhwJnplrV22VpEw
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'OQxDBG3KNJJKqWmXUgDbhghwtnFqrXV9B5Ik1NpkcKYtpNZaSLXvhOzMqY3jpBKtZZuy6/vS1Wkcp7GFFCWytWEYnK61SgG01pwutYCRCDmJWiS1ljaAZNuYcVjbKanUYjNNrdSKwioGoXS2NLYgbQQmse2IEiHb2VIC2zaWZECS7Mx0pm3btiMiJJzZcmpNFhKSJNkJznSakHCAnS0bdjYjAGdKSnuaGriUyMw2DZltmiY7SykhtZYGRRgyQYoaXVeyTdMwKKKUmi1tg+wUtNbaNCgUltO1r+DMdNp27artCKapZWu166IUjORpSiAkjG1JXT/LlrajlNYsRYSmKRVVIrM5HQqVyDSgoLWxtalEGYcRaK1hS
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'pMA2CEkWAAZjZ5oAZ7bMzCghZBDY2TJrKShCTFMLAVG6OrV0a62NJQIopUQUItqUipCw7cwoGoZBdsuMkE3tujY2hUpXSik5ZQSZmdDGrH0lmdpUotSuM4oQTtsCK9rUAk+t1RppsjWhqMVWRCgk4ZZIabDBCoQQbbIAiKLMzKmlU6Gu60DANEzjNNYarWXpuhJVoSAI3LJlM64Rlpy205mSFHICto1wZikhlXEane77PtPDMLQ2dbVEqVJAtnFKXEqdzWbjuG7jVLrOxqh2NRQYBa05W5MoXWczTZNEhEAYG6RSQqE2NWdThG23JBRCEpYwok0ts1lgJKJUiAhJBpwJssNKMjPTSamBJEUaiTZNtUaJMg6TC
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'SCBP0+R0rTUCJ0CECIEValNz2ngaRkm1r9kaECEJWVHCblEK2OlSiyTbCoWQZIyIKKWEBEYRCglslwjLbWqlRK2BbahdiIgIIpwJjloyna1FCUQbR6NSCwCuXZXJzMwEIhQlQgIkRQlMa+nMrkapkemoUbtaSql9NTgdEQKkUqptY4mWLW2njWutEcVWqRElVCKiCJAkG2My03YpAZJUI1Si1JJp2VIoVGtRBBjJ2WxHCSAnlwjJmRlRQkEoQpm2E0WEWkvJpRahzIxSFJJxJrYzbQsiouu60vWCUktmhkKgkNO2I1RrpI2tUN/3gA1CIQBTu4LdpubMzFQIGyyplEAqtQDZjNR1Xe36CGUakJAAI9m2bdu2M
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '7bTNFVItgQFFUYmwgaylgIQkWmuKUChKAGCbzFZqlCjT1KZxjHDfz2tXSq02EhGSAgiFRQkBEQEhSVJI2AolduJMKSJUSmRaUkiEWstSqyIk4bRtZ9QC2JKIKEBESAIiFCUyE5wt29TSKexMZ4JLCYyTCCFltszMzIhwWiFJklAIIUtSlCghSZLBkK1lJnZEhISUrdVabUJO24mkKLIdpaTtzFKitVSolLATkIRBAiRFCQPGslsKahdTyzampNp1oJAkpmGSiFCbJqczE4hSau0iFBESErZlRynCmVZgLCglaI6IKOFsUWuN2qZWuqoQ6drVUgpgPE0Nu5/3ESUzJZVaQ5qG0el+VjDZWpQQgAFJQGazXWrX9
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'iWxZIiRAIClKKaUWbKeRIiIzkWywSolSayld18/alIqIGhgbYQxYodYmjCSsUoptRQCZHtvUpqmWEiEsRUREKSVKCQlFrVVoPUwqalMbh6mU6Puu9l2bpswsXQEwdkZELRVQiEQlIqKUEBFRUEgChBFGkkrItp1Tm6b1MA0DTjsjSq2ljdM4jrUWO5fLpbN1fcWexslIQgpJRghwTg1Tuz5KQWF7miawAJBCgdNIEWHjtESp1ZnpViKctsFOZ5RaQqBSAmeEAIVCsjPTzpRKlIiQULYmKLUibEJh06YxImpXI0JIEVEKIBShbA2IEtmydhWM3dK2Sy04s2WEgNpV2xARigi7OTEIC6kIQgokpFCEZBQlpnEcx
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'IiIiMjNbRpFt2+C02zSBIopwtgTbighnTuNku+s6wCApW3NmrV2pPRHr1XqaBtmZbRrHrptFqVLYgKKrEZEJRioRchopSmAUAeFmoJQSEQG1FmfaZGapFXBaUSQyHSHbtkspEWRrJqdxshOFECIisjXbXdfb2C4lWktBlNLNZiA7gSjRxoYiSnFakqC1jIhMG5cSQtM0YZwpqFXYbRxNgkhH7aIQRKkxjZOQndnSUolQiSghKCHb2SaFapS0kbEARWRma00R2RKBIm1Jfd+D2zS2aYqQojiRhLEdEREhCYNo2cgstUiBkWQERESJkhhLctoRRSHbJeRsw2rVpkkRoYiQ7TZNmcZWRJQSEVFKSNgOpmkqJUoJt
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '26VWlRKSoGXaLqVIISmnVCgiBFEUJWwrZDsTSCAzEZKiFNIgQdpSlFqxEdmsiBDT1KZpBFQCERERpYRKrXYKWktjAANEaJqa7aghhFEoWwIKRUSbWmbaLqUYW0hhAGrXCbdxdGaUEirOzJYKGQMRRVGytQhJpO00SAqZKFFK1FqEWmtIImzAtdZaC7JtMiVaphEmSkQUG0VMU6ul1NIZJEVEZsuk1hIh41AoBBERkpyWLEk4p9GZQkiGlikRinTaLiWcZDqiSELCblPK1C4UYYMRoigRilBgk25Ta9lK6QQgCRnAGCNJEWA7W8tpnGqNWkqbJqcFLUESxoBKiUwbShF2m8acsrWmkNOZRlyWtiOAAo5SDJhaK
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'mySglJLNhiihUJuas3VdF4o2GRO1EghN49CmqdQaqNaSaRWJiFJLqZm27daA2tU2NSSFnKmIUkpEAWwAge0IRURrxlZR1JLNNhGB3FoCrVmSRLYWUj/rQxGlSsJIoZBQtsSUrrYpJYBhGCKi63qcdrq1NraQFMq0StgYIgTYLqUCCkVEKSEVILMpAgCVKCSGUmutkelxbOmWidMKnAClFCkIDEhAS6JELcV2ZmY2oJQSJcBtylJrlMhmTBRFhBNFRCmZKUKlSGF7GkdsgRQRUolAraUiSonWmkKlRptamgiFBIoSmZnNiogotgVIhIQUmoZhvR7aOGW20teNzQ2hNrXa1ShlHCdJpUQmSBHRbEVkS4UkhDINt
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'm9Y5jiFqV1tLSXZmy9am1rLWWmsJKWrNNLiUsG27tRREiHTtip1OR4kI5dSmNtkZIUxOrdSQwJSuZuY0tszW2tRaAkJd15nITElg2zZRAjc7FWE7jUARkkIyLrWKcLOiSJKQldmQFJHpCDlzGgdkTKYzW5smk8YmW5vWwwCazTdq37epZWbpiiRngmrf19plOk1EkUQzIIgSkrAiApNtykxJoRDONKaUQMpMIduZWbouItrUSo2Ikq2VGrWrzpTCBhySjXGpkc3YUSSViIgIRWQiBXbmFCWiFBStJUISBgQG2dgpyXYp0VoCUYQtKYpyatnSoHBOrWXLNpp0a+k2jevWWpTo+3lmligRZEuFJFrLWmuUaGlMl
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'ptN2C0W2lJimqU3DsF4Nq5Vbk1RKAK1lZpYISc6MKMbZWmYCpRYhAElEnVUpQuF0KCTVWo1bS5wRwspMkCIEUQSAVELYNhKSQgIhBKAQoJAUNiEihOxM2xERURCyS42IaC3b1CQBilKLjEMSzkxJpahlttZQtDZJEjJSqNYSEjhbAhEyYKKolq7UDmNnJpKyNdtAhFTCaYEibCsiIjAG5GzNBhNRIgpSSAaMIBTGtruutGlcL5eK6GY9UBQSpVYpUJRaSq1OGyKkiBAKORMQQiCVEoJpmtrUIkIiStiufYedNkgRkhQxTZPsqKXre0luzemIEhFRYppGO6dhIFspAQKihLHTkiIY1oOdte9q16UJISGBJMlOS
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'p4YtCRRBay2h6zoshYBsjhCAcLZpmiIChZMSUpFCTto4ZkukzIxSSiiEorRM21HCbUJyImwJEyXsnMYWoVKKncN6LF3tumrbBoMUCtvGQJQi5LQCSdmaomQmWFGcTcgikIra1ECSFMLYOQ5DpksttXYIZwIKOe1MZ6aNXfsaUTKdmUCpVVJrLVQUYOzMzGyt7/s2Ti0nO6NWKWwPw4Dd9X1XO9sIZyJlS0lAlJKJcFSVKG3KJLMltrBKGYcJnM6uFiCdq6OjUN3c2ZYi0xFMk0soncbj2IpU+hqoTQmJHRFRq43tKGpTs+2k1HAmsk1EiSiKcGuZLXOyRUQtxTbONk2KCIVKZMvEAhIpooaNIqIUMu3M1oyih
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'yUQJiZBAxhEBbtOU6VKKpBARgW1cSoSiRACIiBKhzJRsO0IRsmnZFIoS6+VynFqJsF1LKbWqhO2pNdtIUWtEFVIEgKSQpNamUkqUAJxGHscRCEklQpZkW5KkWktrDclQSrUBSSgCEHImoTY17Agp1FpO49DGZogSXddlGuNEotYK2EYCgZ0pBZJCERJBZtSICBS2S4mIYrApBbAisjU7Q6qloEACyJRUSpGUU3O61JAUkkAS2LYznSmp1AIqtdZaI2S7lFJKZzskKex0S4goxelQlBIAQgpFSJ6mKTOjlFIrxnbLbJmCiAjJ6VJL7WprDdH1FQukUMs2TQ07MwW1lFo7YalERCBJCtm2bVNLRAnk1tK4jU2gk
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'f+onR6ldVyNKmtayq2WaWu37ljmNWWpRqI0tW0YpGEVITFPL1kB2hsIWtkK2szWnSy0YSQpJwtHNeoVyakKQma6lonCmJInMaRqmzCmzkUk6s0XUUDE4nekoJTNtt3FMu+uqTbYspUREaynR1RrhTDtTISmwSyidrTVJpZa025SlBOBM25jSVVC2VBRFsbFxWiLTbUqgdhFRWiIBZNp2IKQ2NSRFZBqIEhKSaClhO9PGmel07WotXZuapIjw5LSRMLYllaLW0nYtIQCixDS1CEHmlCAkGyQnNiXC6XSzKaWUWo0kgWzXWgxOS2TL1gy2mVoDuq4zOawHp2vXpdPpnDIzMbVWIJtVhGlphbK5lADllFHCzcaSJ
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' '2pWI0tIgELakiABaaxEVwESUaZokai1SkQQqJRQFKVumLbAtCUWgaZraNJUSmVlrSbuNIyJbixCh1hIElpQtwYCw7VJKiaKI1tJQSqFZEa21iBjHMSIi5Nay2SCBXbtSa1XUbLYdJZxk2mADihCZmVkibE+tRWDLRuB0RCiijSlwOjNrLVFK7SumTU2itTYOU5QQdmIbLDFNY7YWitYaUSJKG6coUkSbWmZymSIwzpZO7FqrIpwASICFmyUr1KbMtNMKQjGNzcZWdCUUZDqdbbKNRK2tibSEnTWqoti2sZWZEQGRaUmYTBskCYAo0fWdIjIzM7GTjAg3jKRwZq1VkKaU6iRN7TrbkoDWUgIwciaAIpudqQhMt
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'mUYCtZaCqGrZMtMGiEBSZgKIzIwIiWzTNE6AbYnWWmutlFJqaVMbxwkyQtlynCY7wc4MFDUATymJoLXmzKgRwThO6STd2uSkZYsi4cxWa3E60xHKdGuOUoBMKchMt6w1okSbWpumKFFKTNOUUwNaZjZHRBS1ljYQ2QzYgJyZmaVEpqVq3MamCMBJ2plZSrFzGgakftaXUk1ErVFKiZLZMkcpBCFKqbWWKCUiopRMOym12GAjtZaSjCGzNWcqokQ4ndmc6TRWRJFQRDaTGSUUIm0bkJQtFWEbVEpxIglhu9Rik80Rql2XDYUiItu4Xq1am8bW3AzUWhRIDMMYIWebhjHtKGSS6bQjBIqQQm7OtK1SSu06mza2C
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'GzsjyjS2KAG01jCS2tS6vrdlG6cUinCm05LalKUWULYUZOY0DW1qXdfP5otSyjRO4zCGFBFCrTWbkKLILWnZpsluUULQphYm06QVKrUIhLNla1OUyJbGUoxTi1psZ2uKkNRaa60BpRTbNsbTOKWzhJyUErWrXa2ttam1UqqtbAkgOd1a2kjUIimiRqnhdLYWUqJpaqVERGSzokgxjc2YwM0AzgiFopSCNI0totRasCKEmCZHlFKK7UxCSIzjWGpVxDhMpeuilDZNbZwQpLNNCIWmcQIiZDNNLVtThKRMAxEhKdM2EUhq42QcoQhlSxvcbLthM7WMUgTDMGSzFKWvkrBtt2lq02RnRNiWZAO2aVMLRe1qZvZ9D
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "printf '%s' 'EbW2qRk7mYaxlBI1yLRdSqldaWPLzNZaJhC2S1GbRlKI1rLUkonTXde1abLc9Z2T1jIiABG1r8N6BHX9TApnm8axlFpqN00ts2VLhI2hlCop01GULQGbKAUV7AjZdmZmZmaptSVtylIqNoDdptbStXY2oIhIp7M5UxHj2GxKUUS0KcdxilKEMgFnZmBZkmaLeZQ6Ts246wr2NE22bUuSRGZEtNaMotQ0ipDUpqlNEwZUagGmacrMCDKdU7Nda4lQZrZpalMDkGzbzjSAhHGmQlLYBtnOzJBKUWa21jKb06UUGykUypaSJDmzTZOdIUUIhU2mISIEODNbc7Y2TYBQaymRbWrTZAsopbZsw2rVcgIEpRQbMCIzg
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "python3 -c 'import base64,pathlib; p=pathlib.Path(\"/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png\"); p.write_bytes(base64.b64decode(p.read_bytes()))'" in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 0ms:
+exec
+/bin/zsh -lc "sips -g pixelWidth -g pixelHeight '/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png' && ls -lh '/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png'" in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 56ms:
+/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png
+  pixelWidth: 1254
+  pixelHeight: 1254
+-rw-r--r--@ 1 jean-luc1515  staff   2.0M Oct 12 22:09 /Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png
+
+exec
+/bin/zsh -lc "sips -z 1024 1024 '/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png' --out '/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png' && sips -g pixelWidth -g pixelHeight '/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png'" in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 208ms:
+/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png
+  /Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png
+/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png
+  pixelWidth: 1024
+  pixelHeight: 1024
+
+codex
+/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png
+tokens used
+34,690
+/Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png
+DONE /Users/jean-luc1515/Developer/Baton/design/icon/notch-baton-5.png (opaque)
+finished 2026-10-12T22:09:51

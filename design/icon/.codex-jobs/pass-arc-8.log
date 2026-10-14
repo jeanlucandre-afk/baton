@@ -1,0 +1,514 @@
+queued 2026-10-12T22:06:45 model=gpt-6-luna effort=high
+started 2026-10-12T22:06:45
+OpenAI Codex v0.162.1
+--------
+workdir: /Users/jean-luc1515/Developer/Baton/design/icon
+model: gpt-6-luna
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+session id: 01a131b9-8b05-7663-a23e-53cb8facda16
+--------
+user
+Use your built-in image generation tool to create exactly ONE image.
+
+REQUEST:
+macOS app icon for 'Baton', a menu bar app that tracks AI chats running in parallel and taps you when one finishes. Full-bleed 1024x1024 square artwork for a macOS 26 squircle icon (the system applies the mask), centered subject with generous margin, crisp edges, readable at 32px. No text, no letters, no mockup, no device frame, no drop shadow outside the artwork. Subject: a bold single-weight cur
+
+After generating, copy the PNG into /Users/jean-luc1515/Developer/Baton/design/icon as pass-arc-8.png (overwrite if present). Do not create any other files. Print the final path.
+warning: Exceeded skills context budget. All skill descriptions were removed and 134 additional skills were not included in the model-visible skills list.
+codex
+I’ll generate one icon image, then copy its PNG into the requested path as `pass-arc-8.png`.
+exec
+/bin/zsh -lc "pwd && rg --files -g '*.png' -g '*.webp' -g '*.jpg' . /private/tmp /private/var/folders/qf/d87v97sd0_31pvmdgfmyf8t40000gn/T 2>/dev/null | head -80" in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 4ms:
+/Users/jean-luc1515/Developer/Baton/design/icon
+./placeholder-1024.png
+./relay-baton-1.png
+./notch-pulse-2.png
+./glass-ring-3.png
+./handoff-4.png
+/private/tmp/variant-C.png
+/private/tmp/variant-A.png
+/private/tmp/x.png
+/private/tmp/variant-D.png
+/private/tmp/variant-B.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/dash-webhook-detail.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/_team_loli_ll-form.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/_ana_intro-booked.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/manage-fail.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/dash_app_developers_webhooks.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/_team_loli_ll-booked.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/dash_app_developers.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/_team_loli_llc-form.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/manage-cancelled.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/_team_loli_llc-booked.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/_ana_intro-form.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/dash_app_meetings.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/dash_app_event-types.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/dash_app_integrations.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/dash_app_developers_keys.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/shots/dash_app_teams.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/scratchpad/expanded.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/scratchpad/newtask.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/scratchpad/lanes1.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/scratchpad/lanes3.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/scratchpad/lanes2.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/scratchpad/compact.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/scratchpad/ready.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/6.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/7.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/4.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/1.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/2.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/3.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/8.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/9.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/1236f2e6-340e-4b29-b9a0-8248b6dd2417/images/5.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/6.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/1.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/7.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/2.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/3.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/9.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/4.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/8.png
+/private/tmp/claude-501/-Users-jean-luc1515-Developer-Baton/07538aee-8f07-4308-ba0e-821211d74642/images/5.webp
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/agents-top.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/s-bottom.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/top.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/customer.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/agents-card.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/s2.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/s3.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/s1.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/s4.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/s5.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/s6.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/linear/home-top.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/rev-corr-chain2/build-copy/public/apple-touch-icon.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/confirm-dark-375.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/book-dark-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/book-frame-light-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/dash-dark-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/design-dark-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/book-dark-375.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/confirm-light-375.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/confirm-dark-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/dash-dark-375.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/design-light-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/book-frame-dark-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/book-light-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/dash-light-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/dash-light-375.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/confirm-light-1440.png
+/private/tmp/claude-501/-Users-jean-luc1515-Projects-screenshot-exact-match-770/4f264fb9-6525-481b-b22b-b71a5bd183c8/scratchpad/critic-layout/shots/book-light-375.png
+
+codex
+The generation call returned no visible image payload to the workspace, so I’m checking the image workflow’s save method before I finish the copy.
+exec
+/bin/zsh -lc 'cat /Users/jean-luc1515/.codex/plugins/cache/openai-bundled/imagegen/SKILL.md' in /Users/jean-luc1515/Developer/Baton/design/icon
+ exited 1 in 0ms:
+cat: /Users/jean-luc1515/.codex/plugins/cache/openai-bundled/imagegen/SKILL.md: No such file or directory
+
+exec
+/bin/zsh -lc 'cat /Users/jean-luc1515/.codex/skills/.system/imagegen/SKILL.md' in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 0ms:
+---
+name: "imagegen"
+description: "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not 
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has exactly two top-level modes:
+
+- **Default built-in tool mode (preferred):** built-in `image_gen` tool for image generation, editing, and transparent-image requests. Does not require `OPENAI_API_KEY`.
+- **Fallback CLI mode:** `scripts/image_gen.py` CLI. Use when the user explicitly asks for or confirms the CLI/API/model path. Requires `OPENAI_API_KEY`.
+
+Within CLI fallback, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default for normal image generation and editing requests.
+- Do not switch to CLI fallback for ordinary quality, size, or file-path control.
+- For transparent images, ask built-in `image_gen` for a transparent background and preserve the generated alpha.
+- Never silently switch from built-in `image_gen` or CLI `gpt-image-2` to CLI `gpt-image-1.5`; ask the user first unless they explicitly requested `gpt-image-1.5`.
+- The word `batch` by itself does not mean CLI fallback. If the user asks for many assets or says to batch-generate assets without explicitly asking for CLI/API/model controls, stay on the built-in path and issue one built-in call per requested asset or variant.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, Codex saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+- For many distinct assets, do not use `n` as a substitute for separate prompts. `n` is for variants of one prompt; distinct assets need distinct built-in calls or distinct CLI `generate-batch` jobs.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default, including transparent-output requests; fallback CLI only if explicitly requested or confirmed.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI `generate-batch`.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input images.
+6. For every input image, label its role explicitly:
+   - reference image
+   - edit target
+   - supporting insert/style/compositing input
+7. If the edit target is only on the local filesystem and you are staying on the built-in path, inspect it with `view_image` first so the image is available in conversation context.
+8. If the user asked for a photo, illustration, sprite, product image, banner, or other explicitly raster-style asset, use `image_gen` rather than substituting SVG/HTML/CSS placeholders. If the request is for an icon, logo, or UI graphic that should match existing repo-native SVG/vector/code assets, prefer editing those directly instead.
+9. Augment the prompt based on specificity:
+   - If the user's prompt is already specific and detailed, normalize it into a clear spec without adding creative requirements.
+   - If the user's prompt is generic, add tasteful augmentation only when it materially improves output quality.
+10. Use the built-in `image_gen` tool by default.
+11. For transparent-output requests, ask built-in `image_gen` for a transparent background and preserve the generated alpha channel.
+12. Inspect outputs and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+13. Iterate with a single targeted change, then re-check.
+14. For preview-only work, render the image inline; the underlying file may remain at the default `$CODEX_HOME/generated_images/...` path.
+15. For project-bound work, move or copy the selected artifact into the workspace and update any consuming code or references. Never leave a project-referenced asset only at the default `$CODEX_HOME/generated_images/...` path.
+16. For batches or multi-asset requests, persist every requested deliverable final in the workspace unless the user explicitly asked to keep outputs preview-only. Discarded variants do not need to be kept unless requested.
+17. If the user explicitly chooses or confirms the CLI fallback, then use the fallback-only docs for model, quality, size, `input_fidelity`, masks, output format, output paths, and network setup.
+18. Always report the final saved path(s) for any workspace-bound asset(s), plus the final prompt or prompt set and whether the built-in tool or fallback CLI mode was used.
+
+## Transparent image requests
+
+Ask built-in `image_gen` for a genuinely transparent background and preserve its alpha.
+
+## Prompt augmentation
+
+Reformat user prompts into a structured, production-oriented spec. Make the user's goal clearer and more actionable, but do not blindly add detail.
+
+Treat this as prompt-shaping guidance, not a closed schema. Use only the lines that help, and add a short extra labeled line when it materially improves clarity.
+
+### Specificity policy
+
+Use the user's prompt specificity to decide how much augmentation is appropriate:
+
+- If the prompt is already specific and detailed, preserve that specificity and only normalize/structure it.
+- If the prompt is generic, you may add tasteful augmentation when it will materially improve the result.
+
+Allowed augmentations:
+- composition or framing hints
+- polish level or intended-use hints
+- practical layout guidance
+- reasonable scene concreteness that supports the stated request
+
+Not allowed augmentations:
+- extra characters or objects that are not implied by the request
+- brand names, slogans, palettes, or narrative beats that are not implied
+- arbitrary side-specific placement unless the surrounding layout supports it
+
+## Use-case taxonomy (exact slugs)
+
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural — candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup — product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup — app/web interface mockups and wireframes; specify the desired fidelity.
+- infographic-diagram — diagrams/infographics with structured layout and text.
+- scientific-educational — classroom explainers, scientific diagrams, and learning visuals with required labels and accuracy constraints.
+- ads-marketing — campaign concepts and ad creatives with audience, brand position, scene, and exact tagline/copy.
+- productivity-visual — slide, chart, workflow, and data-heavy business visuals.
+- logo-brand — logo/mark exploration, vector-friendly.
+- illustration-story — comics, children’s book art, narrative scenes.
+- stylized-concept — style-driven concept art, 3D/stylized renders.
+- historical-scene — period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization — translate/replace in-image text, preserve layout.
+- identity-preserve — try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit — remove/replace a specific element (including interior swaps).
+- lighting-weather — time-of-day/season/atmosphere changes only.
+- background-extraction — transparent background / clean cutout. Ask built-in `image_gen` for actual transparency.
+- style-transfer — apply reference style while changing subject/scene.
+- compositing — multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render — drawing/line art to photoreal render.
+
+## Shared prompt schema
+
+Use the following labeled spec as shared prompt scaffolding for both top-level modes:
+
+```text
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Input images: <Image 1: role; Image 2: role> (optional)
+Scene/backdrop: <environment>
+Subject: <main subject>
+Style/medium: <photo/illustration/3D/etc>
+Composition/framing: <wide/close/top-down; placement>
+Lighting/mood: <lighting + mood>
+Color palette: <palette notes>
+Materials/textures: <surface details>
+Text (verbatim): "<exact text>"
+Constraints: <must keep/must avoid>
+Avoid: <negative constraints>
+```
+
+Notes:
+- `Asset type` and `Input images` are prompt scaffolding, not dedicated CLI flags.
+- `Scene/backdrop` refers to the visual setting. It is not the same as the fallback CLI `background` parameter, which controls output transparency behavior.
+- Fallback-only execution notes such as `Quality:`, `Input fidelity:`, masks, output format, and output paths belong in the CLI path only. Do not treat them as built-in `image_gen` tool arguments.
+
+Augmentation rules:
+- Keep it short.
+- Add only the details needed to improve the prompt materially.
+- For edits, explicitly list invariants (`change only X; keep Y unchanged`).
+- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
+
+## Examples
+
+### Generation example (hero image)
+```text
+Use case: product-mockup
+Asset type: landing page hero
+Primary request: a minimal hero image of a ceramic coffee mug
+Style/medium: clean product photography
+Composition/framing: wide composition with usable negative space for page copy if needed
+Lighting/mood: soft studio lighting
+Constraints: no logos, no text, no watermark
+```
+
+### Edit example (invariants)
+```text
+Use case: precise-object-edit
+Asset type: product photo background replacement
+Primary request: replace only the background with a warm sunset gradient
+Constraints: change only the background; keep the product and its edges unchanged; no text; no watermark
+```
+
+## Prompting best practices
+- Structure prompt as scene/backdrop -> subject -> details -> constraints.
+- Include intended use (ad, UI mock, infographic) to set the mode and polish level.
+- Use camera/composition language for photorealism.
+- Only use SVG/vector stand-ins when the user explicitly asked for vector output or a non-image placeholder.
+- Quote exact text and specify typography + placement.
+- For tricky words, spell them letter-by-letter and require verbatim rendering.
+- For multi-image inputs, reference images by index and describe how they should be used.
+- For edits, repeat invariants every iteration to reduce drift.
+- Iterate with single-change follow-ups.
+- If the prompt is generic, add only the extra detail that will materially help.
+- If the prompt is already detailed, normalize it instead of expanding it.
+- For CLI fallback only, see `references/cli.md` and `references/image-api.md` for model, `quality`, `input_fidelity`, masks, output format, and output-path guidance.
+- For transparent images, ask built-in `image_gen` for actual transparency and preserve its alpha.
+
+More principles shared by both modes: `references/prompting.md`.
+Copy/paste specs shared by both modes: `references/sample-prompts.md`.
+
+## Guidance by asset type
+Asset-type templates (website assets, game assets, wireframes, logo) are consolidated in `references/sample-prompts.md`.
+
+## gpt-image-2 guidance for CLI fallback
+
+The fallback CLI defaults to `gpt-image-2`.
+
+- Use `gpt-image-2` for new CLI/API workflows unless the user confirms a different model.
+- CLI `gpt-image-2` does not support `background=transparent`; ask before using `gpt-image-1.5` unless the user explicitly requested that model.
+- `gpt-image-2` always uses high fidelity for image inputs; do not set `input_fidelity` with this model.
+- `gpt-image-2` supports `quality` values `low`, `medium`, `high`, and `auto`.
+- Use `quality low` for fast drafts, thumbnails, and quick iterations. Use `medium`, `high`, or `auto` for final assets, dense text, diagrams, identity-sensitive edits, or high-resolution outputs.
+- Square images are typically fastest to generate. Use `1024x1024` for fast square drafts.
+- If the user asks for 4K-style output, use `3840x2160` for landscape or `2160x3840` for portrait.
+- `gpt-image-2` size may be `auto` or `WIDTHxHEIGHT` if all constraints hold: max edge `<= 3840px`, both edges multiples of `16px`, long-to-short ratio `<= 3:1`, total pixels between `655,360` and `8,294,400`.
+
+Popular `gpt-image-2` sizes:
+- `1024x1024` square
+- `1536x1024` landscape
+- `1024x1536` portrait
+- `2048x2048` 2K square
+- `2048x1152` 2K landscape
+- `3840x2160` 4K landscape
+- `2160x3840` 4K portrait
+- `auto`
+
+## Fallback CLI mode only
+
+### Temp and output conventions
+These conventions apply only to the CLI fallback. They do not describe built-in `image_gen` output behavior.
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete them when done.
+- Write final artifacts under `output/imagegen/`.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
+
+### Dependencies
+Prefer `uv` for dependency management in this repo.
+
+Required Python package:
+```bash
+uv pip install openai
+```
+
+Optional for image inspection and downscaling:
+```bash
+uv pip install pillow
+```
+
+Portability note:
+- If you are using the installed skill outside this repo, install dependencies into that environment with its package manager.
+- In uv-managed environments, `uv pip install ...` remains the preferred path.
+
+### Environment
+- `OPENAI_API_KEY` must be set for live API calls.
+- Do not ask the user for `OPENAI_API_KEY` when using the built-in `image_gen` tool.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+
+If installation is not possible in this environment, tell the user which dependency is missing and how to install it into their active environment.
+
+### Script-mode notes
+- CLI commands + examples: `references/cli.md`
+- API parameter quick reference: `references/image-api.md`
+- Network approvals / sandbox settings for CLI mode: `references/codex-network.md`
+
+## Reference map
+- `references/prompting.md`: shared prompting principles for both modes.
+- `references/sample-prompts.md`: shared copy/paste prompt recipes for both modes.
+- `references/cli.md`: fallback-only CLI usage via `scripts/image_gen.py`.
+- `references/image-api.md`: fallback-only API/CLI parameter reference.
+- `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
+- `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
+
+exec
+/bin/zsh -lc 'find /Users/jean-luc1515/.codex/generated_images -maxdepth 2 -type f -print 2>/dev/null | sort | tail -20' in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 27ms:
+/Users/jean-luc1515/.codex/generated_images/01a12608-8505-79d0-8604-7cdc0cc94d1a/exec-9db37285-1bc7-4648-b5fd-f30a5e383c03.png
+/Users/jean-luc1515/.codex/generated_images/01a12608-8505-79d0-8604-7cdc0cc94d1a/exec-b51a7138-c650-4e41-98a5-3ce7b7af8e4f.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-3dd15c37-e440-4f1b-91d8-0cd29d6ec62c.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-46e829c7-7eec-48ca-9cab-7fdaa1c4667e.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-4b0dbb0f-319b-4b50-97a0-9bdf4cd3d0dd.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-60b68b22-b5f5-4277-911f-a229cac87e7f.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-6650b4fd-d800-4ccb-89e0-3a63cc30c10f.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-8410341b-91af-4292-a82c-c4112876ba8f.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-b1b0a240-d976-4a1e-b0c6-b352599777e8.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-b85fcb55-f45e-4e80-ac75-4afeacd45718.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-c160e2ef-7c6e-4611-b8d2-525425be5f57.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-c41e6ffc-6c7a-4544-a35e-a5da5fbeda4d.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-ce01e1d0-401b-4d0b-b619-30516707521f.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-d0148a73-9bb6-40b8-81c8-37c76d32a233.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-ed480a2d-46ce-4794-a5e7-66b5a7ec9c0c.png
+/Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-edae1b4d-72f8-4681-9db2-be5127344a2e.png
+/Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7991-8ac1-5970d01a77d0/exec-11c56e84-f3b8-495a-b134-7fd706ffbf6c.png
+/Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7af3-9cbd-4d7a31c48715/exec-8472366c-d74e-434b-8582-7e9f0a7489e4.png
+/Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7f60-a16f-f7acf509f291/exec-1593a523-6c41-4783-816e-9e2785cfdff7.png
+/Users/jean-luc1515/.codex/generated_images/01a131b9-8b05-7663-a23e-53cb8facda16/exec-359d6bb2-919a-465f-b750-e91a7018125a.png
+
+exec
+/bin/zsh -lc "find /Users/jean-luc1515/.codex/generated_images -type f -name '*.png' -exec stat -f '%m %N' {} + | sort -rn | head -8" in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 1049ms:
+1791835681 /Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7991-8ac1-5970d01a77d0/exec-11c56e84-f3b8-495a-b134-7fd706ffbf6c.png
+1791835678 /Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7f60-a16f-f7acf509f291/exec-1593a523-6c41-4783-816e-9e2785cfdff7.png
+1791835671 /Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7af3-9cbd-4d7a31c48715/exec-8472366c-d74e-434b-8582-7e9f0a7489e4.png
+1791835663 /Users/jean-luc1515/.codex/generated_images/01a131b9-8b05-7663-a23e-53cb8facda16/exec-359d6bb2-919a-465f-b750-e91a7018125a.png
+1791780079 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-d0148a73-9bb6-40b8-81c8-37c76d32a233.png
+1791780039 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-ce01e1d0-401b-4d0b-b619-30516707521f.png
+1791779980 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-4b0dbb0f-319b-4b50-97a0-9bdf4cd3d0dd.png
+1791779908 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-46e829c7-7eec-48ca-9cab-7fdaa1c4667e.png
+
+exec
+/bin/zsh -lc "date -u '+%Y-%m-%d %H:%M:%S UTC' && find /Users/jean-luc1515/.codex/generated_images -type f -name '*.png' -exec stat -f '%m %Sm %N' -t '%Y-%m-%d %H:%M:%S' {} + | sort -rn | head -15" in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 427ms:
+2026-10-12 20:08:30 UTC
+1791835708 2026-10-12 22:08:28 /Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7991-8ac1-5970d01a77d0/exec-55062add-606c-4dc2-8397-255463b3cf8a.png
+1791835681 2026-10-12 22:08:01 /Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7991-8ac1-5970d01a77d0/exec-11c56e84-f3b8-495a-b134-7fd706ffbf6c.png
+1791835678 2026-10-12 22:07:58 /Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7f60-a16f-f7acf509f291/exec-1593a523-6c41-4783-816e-9e2785cfdff7.png
+1791835671 2026-10-12 22:07:51 /Users/jean-luc1515/.codex/generated_images/01a131b9-8ac9-7af3-9cbd-4d7a31c48715/exec-8472366c-d74e-434b-8582-7e9f0a7489e4.png
+1791835663 2026-10-12 22:07:43 /Users/jean-luc1515/.codex/generated_images/01a131b9-8b05-7663-a23e-53cb8facda16/exec-359d6bb2-919a-465f-b750-e91a7018125a.png
+1791780079 2026-10-12 06:41:19 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-d0148a73-9bb6-40b8-81c8-37c76d32a233.png
+1791780039 2026-10-12 06:40:39 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-ce01e1d0-401b-4d0b-b619-30516707521f.png
+1791779980 2026-10-12 06:39:40 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-4b0dbb0f-319b-4b50-97a0-9bdf4cd3d0dd.png
+1791779908 2026-10-12 06:38:28 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-46e829c7-7eec-48ca-9cab-7fdaa1c4667e.png
+1791779855 2026-10-12 06:37:35 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-b1b0a240-d976-4a1e-b0c6-b352599777e8.png
+1791779809 2026-10-12 06:36:49 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-3dd15c37-e440-4f1b-91d8-0cd29d6ec62c.png
+1791779768 2026-10-12 06:36:08 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-c160e2ef-7c6e-4611-b8d2-525425be5f57.png
+1791779706 2026-10-12 06:35:06 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-c41e6ffc-6c7a-4544-a35e-a5da5fbeda4d.png
+1791779647 2026-10-12 06:34:07 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-6650b4fd-d800-4ccb-89e0-3a63cc30c10f.png
+1791779577 2026-10-12 06:32:57 /Users/jean-luc1515/.codex/generated_images/01a12e5b-a5c4-7191-9b98-cc5e33277b44/exec-8410341b-91af-4292-a82c-c4112876ba8f.png
+
+codex
+The PNGs I found in the default generated images folder belong to earlier work and don’t match this icon. I’m rerunning the single asset generation with the image payload surfaced, then I’ll copy that generated PNG.
+exec
+/bin/zsh -lc 'cp /Users/jean-luc1515/.codex/generated_images/01a131b9-8b05-7663-a23e-53cb8facda16/exec-367908c3-378b-4b14-b2ce-32d4534d2b40.png /Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png && sips -g pixelWidth -g pixelHeight /Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png' in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 169ms:
+/Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png
+  pixelWidth: 1254
+  pixelHeight: 1254
+
+exec
+/bin/zsh -lc 'sips -z 1024 1024 /Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png >/dev/null && sips -g pixelWidth -g pixelHeight /Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png && file /Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png' in /Users/jean-luc1515/Developer/Baton/design/icon
+ succeeded in 244ms:
+/Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png
+  pixelWidth: 1024
+  pixelHeight: 1024
+/Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png: PNG image data, 1024 x 1024, 8-bit/color RGB, non-interlaced
+
+codex
+/Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png
+tokens used
+72,685
+/Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png
+DONE /Users/jean-luc1515/Developer/Baton/design/icon/pass-arc-8.png (opaque)
+finished 2026-10-12T22:09:16
