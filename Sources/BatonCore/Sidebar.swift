@@ -90,6 +90,14 @@ public enum Sidebar {
         let lower = label.lowercased()
         func valid(_ name: String) -> Bool { name.filter(\.isLetter).count >= 2 }
 
+        // Claude Code: a session with a pull request shows the PR's badge (purple merged, green open) where
+        // the status dot goes, and its label starts with it: "#22, #23 · Merged Zupi · Part 3". The badge
+        // means the session isn't running; a status word after it still counts.
+        if !leading.isEmpty, let rest = strippingPullRequestBadge(label) {
+            if let row = parse(label: rest, hiddenLabels: hiddenLabels, profile: p, leading: leading) { return row }
+            if valid(rest) { return ChatRow(name: rest, status: .idle) }
+        }
+
         // "Running Northwind task tracking LLM". Longest word first, so "unread response" beats "unread".
         for w in leading where lower.hasPrefix(w + " ") {
             guard let status = status(of: w, overrides: p.overrides) else { continue }
@@ -113,6 +121,29 @@ public enum Sidebar {
             if valid(name) { return ChatRow(name: name, status: s) }
         }
         return nil
+    }
+
+    /// Pull-request states Claude Code puts in a session's badge.
+    static let pullRequestStates = ["changes requested", "ready for review", "in review", "merged", "open", "opened",
+                                    "draft", "closed", "approved", "failing", "passing", "conflicts"]
+
+    /// "#22, #23 · Merged Zupi · Part 3" → "Zupi · Part 3". Nil when the label doesn't start with a PR badge.
+    static func strippingPullRequestBadge(_ label: String) -> String? {
+        guard label.hasPrefix("#"),
+              let dot = label.range(of: " · ") else { return nil }
+        let numbers = label[label.startIndex..<dot.lowerBound]
+        // "#22" or "#22, #23"
+        guard numbers.components(separatedBy: ", ").allSatisfy({ $0.hasPrefix("#") && $0.dropFirst().allSatisfy(\.isNumber) && $0.count > 1 })
+        else { return nil }
+        let after = label[dot.upperBound...]
+        let lower = after.lowercased()
+        // Known states first (some are two words), longest first; otherwise one capitalised word.
+        if let state = pullRequestStates.sorted(by: { $0.count > $1.count }).first(where: { lower.hasPrefix($0 + " ") }) {
+            return String(after.dropFirst(state.count + 1)).trimmingCharacters(in: .whitespaces)
+        }
+        guard let space = after.firstIndex(of: " "), after.first?.isUppercase == true,
+              after[after.startIndex..<space].allSatisfy(\.isLetter) else { return nil }
+        return String(after[after.index(after: space)...]).trimmingCharacters(in: .whitespaces)
     }
 
     static func strongest(_ s: [ChatStatus]) -> ChatStatus? {

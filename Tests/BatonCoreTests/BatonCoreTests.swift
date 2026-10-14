@@ -580,3 +580,30 @@ private func read(_ name: String, _ bundleID: String) throws -> [ChatRow] {
         #expect(tabs.last?.status == .working)
     }
 }
+
+/// Claude Code sessions with a pull request: the PR badge (purple merged, green open) sits where the
+/// status dot goes and starts the row's label.
+@Suite struct PullRequestBadgeTests {
+    let claude = ProfileBook.builtIn.profile("com.anthropic.claudefordesktop")
+
+    @Test func badgeIsStrippedAndMeansNotRunning() {
+        #expect(Sidebar.parse(label: "#22, #23 · Merged Zupi · Part 3 — live checks", profile: claude)
+                == ChatRow(name: "Zupi · Part 3 — live checks", status: .idle))
+        #expect(Sidebar.parse(label: "#41 · Open Landing hero", profile: claude)
+                == ChatRow(name: "Landing hero", status: .idle))
+        #expect(Sidebar.parse(label: "#7 · Draft lowercase name here", profile: claude)
+                == ChatRow(name: "lowercase name here", status: .idle))
+    }
+
+    @Test func aStatusWordAfterTheBadgeStillCounts() {
+        #expect(Sidebar.parse(label: "#41 · Open Running Landing hero", profile: claude)
+                == ChatRow(name: "Landing hero", status: .working))
+    }
+
+    @Test func notABadge() {
+        #expect(Sidebar.strippingPullRequestBadge("#general · Merged things") == nil)
+        #expect(Sidebar.strippingPullRequestBadge("Zupi · Part 3") == nil)
+        // other apps don't get this rule
+        #expect(Sidebar.parse(label: "#22 · Merged Zupi", profile: ProfileBook.builtIn.fallback) == nil)
+    }
+}

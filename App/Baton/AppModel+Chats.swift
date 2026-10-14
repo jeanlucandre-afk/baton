@@ -357,8 +357,12 @@ extension AppModel {
             // Ready follows the app's own mark: only a chat it shows as unread or waiting on you is Ready.
             // A chat that goes Running → Idle (Claude doesn't mark the chat you have open as unread) is
             // done and pings, but it's idle, as the app says.
-            let state = status.windowState
             let finishedNow = status == .idle && prev == .working
+            // Claude marks a session that finished while you were elsewhere with a blue dot, but a session with
+            // a pull request shows the PR's badge there instead (purple merged, green open) and never turns
+            // unread. Finished while you weren't looking: Ready until you open it, like the blue dot.
+            let unseenFinish = finishedNow && c.bundleID == "com.anthropic.claudefordesktop" && !nowTaskIDs.contains(t.id)
+            let state: WindowState = unseenFinish ? .finished : status.windowState
             setState(t.id, state)
             let ping = prev != nil && (finishedNow || state == .finished || state == .needsYou)
             if ping {
