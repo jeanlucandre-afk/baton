@@ -79,6 +79,8 @@ struct OnboardingView: View {
     @State private var notifyStatus: UNAuthorizationStatus = .notDetermined
     /// After "Send a test ping": where to look, or why nothing showed.
     @State private var testNote: String?
+    /// A Jev key is in the Keychain: without it there are no pings, so the keys step and the last step say so.
+    @State private var jevSaved = KeyStore.exists(KeyStore.jev)
     private let apps = SupportedApp.all
     private var model = AppModel.shared
 
@@ -110,10 +112,12 @@ struct OnboardingView: View {
         .tint(Self.coral)
         .animation(.easeOut(duration: 0.2), value: step)
         .task(id: step) {
-            // Live checks while a permission step is showing.
-            while !Task.isCancelled, step == .access || step == .notify {
+            // Live checks while a permission or key step is showing.
+            jevSaved = KeyStore.exists(KeyStore.jev)
+            while !Task.isCancelled, step == .access || step == .notify || step == .keys {
                 model.recheckAccessibility()
                 notifyStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                jevSaved = KeyStore.exists(KeyStore.jev)
                 try? await Task.sleep(for: .seconds(1))
             }
         }
@@ -125,7 +129,7 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 14) {
             headline("Meet Baton")
             copy("Baton watches your AI chats and pings you from the notch the moment one finishes or needs you.")
-            copy("Two permissions and, if you like, two keys. About a minute.").foregroundStyle(Self.paper.opacity(0.55))
+            copy("Two permissions and a key. About a minute.").foregroundStyle(Self.paper.opacity(0.55))
         }
     }
 
@@ -200,9 +204,11 @@ struct OnboardingView: View {
 
     private var keys: some View {
         VStack(alignment: .leading, spacing: 12) {
-            headline("Add keys")
-            copy("Both are optional and stay in your login Keychain. Skip and add them later in Settings › Keys.")
-                .foregroundStyle(Self.paper.opacity(0.7))
+            headline("Add your Jev key")
+            copy("Jev is what tells Baton a chat is finished or needs you. Without it you'll see your chats, but get no pings.")
+            status(jevSaved, on: "Jev key saved. Pings are on.", off: "No Jev key yet. Get one at typesafe.ai.")
+            copy("Gemini is optional. Keys stay in your login Keychain; change them any time in Settings › Keys.")
+                .foregroundStyle(Self.paper.opacity(0.55))
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     ForEach(APIKey.all) { KeyRow(key: $0, compact: true) }
@@ -226,6 +232,12 @@ struct OnboardingView: View {
                 if let testNote {
                     Text(testNote).font(.system(size: 13)).foregroundStyle(Self.paper.opacity(0.55))
                 }
+            }
+            if !jevSaved {
+                Label("No Jev key yet, so Baton won't ping when a chat is done. Add it in Settings › Keys.",
+                      systemImage: "exclamationmark.circle")
+                    .font(.system(size: 13)).foregroundStyle(Self.coral)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             OpenAtLoginToggle()
                 .font(.system(size: 13))
@@ -255,7 +267,7 @@ struct OnboardingView: View {
             }
             Spacer()
             if step == .keys {
-                Button("Skip") { move(1) }.buttonStyle(.plain).foregroundStyle(Self.paper.opacity(0.55)).padding(.trailing, 12)
+                Button(jevSaved ? "Skip Gemini" : "Skip for now") { move(1) }.buttonStyle(.plain).foregroundStyle(Self.paper.opacity(0.55)).padding(.trailing, 12)
             }
             Button(step == .ready ? "Start" : step == .welcome ? "Begin" : "Continue") {
                 if step == .ready {

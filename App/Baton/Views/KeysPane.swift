@@ -5,16 +5,16 @@ import SwiftUI
 struct APIKey: Identifiable {
     let service: String
     let name: String
-    /// "Recommended" or "Optional", shown beside the name.
+    /// "Needed for pings" or "Optional", shown beside the name.
     let need: String
     let does: String
     let without: String
     let url: URL
     var id: String { service }
 
-    static let jev = APIKey(service: KeyStore.jev, name: "Jev", need: "Recommended",
+    static let jev = APIKey(service: KeyStore.jev, name: "Jev", need: "Needed for pings",
                             does: "Tells when a chat is finished or needs you. From typesafe.ai.",
-                            without: "Without it Baton lists your chats but can't tell when one is done.",
+                            without: "Without it Baton lists your chats but can't tell when one is done, so no pings.",
                             url: URL(string: "https://typesafe.ai")!)
     static let gemini = APIKey(service: KeyStore.gemini, name: "Gemini", need: "Optional",
                                does: "Writes the one-line pings, task names and steps, and repairs sidebars. From Google AI Studio.",
