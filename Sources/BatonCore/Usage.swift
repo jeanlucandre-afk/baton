@@ -36,9 +36,12 @@ public struct AppUsage: Codable, Sendable, Equatable {
         if let v = r.plan { plan = v; planSeen = r.planSeen ?? Date() }
     }
 
-    /// A limit whose reset time has passed is back at 0 until the app says otherwise.
+    /// A limit whose reset time has passed is back at 0 until the app says otherwise. So is one read longer ago than
+    /// its whole window (5 hours, a week) with no reset time: whatever it said, that window has rolled over since.
     public func current(at now: Date = Date()) -> AppUsage {
         var u = self
+        if u.five?.resetsAt == nil, let seen = fiveSeen, now.timeIntervalSince(seen) >= 5 * 3600 { u.five = Limit(percent: 0, resetsAt: nil) }
+        if u.week?.resetsAt == nil, let seen = weekSeen, now.timeIntervalSince(seen) >= 7 * 86400 { u.week = Limit(percent: 0, resetsAt: nil) }
         if let r = u.five?.resetsAt, r <= now { u.five = Limit(percent: 0, resetsAt: nil) }
         if let r = u.week?.resetsAt, r <= now { u.week = Limit(percent: 0, resetsAt: nil) }
         if let r = u.plan?.resetsAt, r <= now { u.plan = Limit(percent: 0, resetsAt: nil) }

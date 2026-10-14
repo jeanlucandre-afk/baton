@@ -42,6 +42,10 @@ struct ExpandedView: View {
             }
             .padding(.horizontal, 8)
 
+            if UsageMonitor.shared.detailShown {
+                UsagePanel().transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
             if !model.suggestions.isEmpty {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {

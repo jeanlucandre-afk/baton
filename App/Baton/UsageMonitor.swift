@@ -31,6 +31,10 @@ final class UsageMonitor {
     private var lastCodex: AppUsage?
     /// Limits already pinged at 90%, so each crossing pings once ("claude.five").
     private var warned: Set<String> = []
+    /// The usage panel under the notch header: open while hovered, or kept open by a click.
+    var detailHover = false
+    var detailPinned = false
+    var detailShown: Bool { detailHover || detailPinned }
 
     struct Alert: Equatable {
         let app: App
@@ -194,10 +198,9 @@ extension Palette {
 // MARK: The header line
 
 /// "Claude 29% ◔ · Codex 15% ◔ · Cursor 100%": the number is the 5-hour limit (Cursor: its plan),
-/// the wheel is the week. Hover for both, and when they reset.
+/// the wheel is the week. Hover (or click to pin) opens UsagePanel under the header, in the layout, so nothing draws over it.
 struct UsageLine: View {
     private var monitor = UsageMonitor.shared
-    @State private var hovered: UsageMonitor.App?
 
     var body: some View {
         let apps = UsageMonitor.App.allCases.filter { monitor.current($0) != nil }
@@ -205,16 +208,21 @@ struct UsageLine: View {
             Text("Baton").font(.system(size: 13, weight: .semibold))
         } else {
             HStack(spacing: 16) {
-                ForEach(apps, id: \.self) { app in
-                    item(app, monitor.current(app)!)
-                        .onHover { h in withAnimation(.easeOut(duration: 0.15)) { hovered = h ? app : (hovered == app ? nil : hovered) } }
-                        .overlay(alignment: .topLeading) {
-                            if hovered == app { UsageTip(app: app, usage: monitor.current(app)!, seen: monitor.usage[app]).offset(y: 22).zIndex(5) }
-                        }
-                        .zIndex(hovered == app ? 5 : 0)
-                }
+                ForEach(apps, id: \.self) { app in item(app, monitor.current(app)!) }
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(Palette.secondary)
+                    .rotationEffect(.degrees(monitor.detailShown ? 180 : 0))
             }
             .font(.system(size: 12))
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+            .onHover { h in
+                guard !monitor.detailPinned else { return }
+                withAnimation(.easeOut(duration: 0.18)) { monitor.detailHover = h }
+            }
+            .onTapGesture { withAnimation(.easeOut(duration: 0.18)) { monitor.detailPinned.toggle() } }
+            .help(monitor.detailPinned ? "Click to hide usage" : "Click to keep usage open")
         }
     }
 
@@ -229,7 +237,6 @@ struct UsageLine: View {
                 .contentTransition(.numericText())
             if let week = u.week { Wheel(percent: week.percent) }
         }
-        .contentShape(Rectangle())
     }
 }
 
@@ -249,38 +256,73 @@ private struct Wheel: View {
     }
 }
 
-private struct UsageTip: View {
-    let app: UsageMonitor.App
-    let usage: AppUsage
-    let seen: AppUsage?
+/// Every app's limits as bars, with when each resets and how fresh the reading is. Sits in the layout under the header.
+struct UsagePanel: View {
+    private var monitor = UsageMonitor.shared
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(app.name).fontWeight(.semibold)
-            if app == .cursor {
-                Text(line("Plan", usage.plan, seen?.planSeen))
-            } else {
-                Text(line("5 hours", usage.five, seen?.fiveSeen))
-                Text(line("Week", usage.week, seen?.weekSeen))
+        let apps = UsageMonitor.App.allCases.filter { monitor.current($0) != nil }
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach(apps, id: \.self) { app in
+                let u = monitor.current(app)!
+                let seen = monitor.usage[app]
+                HStack(alignment: .top, spacing: 10) {
+                    AppIcon(bundleID: app.bundleID, size: 18)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(app.name).font(.system(size: 12, weight: .semibold))
+                        if app == .cursor {
+                            bar("Plan", u.plan, seen?.planSeen, app)
+                        } else {
+                            bar("5 hours", u.five, seen?.fiveSeen, app)
+                            bar("Week", u.week, seen?.weekSeen, app)
+                        }
+                    }
+                }
             }
         }
-        .font(.system(size: 11))
-        .foregroundStyle(.white.opacity(0.92))
-        .padding(.horizontal, 10).padding(.vertical, 7)
-        .background(Color(white: 0.16), in: RoundedRectangle(cornerRadius: 9))
-        .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(.white.opacity(0.12)))
-        .fixedSize()
-        .allowsHitTesting(false)
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(.white.opacity(0.1)))
+        .onHover { h in
+            guard !monitor.detailPinned else { return }
+            withAnimation(.easeOut(duration: 0.18)) { monitor.detailHover = h }
+        }
     }
 
-    private func line(_ name: String, _ l: Limit?, _ seenAt: Date?) -> String {
-        guard let l else { return "\(name): not seen yet" }
-        var s = "\(name): \(Int(l.percent))%"
-        if let r = l.resetsAt { s += " · resets \(UsageMonitor.when(r))" }
-        if let seenAt, app != .codex, Date().timeIntervalSince(seenAt) > 300 {
-            s += " · as of \(seenAt.formatted(.relative(presentation: .named)))"
+    private func bar(_ name: String, _ l: Limit?, _ seenAt: Date?, _ app: UsageMonitor.App) -> some View {
+        let p = l?.percent ?? 0
+        return VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 6) {
+                Text(name).foregroundStyle(Palette.secondary)
+                Spacer(minLength: 8)
+                Text(detail(l, seenAt, app)).foregroundStyle(Palette.secondary).lineLimit(1)
+                Text(l.map { "\(Int($0.percent))%" } ?? "–")
+                    .fontWeight(.semibold).monospacedDigit()
+                    .foregroundStyle(l.map { UsageMonitor.color($0.percent) } ?? Palette.secondary)
+                    .frame(minWidth: 34, alignment: .trailing)
+            }
+            .font(.system(size: 11))
+            GeometryReader { g in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(.white.opacity(0.1))
+                    Capsule().fill(UsageMonitor.color(p, quiet: .white.opacity(0.7)))
+                        .frame(width: max(l == nil ? 0 : 3, g.size.width * min(1, p / 100)))
+                }
+            }
+            .frame(height: 4)
+            .animation(.spring(response: 0.6, dampingFraction: 0.85), value: p)
         }
-        return s
+    }
+
+    private func detail(_ l: Limit?, _ seenAt: Date?, _ app: UsageMonitor.App) -> String {
+        guard let l else { return "not seen yet" }
+        var parts: [String] = []
+        if let r = l.resetsAt { parts.append("resets \(UsageMonitor.when(r))") }
+        if let seenAt, app != .codex, Date().timeIntervalSince(seenAt) > 300 {
+            parts.append("as of \(seenAt.formatted(.relative(presentation: .named)))")
+        }
+        return parts.joined(separator: " · ")
     }
 }
 

@@ -43,6 +43,14 @@ import Testing
         #expect(later.week?.percent == 39)
     }
 
+    @Test func aLimitOlderThanItsWindowWithNoResetTimeCountsAsReset() {
+        var u = AppUsage()
+        u.merge(UsageReader.claude(label: "Usage: 100% of session limit", now: now)!)
+        u.fiveSeen = now
+        #expect(u.current(at: now.addingTimeInterval(4 * 3600)).five?.percent == 100)
+        #expect(u.current(at: now.addingTimeInterval(6 * 3600)).five?.percent == 0)
+    }
+
     @Test func cursorModelsFromPlanAndUsage() {
         let u = UsageReader.cursor(labels: ["Usage limits reset on Oct 24 (14 days left)", "Cursor Models 47%"], now: now)
         #expect(u?.plan?.percent == 47)
