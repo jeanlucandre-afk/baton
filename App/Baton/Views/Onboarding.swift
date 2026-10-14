@@ -104,8 +104,10 @@ enum Typeface {
     static func register() {
         guard !registered else { return }
         registered = true
-        let urls = Bundle.main.urls(forResourcesWithExtension: "woff2", subdirectory: nil) ?? []
-        CTFontManagerRegisterFontURLs(urls as CFArray, .process, true, nil)
+        // One at a time and synchronously, so the first frame already has them.
+        for url in Bundle.main.urls(forResourcesWithExtension: "woff2", subdirectory: nil) ?? [] {
+            CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+        }
     }
 
     static func sans(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
@@ -131,7 +133,8 @@ struct OnboardingView: View {
     let done: () -> Void
 
     enum Step: Int, CaseIterable { case welcome, apps, access, notify, keys, ready }
-    @State private var step = Step.welcome
+    /// `-onboardingStep 3` on the command line opens at that step, for checking each film.
+    @State private var step = Step(rawValue: UserDefaults.standard.integer(forKey: "onboardingStep")) ?? .welcome
     @State private var shown = false
     @State private var notifyStatus: UNAuthorizationStatus = .notDetermined
     /// A Jev key is in the Keychain: without it there are no pings, so the keys step and the last step say so.
@@ -665,7 +668,7 @@ struct WelcomeFilm: View {
         let inner: CGFloat = 126
         ZStack(alignment: .top) {
             HStack(spacing: 10) {
-                window(light: true, app: "com.anthropic.claudefordesktop", name: "Claude", title: "Pricing page",
+                window(light: true, app: "com.anthropic.claudefordesktop", name: "Claude", title: "Pricing",
                        dot: finished > 0.5 ? Palette.ready : Palette.working, dotOpacity: 1, glow: glow) {
                     bar(inner * 0.7, light: true).frame(maxWidth: .infinity, alignment: .trailing)
                     bar(inner, light: true)
@@ -673,14 +676,14 @@ struct WelcomeFilm: View {
                     bar(inner * 0.8 * Film.typed(Film.ramp(t, 0.07, 0.52), 14), light: true)
                     RoundedRectangle(cornerRadius: 6).strokeBorder(.black.opacity(0.1)).frame(height: 24).padding(.top, 4)
                 }
-                window(light: false, app: "com.openai.chat", name: "ChatGPT", title: "Launch email",
+                window(light: false, app: "com.openai.chat", name: "ChatGPT", title: "Email",
                        dot: Palette.working, dotOpacity: beat, glow: 0) {
                     bar(inner * 0.6, light: false).frame(maxWidth: .infinity, alignment: .trailing)
                     bar(inner * 0.92, light: false)
                     bar(inner * Film.typed(0.1 + 0.75 * t, 24), light: false)
                     RoundedRectangle(cornerRadius: 6).strokeBorder(.white.opacity(0.12)).frame(height: 24).padding(.top, 9)
                 }
-                window(light: false, app: "com.openai.codex", name: "Codex", title: "Flaky tests",
+                window(light: false, app: "com.openai.codex", name: "Codex", title: "Tests",
                        dot: Palette.working, dotOpacity: 1.35 - beat, glow: 0, background: Color(red: 0.08, green: 0.086, blue: 0.1)) {
                     Group {
                         Text("$ swift test")
@@ -1075,7 +1078,8 @@ struct SupportedApp: Identifiable {
     let name: String
     let installed: Bool
 
-    /// Names for apps that aren't installed; an installed app's own name wins.
+    /// Baton's names for the apps it knows; others go by their own. Codex can live inside ChatGPT.app,
+    /// whose own name would show it as a second ChatGPT.
     private static let names = [
         "com.anthropic.claudefordesktop": "Claude",
         "com.openai.chat": "ChatGPT",
@@ -1091,7 +1095,7 @@ struct SupportedApp: Identifiable {
             let own = url.flatMap { Bundle(url: $0) }.flatMap {
                 ($0.object(forInfoDictionaryKey: "CFBundleDisplayName") ?? $0.object(forInfoDictionaryKey: "CFBundleName")) as? String
             }
-            return SupportedApp(id: id, name: own ?? names[id] ?? id, installed: url != nil)
+            return SupportedApp(id: id, name: names[id] ?? own ?? id, installed: url != nil)
         }
         .sorted { ($0.installed ? 0 : 1, $0.name) < ($1.installed ? 0 : 1, $1.name) }
     }
