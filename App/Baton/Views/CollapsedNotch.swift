@@ -18,17 +18,27 @@ struct CollapsedNotch: View {
         self.geometry = geometry; self.notchHeight = notchHeight; self.lanes = lanes
     }
 
-    private let ear: CGFloat = 6
+    private static let ear: CGFloat = 6
     private var wing: CGFloat { DisplayManager.wing }
 
+    /// How far the right wing reaches past the notch: the wing, its padding and the shape's ear.
+    static let rightReach: CGFloat = DisplayManager.wing + 10 + ear
+    /// The black's width, with or without the right wing (dropped when it would cover menu bar items).
+    static func width(notchWidth: CGFloat, rightWing: Bool) -> CGFloat {
+        notchWidth + 2 * ear + 10 + DisplayManager.wing + (rightWing ? 10 + DisplayManager.wing : 0)
+    }
+    /// Without its right wing the black is narrower on one side only: move it left so the notch stays put.
+    static func shift(rightWing: Bool) -> CGFloat { rightWing ? 0 : -(DisplayManager.wing + 10) / 2 }
+
     var body: some View {
+        let right = MenuBarExtras.shared.rightWingFits(geometry)
         if geometry.kind == .lip {
             // no menu bar on this screen: a thin sliver that opens on hover
             Capsule().fill(.black).frame(width: geometry.rect.width, height: NotchGeometry.lipHeight)
         } else if lanes || style == .lanes {
-            LaneMeter(notchWidth: geometry.rect.width)
-                .frame(width: geometry.rect.width + 2 * wing + 2 * ear + 20, height: notchHeight)
-                .background(NotchShape(topRadius: ear, bottomRadius: 14).fill(.black))
+            LaneMeter(notchWidth: geometry.rect.width, trailing: right)
+                .frame(width: Self.width(notchWidth: geometry.rect.width, rightWing: right), height: notchHeight)
+                .background(NotchShape(topRadius: Self.ear, bottomRadius: 14).fill(.black))
         } else {
             // The task rows are rebuilt on every read: read them once per draw and hand them to both wings.
             let rows = model.rows
@@ -36,10 +46,10 @@ struct CollapsedNotch: View {
             HStack(spacing: 0) {
                 leading(rows, ready).frame(width: wing, alignment: .leading).padding(.leading, 10)
                 Color.clear.frame(width: geometry.rect.width)
-                trailing(rows, ready).frame(width: wing, alignment: .trailing).padding(.trailing, 10)
+                if right { trailing(rows, ready).frame(width: wing, alignment: .trailing).padding(.trailing, 10) }
             }
-            .frame(width: geometry.rect.width + 2 * wing + 2 * ear + 20, height: notchHeight)
-            .background(NotchShape(topRadius: ear, bottomRadius: 14).fill(.black))
+            .frame(width: Self.width(notchWidth: geometry.rect.width, rightWing: right), height: notchHeight)
+            .background(NotchShape(topRadius: Self.ear, bottomRadius: 14).fill(.black))
         }
     }
 

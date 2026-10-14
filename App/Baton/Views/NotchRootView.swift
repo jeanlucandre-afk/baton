@@ -180,6 +180,12 @@ struct NotchRootView: View {
     private var centerX: CGFloat { geometry.rect.midX - panelFrame.minX }
 
     private var shelfOn: Bool { showShelf && geometry.kind != .lip }
+    /// False while the collapsed notch's right wing would cover menu bar items (see MenuBarExtras).
+    private var rightWing: Bool { MenuBarExtras.shared.rightWingFits(geometry) }
+    /// The plain collapsed notch is the one shape that can lose its right wing, and so move off-center.
+    private var collapsedShift: CGFloat {
+        isOpen || shelfOn || geometry.kind == .lip ? 0 : CollapsedNotch.shift(rightWing: rightWing)
+    }
 
     private var openWidth: CGFloat {
         switch model.mode {
@@ -196,6 +202,7 @@ struct NotchRootView: View {
                 darkMorph
             } else {
                 CollapsedNotch(geometry: geometry, notchHeight: notchH, lanes: shelfOn)
+                    .offset(x: geometry.kind == .lip ? 0 : CollapsedNotch.shift(rightWing: rightWing))
                 if shelfOn && !isOpen {
                     ShelfView(notchHeight: notchH, glass: true)
                         .transition(reduce ? .opacity : .opacity.combined(with: .scale(scale: 0.97, anchor: .top)))
@@ -218,6 +225,7 @@ struct NotchRootView: View {
         .animation(isOpen ? Motion.pop(reduce) : Motion.shape(reduce), value: isOpen)
         .animation(Motion.shape(reduce), value: model.mode)
         .animation(Motion.shape(reduce), value: showShelf)
+        .animation(Motion.shape(reduce), value: rightWing)
     }
 
     /// Each card is its own view, so switching cards (list → new task, ping → list) reveals the new one too.
@@ -258,6 +266,7 @@ struct NotchRootView: View {
                 .frame(width: size.width, height: size.height, alignment: .top)
                 .clipShape(shape)
         }
+        .offset(x: collapsedShift)
     }
 
     /// Exactly one of these at a time. Opening, the collapsed one is gone almost at once; closing, the words
@@ -294,7 +303,7 @@ struct NotchRootView: View {
         if isOpen { return CGSize(width: openWidth, height: openHeight) }
         if geometry.kind == .lip { return CGSize(width: notchW, height: NotchGeometry.lipHeight) }
         if shelfOn { return CGSize(width: ShelfView.width, height: notchH + ShelfView.rowHeight) }
-        return CGSize(width: notchW + 2 * DisplayManager.wing + 2 * 6 + 20, height: notchH)
+        return CGSize(width: CollapsedNotch.width(notchWidth: notchW, rightWing: rightWing), height: notchH)
     }
 
     private var glassOpen: some View {

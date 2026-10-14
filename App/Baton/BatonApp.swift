@@ -27,6 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model.start()
         Insight.shared.start()
         UsageMonitor.shared.start()
+        MenuBarExtras.shared.start()
         DisplayManager.shared.start()
         _ = Updater.shared  // starts the daily update check
         KeyboardShortcuts.onKeyUp(for: .newTask) { AppModel.shared.openNewTask() }

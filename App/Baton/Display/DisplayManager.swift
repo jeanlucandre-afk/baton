@@ -124,7 +124,9 @@ final class DisplayManager {
     /// The collapsed notch plus its wings, in global coordinates: where hovering opens it.
     func hotZone(_ id: CGDirectDisplayID) -> CGRect? {
         guard let g = slots[id]?.geometry else { return nil }
-        let r = g.rect.insetBy(dx: -Self.wing, dy: 0)
+        // Without its right wing (it would cover menu bar items), the menu bar right of the notch isn't Baton's.
+        var r = g.rect.insetBy(dx: -Self.wing, dy: 0)
+        if !MenuBarExtras.shared.rightWingFits(g) { r.size.width -= Self.wing }
         return CGRect(x: r.minX, y: r.minY - 4, width: r.width, height: r.height + 4)
     }
 

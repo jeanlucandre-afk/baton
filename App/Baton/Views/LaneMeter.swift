@@ -5,11 +5,13 @@ import SwiftUI
 /// the left, "3/7 working" on the right. Only working pills move.
 struct LaneMeter: View {
     let notchWidth: CGFloat
+    /// False when the right wing would cover menu bar items: then only the pills show.
+    var trailing = true
     private var model = AppModel.shared
     @Environment(\.accessibilityReduceMotion) private var reduce
     @Environment(\.notchVisible) private var visible
 
-    init(notchWidth: CGFloat) { self.notchWidth = notchWidth }
+    init(notchWidth: CGFloat, trailing: Bool = true) { self.notchWidth = notchWidth; self.trailing = trailing }
 
     enum State { case working, waiting, idle }
 
@@ -60,23 +62,25 @@ struct LaneMeter: View {
             .animation(Motion.list(reduce), value: lanes.map { "\($0.id)\($0.group)" })
             .frame(width: DisplayManager.wing, alignment: .leading).padding(.leading, 10)
             Color.clear.frame(width: notchWidth)
-            Group {
-                if model.idlePaused {
-                    Label("paused", systemImage: "moon.zzz").font(.system(size: 11)).foregroundStyle(Palette.secondary)
-                } else if lanes.isEmpty {
-                    Text("no lanes").font(.system(size: 11)).foregroundStyle(Palette.secondary)
-                } else {
-                    let working = lanes.filter { $0.group == .working }.count
-                    HStack(spacing: 3) {
-                        Text("\(working)/\(lanes.count)").font(.system(size: 11, weight: .semibold)).monospacedDigit()
-                            .contentTransition(reduce ? .opacity : .numericText(value: Double(working)))
-                            .animation(Motion.list(reduce), value: "\(working)/\(lanes.count)")
-                        Text("working").font(.system(size: 11)).foregroundStyle(Palette.secondary)
+            if trailing {
+                Group {
+                    if model.idlePaused {
+                        Label("paused", systemImage: "moon.zzz").font(.system(size: 11)).foregroundStyle(Palette.secondary)
+                    } else if lanes.isEmpty {
+                        Text("no lanes").font(.system(size: 11)).foregroundStyle(Palette.secondary)
+                    } else {
+                        let working = lanes.filter { $0.group == .working }.count
+                        HStack(spacing: 3) {
+                            Text("\(working)/\(lanes.count)").font(.system(size: 11, weight: .semibold)).monospacedDigit()
+                                .contentTransition(reduce ? .opacity : .numericText(value: Double(working)))
+                                .animation(Motion.list(reduce), value: "\(working)/\(lanes.count)")
+                            Text("working").font(.system(size: 11)).foregroundStyle(Palette.secondary)
+                        }
                     }
                 }
+                .lineLimit(1)
+                .frame(width: DisplayManager.wing, alignment: .trailing).padding(.trailing, 10)
             }
-            .lineLimit(1)
-            .frame(width: DisplayManager.wing, alignment: .trailing).padding(.trailing, 10)
         }
     }
 }

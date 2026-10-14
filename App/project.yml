@@ -29,8 +29,8 @@ targets:
       path: Baton/Info.plist
       properties:
         CFBundleDisplayName: Baton
-        CFBundleShortVersionString: "0.2.0"
-        CFBundleVersion: "2"
+        CFBundleShortVersionString: "0.2.1"
+        CFBundleVersion: "3"
         LSUIElement: true
         CFBundleIconName: AppIcon
         LSApplicationCategoryType: public.app-category.productivity
