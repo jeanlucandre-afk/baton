@@ -6,6 +6,15 @@
     <description>Baton updates</description>
     <language>en</language>
     <item>
+      <title>Baton 0.2.3</title>
+      <pubDate>Wed, 14 Oct 2026 23:46:23 GMT</pubDate>
+      <sparkle:version>5</sparkle:version>
+      <sparkle:shortVersionString>0.2.3</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <sparkle:releaseNotesLink>https://github.com/jeanlucandre-afk/baton/releases/tag/v0.2.3</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/jeanlucandre-afk/baton/releases/download/v0.2.3/Baton-0.2.3.zip" type="application/octet-stream" sparkle:edSignature="Xej0AKWac9i9BRqylRoIwFVApGxK+9nAqJ6h8HEC69Msze5ssF+mIFQhVF+6WviqseXQl9SbagQlKwM+kIb+DQ==" length="6527671"/>
+    </item>
+    <item>
       <title>Baton 0.2.2</title>
       <pubDate>Wed, 14 Oct 2026 17:33:09 GMT</pubDate>
       <sparkle:version>4</sparkle:version>
