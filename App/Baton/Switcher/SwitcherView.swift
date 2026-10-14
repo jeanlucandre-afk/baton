@@ -13,7 +13,6 @@ struct SwitcherView: View {
 
     static let ink = Color(white: 0.055)
     static let paper = Color(red: 0.96, green: 0.95, blue: 0.92)
-    static let coral = Color(red: 1.0, green: 0.47, blue: 0.40)
     private static let rowHeight: CGFloat = 40
     private static let rowSpacing: CGFloat = 2
     /// Nine lines and a half, so a longer list shows it scrolls.
@@ -209,7 +208,7 @@ struct SwitcherView: View {
 
     static func color(_ u: Switcher.Urgency) -> Color {
         switch u {
-        case .needsYou: coral
+        case .needsYou: Palette.ready
         case .ready: Palette.ready
         case .working: Palette.working
         case .recent: Palette.idle.opacity(0.7)
