@@ -18,6 +18,8 @@ baton-probe — tests Baton's detection engine on real windows
                                         broken profile (a simulated app update), --gemini skips the
                                         on-Mac list search, --save keeps the result
   baton-probe profiles                  where saved profiles live, and which apps they cover
+  baton-probe shot <n> [<file.jpg>]     screenshot a window and ask Jev (1.14, images) for its status
+                                        from the picture alone; needs Screen Recording for the terminal
 
 Logs go to ~/Developer/Baton/logs/.
 """
@@ -357,6 +359,33 @@ case "tree":
             for c in k.reversed() { AXUIElementSetMessagingTimeout(c, AX.messagingTimeout); stack.append((c, d + 1)) }
         }
     }
+
+case "shot":
+    requireAccessibility()
+    _ = NSApplication.shared  // the window-server connection ScreenCaptureKit needs; the app has one already
+    guard let w = AX.listWindows()[safe: Int(args.first ?? "") ?? -1] else { print("Pick a window by number. Run `baton-probe list` first."); exit(1) }
+    guard WindowShot.permitted || WindowShot.requestPermission() else {
+        print("Needs Screen Recording for this terminal: System Settings › Privacy & Security › Screen & System Audio Recording.")
+        exit(1)
+    }
+    // ScreenCaptureKit answers on the main run loop, so it has to keep running (no semaphore wait).
+    Task {
+        defer { exit(0) }
+        guard let jpeg = await WindowShot.jpeg(w) else { print("Couldn't capture \(w.appName) · \(w.title) (minimized?)."); return }
+        print("Captured \(w.appName) · \(w.title): \(jpeg.count / 1024) KB")
+        if let path = args[safe: 1] { try? jpeg.write(to: URL(fileURLWithPath: path)); print("Saved \(path)") }
+        let jev: Jev
+        do { jev = try Jev() } catch { print("Couldn't read the Jev key from the Keychain (service \"jev-api-key\")."); return }
+        // The window's text left out on purpose: this shows what the picture alone tells Jev.
+        let state: [String: any Sendable] = ["app": w.appName, "window_title": w.title, "latest_text": "", "last_line": ""]
+        do {
+            let a = try await jev.classify(state: state, screenshot: jpeg)
+            print(String(format: "Jev %@: %@ %.2f · asks you %.2f · error %.2f · %d ms · %d tok · $%.6f", Jev.imageModel,
+                         a.status.rawValue, a.confidence, a.asksYou, a.hasError, Int(a.millis), a.inputTokens, a.cost))
+            print("probabilities: " + a.probabilities.sorted { $0.value > $1.value }.map { "\($0.key) " + String(format: "%.2f", $0.value) }.joined(separator: ", "))
+        } catch { print("Jev error: \(error)") }
+    }
+    RunLoop.main.run()
 
 case "watch":
     requireAccessibility()

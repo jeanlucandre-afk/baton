@@ -867,8 +867,10 @@ final class AppModel {
                 }
             case let .contextChanged(tid, title, tail):
                 resolve(tid, title: title, tail: tail)
-            case let .answer(_, a, _, cached, _, _):
+            case let .answer(tid, a, reason, cached, _, _):
                 if !cached { spent += a.cost }
+                DebugLog.log(String(format: "jev %@ %@ %.2f · %d tok · %@%@", live[tid]?.window.appName ?? "?", a.status.rawValue,
+                                    a.confidence, a.inputTokens, reason, cached ? " · cached" : ""))
             case let .lost(tid):
                 live[tid] = nil
             case .note:

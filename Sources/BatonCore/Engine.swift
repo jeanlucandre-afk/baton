@@ -52,6 +52,8 @@ public final class DetectionEngine: @unchecked Sendable {
         var activity = false
         /// A quiet window isn't read again before this.
         var nextRead = Date.distantPast
+        /// Jev also gets a picture of the window (an app whose sidebar Baton can't read; see `setScreenshots`).
+        var screenshots = false
         init(win: AXWindow, now: Date) { self.win = win; lastChange = now }
     }
 
@@ -62,6 +64,7 @@ public final class DetectionEngine: @unchecked Sendable {
     private var config: Config
     private let hysteresis = Hysteresis()
     private let snap: @Sendable (AXWindow) -> Snapshot?
+    private let shoot: @Sendable (AXWindow) async -> Data?
     private let now: @Sendable () -> Date
 
     private var trackers: [UUID: Tracker] = [:]
@@ -82,10 +85,12 @@ public final class DetectionEngine: @unchecked Sendable {
 
     public init(classifier: (any StateClassifier)?, config: Config = Config(),
                 snapshot: @escaping @Sendable (AXWindow) -> Snapshot? = { AX.snapshot($0) },
+                screenshot: @escaping @Sendable (AXWindow) async -> Data? = { await WindowShot.jpeg($0) },
                 now: @escaping @Sendable () -> Date = { Date() }) {
         self.classifier = classifier
         self.config = config
         self.snap = snapshot
+        self.shoot = screenshot
         self.now = now
         (events, emit) = AsyncStream.makeStream(of: EngineEvent.self, bufferingPolicy: .bufferingNewest(500))
     }
@@ -110,6 +115,17 @@ public final class DetectionEngine: @unchecked Sendable {
     /// Updates which task's goal Jev should judge this window against (e.g. after switching chats).
     public func setContext(_ id: UUID, _ context: String?) {
         queue.async { self.trackers[id]?.context = context }
+    }
+
+    /// Sends a screenshot of this window with every Jev question from now on (or stops). For a window
+    /// watched in place of a sidebar Baton can't read, whose text may be as broken as the sidebar.
+    public func setScreenshots(_ id: UUID, _ on: Bool) {
+        queue.async {
+            guard let t = self.trackers[id], t.screenshots != on else { return }
+            t.screenshots = on
+            // Ask again with the picture rather than trust an answer from the text alone.
+            if on { t.recheckAt = self.now(); t.nextRead = .distantPast }
+        }
     }
 
     public func unwatch(_ id: UUID) {
@@ -274,7 +290,8 @@ public final class DetectionEngine: @unchecked Sendable {
 
         // A recheck or heartbeat asks again on purpose: the screen is the same, but the time it has stood
         // still is not, and that's what tells a long-running reply from a finished one.
-        if reason != "recheck", reason != "heartbeat", let cached = cache[hash] {
+        // The cache is keyed on the text, which says nothing about what a screenshot would show.
+        if reason != "recheck", reason != "heartbeat", !t.screenshots, let cached = cache[hash] {
             emit.yield(.answer(id: id, answer: cached, reason: reason, cached: true, chars: s.tail.count, axMillis: s.millis))
             apply(id, t, cached)
             return
@@ -299,9 +316,17 @@ public final class DetectionEngine: @unchecked Sendable {
         ]
         if let c = t.context { state["user_task"] = Redact.clean(c) }
         t.inFlight = true
+        let win = t.win, shots = t.screenshots, shoot = self.shoot
         Task {
             let result: Result<JevAnswer, Error>
-            do { result = .success(try await classifier.classify(state: state)) } catch { result = .failure(error) }
+            var reason = reason
+            // No picture (no permission, window minimized): the text alone, as before.
+            let image = shots ? await shoot(win) : nil
+            if shots { reason += image == nil ? " · no screenshot" : " · screenshot" }
+            do {
+                if let image { result = .success(try await classifier.classify(state: state, screenshot: image)) }
+                else { result = .success(try await classifier.classify(state: state)) }
+            } catch { result = .failure(error) }
             self.queue.async {
                 t.inFlight = false
                 switch result {
@@ -314,7 +339,7 @@ public final class DetectionEngine: @unchecked Sendable {
                     self.failures = 0
                     self.calls += 1
                     self.spent += a.cost
-                    self.remember(hash, a)
+                    if !shots { self.remember(hash, a) }
                     self.emit.yield(.answer(id: id, answer: a, reason: reason, cached: false, chars: s.tail.count, axMillis: s.millis))
                     if self.trackers[id] === t { self.apply(id, t, a) }
                 }

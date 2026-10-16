@@ -54,6 +54,8 @@ extension Defaults.Keys {
     static let settle = Key<Double>("settle", default: 2.5)
     /// When an app update breaks how Baton reads a sidebar, re-learn it on its own.
     static let autoRepair = Key<Bool>("autoRepair", default: true)
+    /// While a sidebar can't be read, Jev also sees a screenshot of the app's window (needs Screen Recording).
+    static let screenshotFallback = Key<Bool>("screenshotFallback", default: false)
     /// The first-run window (Welcome, permissions, keys) has been through once.
     static let onboarded = Key<Bool>("onboarded", default: false)
 }

@@ -160,6 +160,9 @@ private struct TrackingPane: View {
     @Default(.settle) private var settle
     @Default(.idlePauseMinutes) private var idlePause
     @Default(.autoRepair) private var autoRepair
+    @Default(.screenshotFallback) private var screenshotFallback
+    /// macOS only grants Screen Recording to a relaunched app, so this is read once per Settings open.
+    @State private var screenAllowed = WindowShot.permitted
 
     var body: some View {
         Form {
@@ -212,10 +215,29 @@ private struct TrackingPane: View {
                     }
                 }
                 Toggle("Re-learn a sidebar on its own when an app changes it", isOn: $autoRepair)
+                Toggle(isOn: $screenshotFallback) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Show Jev the window while a sidebar can't be read")
+                        if screenshotFallback && !screenAllowed {
+                            Text("Needs Screen Recording for Baton. Turn it on, then quit and reopen Baton.")
+                                .font(.caption).foregroundStyle(.orange)
+                        }
+                    }
+                }
+                .onChange(of: screenshotFallback) { _, on in
+                    if on && !WindowShot.permitted { WindowShot.requestPermission() }
+                    screenAllowed = WindowShot.permitted
+                    model.applyScreenshots()
+                }
+                if screenshotFallback && !screenAllowed {
+                    Button("Open Screen Recording Settings…") {
+                        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!)
+                    }
+                }
             } header: {
                 Text("Reading apps")
             } footer: {
-                Text("Apps change their sidebars in updates. When Baton can't read one, it watches the window instead and re-learns the sidebar: first on your Mac, then, if needed, by sending the sidebar's layout (no conversation text) to Gemini. A new reading is only kept if it finds your chats again.")
+                Text("Apps change their sidebars in updates. When Baton can't read one, it watches the window instead and re-learns the sidebar: first on your Mac, then, if needed, by sending the sidebar's layout (no conversation text) to Gemini. A new reading is only kept if it finds your chats again. With \"Show Jev the window\" on, Baton also sends Jev a screenshot of that app's window while it watches it, so pings keep working when the window's text can't be read either. Screenshots are sent as they are: emails or keys on screen are not removed.")
                     .foregroundStyle(.secondary)
             }
             Section {
@@ -225,7 +247,7 @@ private struct TrackingPane: View {
             } header: {
                 Text("Detection")
             } footer: {
-                Text("Window text is read on your Mac. Only the end of attached windows is sent to Jev, with emails, keys and phone numbers removed.")
+                Text("Window text is read on your Mac. Only the end of attached windows is sent to Jev, with emails, keys and phone numbers removed. With \"Show Jev the window\" on, so is a screenshot of a window Baton watches in place of a sidebar it can't read.")
                     .foregroundStyle(.secondary)
             }
             Section {

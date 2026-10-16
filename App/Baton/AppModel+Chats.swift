@@ -557,6 +557,14 @@ extension AppModel {
         for t in chatTasks { attach(w, to: t.id, makeCurrent: chatTasks.count == 1) }
         fallbackLive[bundle] = live.first(where: { $0.value.window == w })?.key
         readerNotes[bundle] = "Can't read the sidebar. Watching the window instead."
+        applyScreenshots()
+    }
+
+    /// Windows watched for a blind sidebar get screenshots when the switch is on and macOS allows it.
+    /// Called again when the switch changes, so it applies to a fallback already running.
+    func applyScreenshots() {
+        let on = Defaults[.screenshotFallback] && WindowShot.permitted
+        for tid in fallbackLive.values { engine.setScreenshots(tid, on) }
     }
 
     private func backToSidebar(_ bundle: String) {
