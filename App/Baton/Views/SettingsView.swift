@@ -217,7 +217,7 @@ private struct TrackingPane: View {
                 Toggle("Re-learn a sidebar on its own when an app changes it", isOn: $autoRepair)
                 Toggle(isOn: $screenshotFallback) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Show Jev the window while a sidebar can't be read")
+                        Text("Show Jev the window while a sidebar can't be read (experimental)")
                         if screenshotFallback && !screenAllowed {
                             Text("Needs Screen Recording for Baton. Turn it on, then quit and reopen Baton.")
                                 .font(.caption).foregroundStyle(.orange)
